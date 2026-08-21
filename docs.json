@@ -22,6 +22,12 @@
         "pages": [
           "voices"
         ]
+      },
+      {
+        "group": "Deployment",
+        "pages": [
+          "deployment"
+        ]
       }
     ]
   }

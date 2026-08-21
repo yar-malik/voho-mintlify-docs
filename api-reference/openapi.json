@@ -1,0 +1,956 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Voho Speech API",
+    "version": "1",
+    "description": "Turn text into speech over HTTP or WebSocket. Every endpoint takes a bearer token issued from the Voho console."
+  },
+  "servers": [
+    {
+      "url": "https://app.voho.ai"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "API token from the Voho console. Begins with `voho_sk_live_`."
+      }
+    },
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string"
+              },
+              "message": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "Voice": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "layla"
+          },
+          "name": {
+            "type": "string",
+            "example": "Layla"
+          },
+          "gender": {
+            "type": "string",
+            "enum": [
+              "female",
+              "male"
+            ]
+          },
+          "age": {
+            "type": "string",
+            "enum": [
+              "18-30",
+              "30-50",
+              "60+"
+            ]
+          },
+          "language": {
+            "type": "string",
+            "example": "ar-SA"
+          },
+          "dialect": {
+            "type": "string",
+            "enum": [
+              "najdi",
+              "hijazi",
+              "gulf",
+              "egyptian",
+              "msa",
+              "none"
+            ]
+          },
+          "country": {
+            "type": "string",
+            "example": "Saudi Arabia"
+          },
+          "styles": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "Professional",
+                "Formal",
+                "Casual",
+                "Energetic"
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/v1/speech": {
+      "post": {
+        "summary": "Synthesise speech",
+        "operationId": "createSpeech",
+        "description": "Returns finished audio as raw bytes. Details of what was produced are in the `X-Voho-*` response headers.",
+        "tags": [
+          "Speech"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "text",
+                  "voice"
+                ],
+                "properties": {
+                  "text": {
+                    "type": "string",
+                    "maxLength": 5000,
+                    "description": "Text to speak. Maximum 5,000 characters.",
+                    "example": "\u0623\u0647\u0644\u0627\u064b \u0628\u0643 \u0641\u064a \u0641\u0648\u0647\u0648"
+                  },
+                  "voice": {
+                    "type": "string",
+                    "description": "Voice ID from the catalog.",
+                    "example": "layla"
+                  },
+                  "model": {
+                    "type": "string",
+                    "enum": [
+                      "sada-1",
+                      "nabra-1"
+                    ],
+                    "default": "sada-1"
+                  },
+                  "format": {
+                    "type": "string",
+                    "enum": [
+                      "mp3",
+                      "wav",
+                      "opus",
+                      "mulaw"
+                    ],
+                    "default": "mp3",
+                    "description": "Overrides the Accept header when both are present."
+                  },
+                  "sample_rate": {
+                    "type": "integer",
+                    "description": "Defaults to the format's native rate (24000, or 8000 for mulaw)."
+                  },
+                  "speed": {
+                    "type": "number",
+                    "default": 1.0,
+                    "description": "Speaking rate. Below 1.0 is slower."
+                  },
+                  "pitch": {
+                    "type": "number",
+                    "description": "Pitch adjustment. Only applies to `nabra-1`; `sada-1` ignores it."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Audio bytes.",
+            "headers": {
+              "X-Voho-Model": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Model used."
+              },
+              "X-Voho-Voice": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Voice used."
+              },
+              "X-Voho-Format": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Audio format."
+              },
+              "X-Voho-Sample-Rate": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Sample rate in Hz."
+              },
+              "X-Voho-Characters": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Characters billed."
+              },
+              "X-Voho-Cost-Cents": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Cost of this call in cents."
+              }
+            },
+            "content": {
+              "audio/mpeg": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "audio/wav": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "audio/ogg": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "audio/basic": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request, empty text, text too long, or unknown format.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "text_too_long",
+                    "message": "Text exceeds the 5,000 character limit."
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, malformed, or revoked token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "unauthorized",
+                    "message": "Invalid or missing API token."
+                  }
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "Credit balance exhausted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "insufficient_credit",
+                    "message": "Your credit balance is exhausted. Top up to continue."
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown voice or model.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "unknown_voice",
+                    "message": "Unknown voice \"laila\"."
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Synthesis failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "synthesis_failed",
+                    "message": "Synthesis failed. Please try again."
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Briefly at capacity. Retry with backoff.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "unavailable",
+                    "message": "The voice engine is briefly at capacity. Retry shortly."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/speech/stream": {
+      "post": {
+        "summary": "Stream speech",
+        "operationId": "streamSpeech",
+        "description": "Audio as it is produced. Send `Accept: text/event-stream` for SSE with base64 chunks and a usage event; anything else returns raw chunked audio. Requires `sada-1`.",
+        "tags": [
+          "Speech"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "text",
+                  "voice"
+                ],
+                "properties": {
+                  "text": {
+                    "type": "string",
+                    "maxLength": 5000,
+                    "example": "\u0623\u0647\u0644\u0627\u064b \u0628\u0643"
+                  },
+                  "voice": {
+                    "type": "string",
+                    "example": "layla"
+                  },
+                  "model": {
+                    "type": "string",
+                    "enum": [
+                      "sada-1"
+                    ],
+                    "default": "sada-1",
+                    "description": "Streaming supports `sada-1` only."
+                  },
+                  "format": {
+                    "type": "string",
+                    "enum": [
+                      "opus",
+                      "mulaw",
+                      "pcm"
+                    ],
+                    "default": "opus"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "SSE event stream, or raw chunked audio.",
+            "content": {
+              "text/event-stream": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "audio/ogg": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "audio/basic": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "audio/L16": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request or unsupported format.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "unknown_format",
+                    "message": "Unknown format \"mp3\"."
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, malformed, or revoked token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "unauthorized",
+                    "message": "Invalid or missing API token."
+                  }
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "Credit balance exhausted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "insufficient_credit",
+                    "message": "Your credit balance is exhausted. Top up to continue."
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown voice or model.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "unknown_model",
+                    "message": "Unknown model \"nabra-1\"."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/voices": {
+      "get": {
+        "summary": "List voices",
+        "operationId": "listVoices",
+        "description": "The voice catalog plus the models, formats, and streaming capabilities available to you. Filters combine with AND.",
+        "tags": [
+          "Voices"
+        ],
+        "parameters": [
+          {
+            "name": "dialect",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "najdi",
+                "gulf",
+                "hijazi",
+                "msa",
+                "egyptian"
+              ]
+            }
+          },
+          {
+            "name": "gender",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "female",
+                "male"
+              ]
+            }
+          },
+          {
+            "name": "language",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "ar"
+            },
+            "description": "Matched against the start of the locale."
+          },
+          {
+            "name": "style",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "Professional",
+                "Formal",
+                "Casual",
+                "Energetic"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Catalog.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "object": {
+                      "type": "string",
+                      "example": "list"
+                    },
+                    "count": {
+                      "type": "integer"
+                    },
+                    "dialects": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "label": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "models": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "description": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "formats": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "content_type": {
+                            "type": "string"
+                          },
+                          "default_sample_rate": {
+                            "type": "integer"
+                          }
+                        }
+                      }
+                    },
+                    "streaming": {
+                      "type": "object",
+                      "properties": {
+                        "endpoint": {
+                          "type": "string"
+                        },
+                        "model": {
+                          "type": "string"
+                        },
+                        "formats": {
+                          "type": "array",
+                          "items": {
+                            "type": "object"
+                          }
+                        }
+                      }
+                    },
+                    "voices": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Voice"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, malformed, or revoked token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "unauthorized",
+                    "message": "Invalid or missing API token."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/voices/{id}": {
+      "get": {
+        "summary": "Get a voice",
+        "operationId": "getVoice",
+        "description": "Everything needed to configure one voice, including a ready-to-send sample request in the right language.",
+        "tags": [
+          "Voices"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "layla"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Voice detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Voice"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "description": {
+                          "type": "string"
+                        },
+                        "supported_models": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "sample_request": {
+                          "type": "object"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, malformed, or revoked token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "unauthorized",
+                    "message": "Invalid or missing API token."
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No such voice.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "unknown_voice",
+                    "message": "Unknown voice \"laila\"."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/text/normalize": {
+      "post": {
+        "summary": "Normalize text",
+        "operationId": "normalizeText",
+        "description": "Returns the text as it will actually be spoken, with numbers, currency, and abbreviations expanded. Does not synthesise audio and does not draw down credits.",
+        "tags": [
+          "Text"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "text"
+                ],
+                "properties": {
+                  "text": {
+                    "type": "string",
+                    "example": "\u0627\u0644\u0645\u0628\u0644\u063a SAR 1,250 \u0645\u0633\u062a\u062d\u0642 \u0641\u064a 15/03."
+                  },
+                  "lang": {
+                    "type": "string",
+                    "enum": [
+                      "ar",
+                      "en"
+                    ],
+                    "description": "Detected automatically when omitted."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Expanded text.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "original": {
+                      "type": "string"
+                    },
+                    "normalized": {
+                      "type": "string"
+                    },
+                    "language": {
+                      "type": "string"
+                    },
+                    "replacements": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "from": {
+                            "type": "string"
+                          },
+                          "to": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Text missing or blank.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "empty_text",
+                    "message": "Text is required."
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, malformed, or revoked token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "unauthorized",
+                    "message": "Invalid or missing API token."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/text/coverage": {
+      "post": {
+        "summary": "Check pronunciation coverage",
+        "operationId": "textCoverage",
+        "description": "Flags tokens likely to be mispronounced \u2014 Latin words inside Arabic text, unexpanded digits, asset tags, and acronyms. A lexical check, not a pronunciation model.",
+        "tags": [
+          "Text"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "text"
+                ],
+                "properties": {
+                  "text": {
+                    "type": "string",
+                    "example": "\u0639\u0637\u0644 \u0641\u064a \u0627\u0644\u0645\u0643\u064a\u0641 AC-4417 \u0641\u064a \u0645\u0628\u0646\u0649 HVAC"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Coverage report.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "language": {
+                      "type": "string"
+                    },
+                    "token_count": {
+                      "type": "integer"
+                    },
+                    "flagged_count": {
+                      "type": "integer"
+                    },
+                    "coverage": {
+                      "type": "number",
+                      "description": "Proportion of tokens that raised no flag."
+                    },
+                    "flagged": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "token": {
+                            "type": "string"
+                          },
+                          "reason": {
+                            "type": "string",
+                            "enum": [
+                              "asset_tag",
+                              "acronym",
+                              "contains_digits",
+                              "latin_in_arabic"
+                            ]
+                          },
+                          "hint": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Text missing or blank.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "empty_text",
+                    "message": "Text is required."
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, malformed, or revoked token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "unauthorized",
+                    "message": "Invalid or missing API token."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

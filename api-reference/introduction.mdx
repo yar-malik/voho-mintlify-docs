@@ -1,6 +1,6 @@
 ---
-title: "API introduction"
-sidebarTitle: "Introduction"
+title: "API reference index"
+sidebarTitle: "Overview"
 description: "Base URL, authentication, response headers, credits, and error handling for the Voho Speech API."
 icon: "plug"
 ---
@@ -39,10 +39,10 @@ A missing, malformed, or revoked token returns `401`:
 | `POST` | [`/v1/speech`](/api-reference/speech) | Synthesise a complete audio file |
 | `POST` | [`/v1/speech/stream`](/api-reference/speech-stream) | Stream audio as it is generated |
 | `WS` | [`/v1/speech/ws`](/api-reference/websocket) | Incremental text in, audio out, one connection |
-| `GET` | [`/v1/voices`](/api-reference/voices) | List and filter the voice catalog |
-| `GET` | [`/v1/voices/{id}`](/api-reference/voices#get-a-voice) | Details for one voice |
-| `POST` | [`/v1/text/normalize`](/api-reference/text) | See how text will be spoken |
-| `POST` | [`/v1/text/coverage`](/api-reference/text#coverage) | Flag likely mispronunciations |
+| `GET` | [`/v1/voices`](/api-reference/voices-list) | List and filter the voice catalog |
+| `GET` | [`/v1/voices/{id}`](/api-reference/voices-get) | Details for one voice |
+| `POST` | [`/v1/text/normalize`](/api-reference/text-normalize) | See how text will be spoken |
+| `POST` | [`/v1/text/coverage`](/api-reference/text-coverage) | Flag likely mispronunciations |
 
 ## Response headers
 
@@ -101,7 +101,7 @@ See [Errors](/api-reference/errors) for the full list.
   <Card title="Synthesise speech" icon="waveform-lines" href="/api-reference/speech">
     The core endpoint.
   </Card>
-  <Card title="Browse voices" icon="list" href="/api-reference/voices">
+  <Card title="Browse voices" icon="list" href="/api-reference/voices-list">
     Find a voice by dialect.
   </Card>
 </CardGroup>

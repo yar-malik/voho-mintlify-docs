@@ -49,62 +49,89 @@
     }
   },
   "navigation": {
-    "groups": [
+    "tabs": [
       {
-        "group": "Getting started",
-        "icon": "rocket",
-        "pages": [
-          "index",
-          "quickstart"
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Getting started",
+            "icon": "rocket",
+            "pages": [
+              "index",
+              "quickstart"
+            ]
+          },
+          {
+            "group": "Voices and models",
+            "icon": "waveform-lines",
+            "pages": [
+              "voices",
+              "models"
+            ]
+          },
+          {
+            "group": "Voice agents",
+            "icon": "headset",
+            "pages": [
+              "concepts",
+              "instructions",
+              "actions",
+              "handoff"
+            ]
+          },
+          {
+            "group": "Running in production",
+            "icon": "chart-line",
+            "pages": [
+              "testing",
+              "latency",
+              "transcripts",
+              "troubleshooting"
+            ]
+          },
+          {
+            "group": "Platform",
+            "icon": "server",
+            "pages": [
+              "deployment",
+              "security"
+            ]
+          }
         ]
       },
       {
-        "group": "Speech API",
-        "icon": "plug",
-        "pages": [
-          "api-reference/introduction",
-          "api-reference/speech",
-          "api-reference/speech-stream",
-          "api-reference/websocket",
-          "api-reference/voices",
-          "api-reference/text",
-          "api-reference/errors"
-        ]
-      },
-      {
-        "group": "Voices and models",
-        "icon": "waveform-lines",
-        "pages": [
-          "voices",
-          "models"
-        ]
-      },
-      {
-        "group": "Voice agents",
-        "icon": "headset",
-        "pages": [
-          "concepts",
-          "instructions",
-          "actions",
-          "handoff"
-        ]
-      },
-      {
-        "group": "Running in production",
-        "icon": "chart-line",
-        "pages": [
-          "testing",
-          "latency",
-          "transcripts",
-          "troubleshooting"
-        ]
-      },
-      {
-        "group": "Platform",
-        "icon": "server",
-        "pages": [
-          "deployment",
-          "security"
+        "tab": "API Reference",
+        "openapi": "api-reference/openapi.json",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "api-reference/introduction",
+              "api-reference/errors"
+            ]
+          },
+          {
+            "group": "Speech",
+            "pages": [
+              "api-reference/speech",
+              "api-reference/speech-stream",
+              "api-reference/websocket"
+            ]
+          },
+          {
+            "group": "Voices",
+            "pages": [
+              "api-reference/voices-list",
+              "api-reference/voices-get"
+            ]
+          },
+          {
+            "group": "Text utilities",
+            "pages": [
+              "api-reference/text-normalize",
+              "api-reference/text-coverage"
+            ]
+          }
         ]
       }
     ]

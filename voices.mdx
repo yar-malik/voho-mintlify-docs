@@ -15,7 +15,7 @@ Every synthesis request names a voice through the `voice` field. Voices differ i
 ```
 
 <Tip>
-  Fetch the catalog programmatically with [`GET /v1/voices`](/api-reference/voices) so your application stays current as voices are added.
+  Fetch the catalog programmatically with [`GET /v1/voices`](/api-reference/voices-list) so your application stays current as voices are added.
 </Tip>
 
 ## Arabic voices
@@ -101,7 +101,7 @@ Service and support lines read better with an unhurried delivery — `layla` or 
 
 ## Auditioning quickly
 
-[`GET /v1/voices/{id}`](/api-reference/voices#get-a-voice) returns a ready-to-send `sample_request` in the right language for that voice — post it straight to `/v1/speech` to hear the voice without writing anything.
+[`GET /v1/voices/{id}`](/api-reference/voices-get) returns a ready-to-send `sample_request` in the right language for that voice — post it straight to `/v1/speech` to hear the voice without writing anything.
 
 ```bash
 curl https://app.voho.ai/v1/voices/layla \

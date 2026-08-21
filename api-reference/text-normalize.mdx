@@ -1,0 +1,49 @@
+---
+openapi: "POST /v1/text/normalize"
+title: "Normalize text"
+sidebarTitle: "Normalize"
+description: "See how text will actually be spoken before a caller hears it."
+---
+
+
+Two endpoints for checking text *before* it reaches a caller. Both are free — they do not synthesise audio and do not draw down credits.
+
+Returns the text as it will actually be spoken, with numbers, currency, and abbreviations expanded.
+
+This exists because expansion is where surprises live. "SAR 1,250" read out as digits is the kind of thing that gets noticed on a live call, and you want to catch it in development rather than in production.
+
+<ParamField body="text" type="string" required>
+  Text to expand.
+</ParamField>
+
+<ParamField body="lang" type="string">
+  `ar` or `en`. Detected automatically when omitted.
+</ParamField>
+
+<RequestExample>
+```bash cURL
+curl -X POST https://app.voho.ai/v1/text/normalize \
+  -H "Authorization: Bearer $VOHO_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"text":"المبلغ SAR 1,250 مستحق في 15/03."}'
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "original": "المبلغ SAR 1,250 مستحق في 15/03.",
+  "normalized": "المبلغ ألف ومئتان وخمسون ريال سعودي مستحق في خمسة عشر مارس.",
+  "language": "ar",
+  "replacements": [
+    { "from": "SAR 1,250", "to": "ألف ومئتان وخمسون ريال سعودي" },
+    { "from": "15/03", "to": "خمسة عشر مارس" }
+  ]
+}
+```
+</ResponseExample>
+
+<Tip>
+  Run your templates through this once during development. Most pronunciation complaints trace back to an expansion nobody looked at.
+</Tip>
+

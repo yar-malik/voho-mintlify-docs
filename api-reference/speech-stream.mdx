@@ -1,13 +1,10 @@
 ---
+openapi: "POST /v1/speech/stream"
 title: "Stream speech"
 sidebarTitle: "Streaming"
 description: "POST /v1/speech/stream — audio that starts arriving before synthesis finishes."
 icon: "tower-broadcast"
 ---
-
-<Info>
-  **POST** `https://app.voho.ai/v1/speech/stream`
-</Info>
 
 Streaming sends audio as it is produced rather than after it is complete. On a live call this is the difference between a natural pause and dead air.
 

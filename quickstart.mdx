@@ -120,7 +120,7 @@ If your text comes from an LLM and arrives incrementally, use the [WebSocket](/a
 
 ## Check before you ship
 
-Run your templates through [`/v1/text/normalize`](/api-reference/text) once to see how numbers and currency will actually be spoken. Expansion is where most pronunciation surprises live.
+Run your templates through [`/v1/text/normalize`](/api-reference/text-normalize) once to see how numbers and currency will actually be spoken. Expansion is where most pronunciation surprises live.
 
 ```bash
 curl -X POST https://app.voho.ai/v1/text/normalize \

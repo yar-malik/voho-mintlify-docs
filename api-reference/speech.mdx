@@ -1,13 +1,10 @@
 ---
+openapi: "POST /v1/speech"
 title: "Synthesise speech"
 sidebarTitle: "Speech"
 description: "POST /v1/speech — turn text into a complete audio file."
 icon: "waveform-lines"
 ---
-
-<Info>
-  **POST** `https://app.voho.ai/v1/speech`
-</Info>
 
 Returns the finished audio as raw bytes, with the details of what was produced in the response headers. For audio that starts playing before synthesis completes, use [streaming](/api-reference/speech-stream) instead.
 
@@ -18,7 +15,7 @@ Returns the finished audio as raw bytes, with the details of what was produced i
 </ParamField>
 
 <ParamField body="voice" type="string" required>
-  Voice ID, for example `layla`. See [Voices](/api-reference/voices).
+  Voice ID, for example `layla`. See [Voices](/api-reference/voices-list).
 </ParamField>
 
 <ParamField body="model" type="string" default="sada-1">

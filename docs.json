@@ -1,32 +1,90 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "luma",
-  "name": "Voho Docs",
+  "theme": "aspen",
+  "name": "Voho",
+  "description": "Saudi-first AI voice agents for every customer conversation.",
   "colors": {
     "primary": "#6E3FF3",
-    "light": "#8B5CF6",
+    "light": "#A78BFA",
     "dark": "#5B21B6"
   },
   "favicon": "/favicon.svg",
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg",
+    "href": "/"
+  },
+  "appearance": {
+    "default": "system"
+  },
+  "fonts": {
+    "heading": {
+      "family": "Inter",
+      "weight": 600
+    },
+    "body": {
+      "family": "Inter"
+    }
+  },
+  "styling": {
+    "eyebrows": "breadcrumbs",
+    "codeblocks": "dark"
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Support",
+        "href": "mailto:support@voho.ai"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Talk to us",
+      "href": "mailto:support@voho.ai"
+    }
+  },
+  "footer": {
+    "socials": {
+      "website": "https://voho.ai"
+    }
+  },
   "navigation": {
     "groups": [
       {
-        "group": "Getting Started",
+        "group": "Getting started",
+        "icon": "rocket",
         "pages": [
           "index",
-          "quickstart"
+          "quickstart",
+          "concepts"
         ]
       },
       {
         "group": "Building agents",
+        "icon": "wrench",
         "pages": [
-          "voices"
+          "instructions",
+          "actions",
+          "voices",
+          "handoff"
         ]
       },
       {
-        "group": "Deployment",
+        "group": "Running in production",
+        "icon": "chart-line",
         "pages": [
-          "deployment"
+          "testing",
+          "latency",
+          "transcripts",
+          "troubleshooting"
+        ]
+      },
+      {
+        "group": "Platform",
+        "icon": "server",
+        "pages": [
+          "deployment",
+          "security"
         ]
       }
     ]

@@ -1,0 +1,79 @@
+---
+title: "Actions"
+description: "Let an agent do things — log tickets, look up records, update systems — instead of only talking about them."
+icon: "bolt"
+---
+
+An action is something the agent does in your systems during a call. Actions are what make an agent worth deploying; without them you have a very expensive answering machine.
+
+## What an action looks like
+
+An action has a name, a description of when to use it, and the information it needs. The agent decides when to call it based on the conversation.
+
+```json
+{
+  "name": "create_ticket",
+  "description": "Log a maintenance ticket. Use once you have the fault description, building, and urgency.",
+  "parameters": {
+    "description": "What is broken, in the caller's words",
+    "building":    "Building name or nearest landmark",
+    "urgency":     "routine | urgent | emergency"
+  }
+}
+```
+
+The description is not decoration — it is how the agent decides whether this is the right moment. "Log a maintenance ticket" alone produces agents that log tickets before collecting anything useful.
+
+## Designing actions that work
+
+**Keep the parameter list short.** Every required parameter is a question the caller must answer before anything happens. Three is comfortable, six is an interrogation.
+
+**Make optional things optional.** If the ticket can be logged without a floor number, do not require one. Agents are diligent about required fields and will keep asking.
+
+**Name the moment in the description.** "Use once you have X, Y, and Z" is more effective than any amount of instruction elsewhere.
+
+**Return something the agent can say.** An action that returns `{"id": 4417}` lets the agent read back a reference number. One that returns `{"ok": true}` leaves it with nothing useful to confirm.
+
+<Note>
+  Design the return value for speech. The agent reads it aloud, so a long identifier like `TCK-2026-08-A4417-XZ` is painful over the phone. Short numeric references work far better.
+</Note>
+
+## Read actions and write actions
+
+**Read actions** fetch information — order status, account balance, opening hours. They are safe to call speculatively and can run early in a call.
+
+**Write actions** change something — creating a ticket, cancelling an order. They deserve more care. Have the agent confirm before calling a write action that is hard to reverse:
+
+```text
+Before cancelling an order, read back the order number and the item,
+and wait for the caller to confirm. Do not cancel on the first mention.
+```
+
+## Failure handling
+
+Actions fail — your system is down, the record does not exist, the request times out. Say what the agent should do:
+
+```text
+If create_ticket fails, tell the caller their report was taken but the
+reference number is not available yet, and that they will receive it by
+SMS. Do not retry more than once, and do not read out an error.
+```
+
+<Warning>
+  An agent that has not been told how to handle a failure will improvise, and the improvisation is often a confidently invented reference number. Always specify the failure path for write actions.
+</Warning>
+
+## Latency
+
+Every action happens while the caller waits in silence. Under about a second is unnoticeable; beyond two or three seconds the caller starts wondering whether the line dropped.
+
+For slow actions, have the agent say what it is doing before calling — "let me check that for you" buys several seconds of natural silence. See [Latency](/latency).
+
+<CardGroup cols={2}>
+  <Card title="Writing instructions" icon="pen-line" href="/instructions">
+    Instructions decide when actions fire.
+  </Card>
+  <Card title="Handoff" icon="user-check" href="/handoff">
+    The action every line needs.
+  </Card>
+</CardGroup>

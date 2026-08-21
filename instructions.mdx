@@ -1,0 +1,94 @@
+---
+title: "Writing agent instructions"
+description: "How to write the instructions that determine what your agent does, and why they matter more than any other setting."
+icon: "pen-line"
+---
+
+Instructions are the highest-leverage thing you control. Voice quality and language coverage matter, but the instructions decide whether the agent is useful, and a good set of instructions on an average configuration beats the reverse every time.
+
+## Start with the job, not the personality
+
+The common first draft describes a character — friendly, professional, helpful. That produces an agent that is pleasant and useless.
+
+Describe the job instead. Who calls this line, what they usually want, what a resolved call looks like, and what the agent should do when it cannot resolve something.
+
+<CodeGroup>
+```text Weak
+You are a friendly and professional customer service agent for our company.
+Be helpful and polite at all times.
+```
+
+```text Strong
+You answer the maintenance line for a facilities team. Callers report
+problems with building equipment — air conditioning, lighting, plumbing,
+lifts.
+
+Your job is to capture enough detail to log a ticket: what is broken,
+which building and floor, and how urgent it is. Once you have those
+three things, log the ticket and read back the reference number.
+
+If the caller reports anything involving smoke, water leaking near
+electrics, or a trapped person, do not log a ticket — transfer to a
+human immediately.
+```
+</CodeGroup>
+
+The second version is longer, and length is not the point. The point is that it answers questions the agent will actually face.
+
+## Be explicit about what to collect
+
+If the agent needs three pieces of information, say so, and say what to do when the caller does not have one of them. Otherwise the agent will either give up too early or interrogate the caller.
+
+```text
+Collect: building name, floor, and a description of the fault.
+
+If the caller does not know the building name, ask for the nearest
+landmark or department and record that instead. Do not refuse to log
+the ticket over a missing building name.
+```
+
+## Handle the awkward cases explicitly
+
+Most call failures are not the agent being stupid. They are situations nobody wrote down. Name them:
+
+- The caller changes their mind halfway through.
+- The caller asks something outside this line's remit.
+- The caller is angry.
+- The caller wants a human immediately.
+- The line is silent, or there is heavy background noise.
+
+<Warning>
+  Always define an escalation path. An agent with no route to a human will keep trying, and a caller who has asked twice for a person and been refused is a complaint. See [Handoff](/handoff).
+</Warning>
+
+## Say how to speak, briefly
+
+A little guidance on register goes a long way, and too much makes the agent stilted.
+
+```text
+Speak in Najdi Arabic. Keep replies short — one or two sentences.
+Confirm details by repeating them back. Do not apologise repeatedly.
+```
+
+The "do not apologise repeatedly" line is worth more than it looks. Over-apologising is one of the most common ways an agent reads as artificial.
+
+## Iterate against real transcripts
+
+<Steps>
+  <Step title="Write a first draft">
+    Cover the job, the information to collect, and the escalation path. Do not try to anticipate everything.
+  </Step>
+  <Step title="Make ten calls">
+    Include the three most common requests and at least two awkward ones.
+  </Step>
+  <Step title="Read the transcripts">
+    Find the turn where each bad call went wrong. It is usually one specific turn.
+  </Step>
+  <Step title="Fix the instruction that caused it">
+    Add the missing case. Resist rewriting the whole thing.
+  </Step>
+</Steps>
+
+<Tip>
+  Keep a file of the calls that went wrong and re-run them after each change. It takes minutes and stops you from fixing one problem while reintroducing another.
+</Tip>

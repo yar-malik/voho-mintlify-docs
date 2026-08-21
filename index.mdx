@@ -1,39 +1,74 @@
 ---
-title: "Introduction"
-description: "Voho builds Saudi-first AI voice agents that answer calls, understand local Arabic, and hand your team clean summaries."
+title: "Voho"
+sidebarTitle: "Introduction"
+description: "Saudi-first AI voice agents that answer calls, understand local Arabic, take action in your systems, and leave your team a clean record."
+mode: "wide"
+icon: "house"
 ---
 
-Voho voice agents answer your phone lines, hold a real conversation in Saudi Arabic or English, take the action the caller asked for, and leave your team a clean written record of what happened.
+Voho voice agents answer your phone lines, hold a real conversation in Saudi Arabic or English, do the thing the caller asked for, and leave your team a clean written record of what happened.
 
-They are built for local operations first. Agents understand Najdi and other Gulf accents rather than treating Arabic as one flat language, switch between Arabic and English mid-call the way callers actually do, and follow up on WhatsApp when a conversation needs to continue after the call ends.
+They are built for local operations first. Agents understand Najdi and other Gulf accents rather than treating Arabic as one flat language, follow callers who switch between Arabic and English mid-sentence, and escalate to a person when that is the right answer.
+
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="rocket" href="/quickstart" horizontal>
+    Get an agent answering calls.
+  </Card>
+  <Card title="Core concepts" icon="diagram-project" href="/concepts" horizontal>
+    Agents, calls, turns, actions.
+  </Card>
+</CardGroup>
+
+## Start here
+
+<CardGroup cols={3}>
+  <Card title="Writing instructions" icon="pen-line" href="/instructions">
+    The single highest-leverage thing you control. Most call quality lives here.
+  </Card>
+  <Card title="Actions" icon="bolt" href="/actions">
+    Let the agent log tickets and look up records, not just talk.
+  </Card>
+  <Card title="Voices and languages" icon="waveform-lines" href="/voices">
+    Pick a voice, set the dialect, handle code-switching.
+  </Card>
+  <Card title="Handoff" icon="user-check" href="/handoff">
+    Every line needs a route to a human. Decide when it fires.
+  </Card>
+  <Card title="Testing" icon="vial" href="/testing">
+    Find the failures before your callers do.
+  </Card>
+  <Card title="Troubleshooting" icon="wrench" href="/troubleshooting">
+    Common problems and the instruction that fixes each.
+  </Card>
+</CardGroup>
 
 ## What an agent does on a call
 
 <Steps>
-  <Step title="Answers">
-    The agent picks up, greets the caller in your configured dialect, and starts listening.
+  <Step title="Answers" icon="phone">
+    Picks up, greets the caller in your configured dialect, starts listening.
   </Step>
-  <Step title="Understands">
-    Speech is transcribed and interpreted in real time, including code-switching between Arabic and English.
+  <Step title="Understands" icon="ear-listen">
+    Transcribes and interprets in real time, including Arabic–English code-switching.
   </Step>
-  <Step title="Acts">
-    The agent classifies the request and calls your systems — logging a ticket, checking an order, adjusting a setting.
+  <Step title="Acts" icon="bolt">
+    Classifies the request and calls your systems — logging a ticket, checking an order.
   </Step>
-  <Step title="Reports">
-    You get a transcript and a structured summary in both Arabic and English, plus any records the agent created.
+  <Step title="Reports" icon="file-lines">
+    Leaves a transcript and a bilingual summary, plus any records it created.
   </Step>
 </Steps>
 
 ## Where teams deploy them
 
 <CardGroup cols={2}>
-  <Card title="Service desk" icon="headset">
+  <Card title="Service desks" icon="headset">
     Take issue reports, classify them, and log tickets without a human triaging the queue.
   </Card>
-  <Card title="Customer lines" icon="phone">
+  <Card title="Customer lines" icon="phone-volume">
     Answer product questions, quote prices, and capture orders on the first call.
   </Card>
-  <Card title="Device and facility control" icon="sliders">
+  <Card title="Facility and device control" icon="sliders">
     Let callers operate equipment by voice, with the command executed live.
   </Card>
   <Card title="Custom workflows" icon="wand-magic-sparkles">
@@ -41,6 +76,6 @@ They are built for local operations first. Agents understand Najdi and other Gul
   </Card>
 </CardGroup>
 
-<Card title="Quickstart" icon="rocket" href="/quickstart">
-  Get your first agent answering calls.
-</Card>
+<Note>
+  New to voice agents? Read [Core concepts](/concepts) first — it is ten minutes and every other page assumes it.
+</Note>

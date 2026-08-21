@@ -1,0 +1,60 @@
+---
+title: "Transcripts and summaries"
+description: "What Voho records for every call, and how to use it for quality, reporting, and debugging."
+icon: "file-lines"
+---
+
+Every call produces a record: the turn-by-turn transcript, a summary, and whatever actions the agent took. This is your primary tool for improving an agent and your primary evidence when someone disputes what was said.
+
+## Transcripts
+
+The transcript is the literal exchange, turn by turn, with each turn attributed to caller or agent. Where a caller mixed Arabic and English, the transcript preserves the mix rather than normalising it.
+
+Use transcripts for debugging. When a call goes wrong, the failure is nearly always one identifiable turn — a misheard detail, a question answered before it was asked, an action fired too early.
+
+<Tip>
+  When someone reports "the agent is bad", ask for the call. The general complaint is rarely actionable; the specific turn almost always is.
+</Tip>
+
+## Summaries
+
+The summary is a short structured account of what the call was about, what was established, and what happened as a result. It is written for a human scanning many calls, not for an archive.
+
+Summaries are produced in both Arabic and English, so a bilingual team reads whichever it prefers without translating.
+
+<Note>
+  Summaries are generated from the conversation and can be imperfect on unusual calls. For anything contested — a disputed order, a compliance question — the transcript is the record, not the summary.
+</Note>
+
+## Reviewing at volume
+
+Once a line handles real traffic, reading every call stops being possible. A workable rhythm:
+
+<Steps>
+  <Step title="Read everything for the first week">
+    Every call, daily. Failure patterns show up fast and are cheapest to fix early.
+  </Step>
+  <Step title="Then sample">
+    A fixed number per day, chosen randomly. Enough to notice drift.
+  </Step>
+  <Step title="Always read the exceptions">
+    Every escalated call, every failed action, every call that ended unusually early. These are where problems concentrate.
+  </Step>
+</Steps>
+
+## What to look for
+
+- **Repeated questions** — the agent asked for something the caller already said. Usually an instruction problem.
+- **Premature actions** — fired before collecting enough. Tighten the action description.
+- **Loops** — the same exchange two or three times. Add an escalation trigger.
+- **Language drift** — replying in the wrong language after a code-switch.
+- **Over-apologising** — the most common reason an agent reads as artificial.
+
+## Retention
+
+How long records are kept, and who can read them, is a policy decision with legal weight — call recordings and transcripts are personal data in most jurisdictions, and voice recordings attract specific obligations in several.
+
+<Warning>
+  Settle retention and access before a line goes live, not after. Decide how long records are kept, who can read them, and what your callers are told. Involve whoever owns data protection in your organisation.
+  {/* TODO: replace with Voho's actual retention defaults and configuration options once confirmed. */}
+</Warning>

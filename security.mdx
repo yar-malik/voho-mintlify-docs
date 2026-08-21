@@ -1,0 +1,76 @@
+---
+title: "Security and data handling"
+description: "What a voice agent processes, the questions to settle before launch, and what your callers need to be told."
+icon: "shield-check"
+---
+
+A voice agent processes some of the most sensitive data your organisation handles: recorded speech, transcripts, and whatever callers disclose while trying to get something done. Treat a voice line as a system that collects personal data by design.
+
+## What gets processed
+
+- **Call audio** — the caller's voice, which in most jurisdictions is personal data in its own right and biometric data in some.
+- **Transcripts** — the literal text of what was said, including anything volunteered.
+- **Action data** — whatever is passed to your systems, which can include account numbers and addresses.
+- **Summaries** — derived from the above.
+
+<Warning>
+  Callers disclose things nobody planned for — medical details, financial hardship, information about third parties. Any assessment based only on the fields you designed will understate what the line actually holds.
+</Warning>
+
+## Settle these before launch
+
+<AccordionGroup>
+  <Accordion title="What are callers told?" icon="bullhorn">
+    Most jurisdictions require callers to be informed that a call is recorded or processed automatically, and many require it before the conversation begins. Requirements differ by country and sector — confirm what applies to yours.
+  </Accordion>
+
+  <Accordion title="How long is anything kept?" icon="clock">
+    Decide retention per data type. Audio, transcripts, and summaries do not need identical periods, and "keep everything indefinitely" is rarely defensible under data protection law.
+  </Accordion>
+
+  <Accordion title="Who can read it?" icon="users">
+    Access to transcripts should be scoped to people with a reason to read them. Reviewing calls for quality is a legitimate reason; general availability across a company is not.
+  </Accordion>
+
+  <Accordion title="Where is it processed?" icon="globe">
+    If your organisation has obligations about where data is processed, settle this during scoping rather than after building. It is the question most likely to force an architecture change late.
+
+    See [Deployment options](/deployment).
+  </Accordion>
+
+  <Accordion title="What happens on a deletion request?" icon="trash">
+    Individuals can request erasure in many jurisdictions. Know how you would locate and remove one caller's records across audio, transcripts, summaries, and anything your actions wrote downstream.
+  </Accordion>
+</AccordionGroup>
+
+## Minimise at the source
+
+The cheapest data to protect is data you never collected.
+
+- Do not collect what the call does not need. If the agent never needs a national ID, do not ask for one.
+- Avoid putting sensitive values into action parameters that get logged widely.
+- Where verification is required, prefer confirming a detail the caller supplies over asking them to read out a full number.
+
+## Regional obligations
+
+Saudi Arabia's Personal Data Protection Law, and the equivalents across the Gulf, place specific requirements on processing personal data — including rules on transfers outside the country. If you operate under PDPL or a comparable regime, these constraints shape which deployment configuration is appropriate.
+
+<Warning>
+  Nothing on this page is legal advice, and nothing here should be read as a compliance claim about Voho. Whether a given configuration satisfies a given obligation depends on your contract, your sector, and your jurisdiction. Involve your legal and data protection people early, and get commitments in writing.
+  {/* TODO: link Voho's DPA, security documentation, and certification status here once legal confirms what can be stated. */}
+</Warning>
+
+## Questions worth asking any vendor
+
+Including us:
+
+1. What exactly is retained, and for how long, per data type?
+2. Where is data processed, and does that change under load?
+3. Is call data used to train models? If so, can that be switched off?
+4. What certifications exist, and what is their scope?
+5. What are the notification commitments if there is a breach?
+6. What happens to data when the contract ends?
+
+<Note>
+  A vendor that answers these precisely and in writing is a different proposition from one that answers them warmly in a sales call. Ask for the written version.
+</Note>

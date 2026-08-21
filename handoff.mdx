@@ -1,0 +1,69 @@
+---
+title: "Handoff to humans"
+description: "Every line needs a route to a person. How to decide when it fires and what the caller experiences."
+icon: "user-check"
+---
+
+Every production line needs a path to a human. This is not a fallback for a weak agent — it is a requirement of a line people trust. The question is not whether to have one, but when it fires and what the caller experiences.
+
+## When to hand off
+
+Four triggers cover most cases.
+
+<AccordionGroup>
+  <Accordion title="The caller asks" icon="hand">
+    A caller who asks for a person should get one. Arguing produces complaints, and an agent that refuses twice has already lost the call.
+
+    Handle a single deflection at most: "I can log that for you right now, or put you through — which would you prefer?" If they ask again, transfer.
+  </Accordion>
+
+  <Accordion title="Safety or urgency" icon="triangle-exclamation">
+    Some reports must reach a person immediately regardless of what the agent could do. Name them explicitly in the instructions — smoke, injury, a trapped person, anything involving danger.
+
+    These should transfer without any attempt to collect details first.
+  </Accordion>
+
+  <Accordion title="Out of scope" icon="arrow-right-from-bracket">
+    A caller on the maintenance line asking about their invoice is not a failure. Transfer to the right team rather than improvising an answer.
+  </Accordion>
+
+  <Accordion title="Repeated failure" icon="rotate-left">
+    If the agent has asked the same question three times and still has not understood, further attempts will not help. Poor line quality and strong accents both produce this pattern.
+  </Accordion>
+</AccordionGroup>
+
+## What the caller hears
+
+Say that a transfer is happening and why. Silence followed by hold music reads as a dropped call.
+
+```text
+"I'll put you through to someone who can help with that — one moment."
+```
+
+<Warning>
+  Never transfer into an unattended queue. A handoff to nobody is worse than no handoff, because the caller has now spent time with an agent *and* lost the call. Confirm the destination is staffed during the hours your line runs.
+</Warning>
+
+## Pass the context across
+
+The single biggest frustration in a transferred call is repeating yourself. Whoever picks up should receive what has already been established — what the caller wants, what has been collected, and why the transfer happened.
+
+Where a live screen pop is not possible, sending the summary to the destination team as a message still saves the caller from starting over.
+
+## After hours
+
+Decide explicitly what happens when no human is available:
+
+- **Take a message** — the agent collects details and promises a callback. Only if someone actually calls back.
+- **Say when to call** — honest and cheap. "Our team is available Sunday to Thursday, eight to five."
+- **Escalate anyway** — for genuine emergencies, an out-of-hours number.
+
+<Tip>
+  Whichever you choose, have the agent state it plainly. Callers accept being told the office is closed. They do not accept being asked for details that go nowhere.
+</Tip>
+
+## Measure it
+
+Track your handoff rate. A rate climbing over time usually means callers are bringing requests the agent was never configured for — which is a signal about what to build next, not a reason to make transfers harder.
+
+A rate near zero is not automatically good either. It can mean callers who wanted a person could not get one.

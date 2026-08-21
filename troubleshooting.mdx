@@ -1,0 +1,80 @@
+---
+title: "Troubleshooting"
+description: "Common agent problems, what causes them, and what to change."
+icon: "wrench"
+---
+
+Most problems on a live line fall into a handful of patterns. Each has a characteristic cause.
+
+<AccordionGroup>
+  <Accordion title="The agent asks for something the caller already said" icon="repeat">
+    **Cause:** the caller volunteered several details at once and the agent is working through a fixed question order.
+
+    **Fix:** state explicitly that information already provided should not be requested again, and list what to collect as a set rather than a sequence.
+
+    ```text
+    Collect building, floor, and fault description. The caller may give
+    several at once — do not ask again for anything already provided.
+    ```
+  </Accordion>
+
+  <Accordion title="The agent interrupts mid-sentence" icon="scissors">
+    **Cause:** end-of-speech detection firing on a natural pause. Common with callers who think while speaking, and with older speakers.
+
+    **Fix:** this is rarely an instruction problem. Check line quality first — noisy lines and speakerphones make it much worse. If it persists on a specific line, raise it with your Voho contact rather than rewriting instructions.
+  </Accordion>
+
+  <Accordion title="The agent replies in the wrong language" icon="language">
+    **Cause:** a code-switch pulled the reply language across with it. Typically triggered by an English product name inside an Arabic sentence.
+
+    **Fix:** set the reply language explicitly rather than leaving it to follow the caller.
+
+    ```text
+    Always reply in Najdi Arabic, even when the caller uses English words
+    or switches to English entirely.
+    ```
+
+    See [Voices and languages](/voices).
+  </Accordion>
+
+  <Accordion title="The agent invents information" icon="ghost">
+    **Cause:** it was asked something it has no action for, and no instruction covering what to do instead.
+
+    **Fix:** name the boundary and give it somewhere to go. This is the failure with the highest cost — an invented reference number or delivery date reaches the caller as fact.
+
+    ```text
+    You do not have access to delivery dates. If asked, say you cannot
+    see that and offer to transfer to the orders team. Never estimate.
+    ```
+  </Accordion>
+
+  <Accordion title="The agent logs tickets with missing details" icon="triangle-exclamation">
+    **Cause:** the action fired before enough was collected, usually because its description does not name the moment.
+
+    **Fix:** put the precondition in the action description itself — "use only once you have X, Y, and Z" — rather than only in the instructions.
+
+    See [Actions](/actions).
+  </Accordion>
+
+  <Accordion title="Long silences mid-call" icon="hourglass">
+    **Cause:** almost always a slow action. The caller waits in dead air while your system responds.
+
+    **Fix:** have the agent narrate before slow actions, and put a timeout on them. See [Latency](/latency).
+  </Accordion>
+
+  <Accordion title="Callers keep asking for a human" icon="user-check">
+    **Cause:** either the agent cannot do what callers actually want, or it is refusing transfers.
+
+    **Fix:** read twenty escalated calls. If they cluster on one request type, build that capability. If they are scattered, your handoff is too hard to reach. See [Handoff](/handoff).
+  </Accordion>
+
+  <Accordion title="It works internally but fails with real callers" icon="users">
+    **Cause:** tested only by colleagues, who share vocabulary, accent, and patience that real callers do not.
+
+    **Fix:** retest with people who sound like your customers. See [Testing](/testing).
+  </Accordion>
+</AccordionGroup>
+
+## When it is not the instructions
+
+Some problems are not yours to fix. Consistent mishearing of a particular accent, audio artefacts, or interruptions that persist across every line are platform issues. Gather three or four example calls and raise them with your Voho contact — specific calls get diagnosed, general reports do not.

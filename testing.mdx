@@ -1,0 +1,74 @@
+---
+title: "Testing your agent"
+description: "How to find out whether an agent is ready for real callers, before real callers find out for you."
+icon: "vial"
+---
+
+Voice agents fail in ways that are invisible from configuration. The only reliable test is calling the thing, and the only reliable reviewers are people who sound like your customers.
+
+## Test with real accents
+
+The most common cause of a bad launch is an agent validated entirely by colleagues who all speak the same way.
+
+Recruit testers who match your actual caller base — regional accents, older speakers, people calling from a car or a factory floor. On a Saudi line that means Najdi speakers alongside Egyptian, Levantine, and South Asian expatriate speakers, because those are the people who will call.
+
+<Warning>
+  Reading a prepared script is not a test. Scripted speech is slower, clearer, and better structured than real speech. Give testers a situation, not a sentence.
+</Warning>
+
+## The scenarios worth running
+
+<AccordionGroup>
+  <Accordion title="The three most common requests" icon="repeat">
+    Whatever your line exists for. These should work flawlessly before anything else is considered.
+  </Accordion>
+
+  <Accordion title="The caller who changes their mind" icon="shuffle">
+    "Actually, no, it's the other building." Agents that have collected information often fail to update it, and confidently log the original.
+  </Accordion>
+
+  <Accordion title="The caller who volunteers everything at once" icon="comments">
+    Real callers open with a paragraph containing every detail out of order. Agents built around one-question-at-a-time often ask for what they were just told.
+  </Accordion>
+
+  <Accordion title="Mixed Arabic and English" icon="language">
+    Product names and numbers in English inside an Arabic sentence. Check the agent stays in the right reply language rather than drifting.
+  </Accordion>
+
+  <Accordion title="The angry caller" icon="fire">
+    Interruptions, raised voice, no patience for questions. Check the agent escalates rather than persisting.
+  </Accordion>
+
+  <Accordion title="Silence and noise" icon="volume-off">
+    Dead air, background conversation, a bad line. The agent should handle these without looping.
+  </Accordion>
+
+  <Accordion title="Out of scope" icon="arrow-right-from-bracket">
+    Something the line does not handle. The agent should route it, not improvise.
+  </Accordion>
+</AccordionGroup>
+
+## Read the transcripts, not the summaries
+
+Summaries tell you what the agent thought happened. Transcripts tell you what happened. A call can produce a clean summary and still have frustrated the caller for two minutes.
+
+Read turn by turn and find the exact turn where each bad call went wrong. It is almost always one turn, and the fix is almost always one line of instruction.
+
+## Keep a regression set
+
+Save the calls that went wrong. After each instruction change, run them again.
+
+This takes minutes and catches the most common failure in agent development: fixing one case while breaking another. Without it you will make the same fix three times.
+
+## Before you point real traffic at it
+
+- [ ] Tested by people who sound like your customers, not just colleagues
+- [ ] The three core requests work end to end
+- [ ] Escalation works, and lands somewhere staffed
+- [ ] Action failures produce a sensible reply, not an invented answer
+- [ ] After-hours behaviour is defined
+- [ ] Someone is assigned to read transcripts daily for the first week
+
+<Tip>
+  Launch on a fraction of traffic if you can. The first week of real calls teaches more than any amount of internal testing, and a smaller blast radius makes that education cheaper.
+</Tip>

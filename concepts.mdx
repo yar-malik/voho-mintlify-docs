@@ -1,0 +1,65 @@
+---
+title: "Core concepts"
+description: "Agents, calls, turns, and actions — the vocabulary the rest of these docs uses."
+icon: "diagram-project"
+---
+
+Five ideas cover almost everything in Voho. They are worth ten minutes now because every other page assumes them.
+
+## Agent
+
+An **agent** is a configured conversational worker: instructions describing its job, a voice, a set of languages, and a list of actions it may take. One agent typically owns one phone line.
+
+Agents are configuration, not code. Changing what an agent does usually means changing its instructions rather than deploying anything.
+
+## Call
+
+A **call** is one conversation from answer to hangup. It carries the audio, the running transcript, any actions the agent took, and the summary produced at the end.
+
+Calls are the unit you review, measure, and bill against. When something goes wrong, the call record is where you look.
+
+## Turn
+
+A **turn** is one exchange — the caller speaks, the agent responds. Calls are sequences of turns, and most quality problems are turn-level: the agent misheard one thing, or answered a question the caller didn't ask.
+
+<Note>
+  Reading transcripts turn by turn is the single most effective debugging technique available to you. Nearly every "the agent is bad" report resolves to two or three specific turns.
+</Note>
+
+## Action
+
+An **action** is something the agent does in the world rather than in the conversation — creating a ticket, looking up an order, updating a record. Actions are what separate a useful agent from a recording.
+
+An agent with no actions can only talk. See [Actions](/actions).
+
+## Barge-in
+
+**Barge-in** is the caller interrupting the agent mid-sentence. Real conversations are full of it, and an agent that ignores interruptions feels robotic and frustrating within about two turns.
+
+Voho agents stop speaking when the caller starts. This matters most on long confirmations — the caller who already knows their order number will talk over you every time.
+
+## How they fit together
+
+<Steps>
+  <Step title="A call arrives">
+    The agent answers and greets the caller in its configured language.
+  </Step>
+  <Step title="Turns accumulate">
+    Caller and agent exchange turns. The agent tracks what has been established so far.
+  </Step>
+  <Step title="Actions fire">
+    When the agent has what it needs, it takes an action — logging the ticket, fetching the record.
+  </Step>
+  <Step title="The call closes">
+    The agent confirms, hangs up, and a transcript and summary are written to the call record.
+  </Step>
+</Steps>
+
+<CardGroup cols={2}>
+  <Card title="Writing instructions" icon="pen-line" href="/instructions">
+    The highest-leverage thing you control.
+  </Card>
+  <Card title="Actions" icon="bolt" href="/actions">
+    Give the agent something to do.
+  </Card>
+</CardGroup>

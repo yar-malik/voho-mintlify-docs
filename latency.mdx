@@ -1,0 +1,95 @@
+---
+title: "Latency and call quality"
+description: "What callers actually notice, which delays matter, and how to reduce the ones you control."
+icon: "gauge-high"
+---
+
+Latency in a voice agent is not one number. Callers notice specific gaps at specific moments, and the fix differs for each.
+
+## The gap that matters
+
+The one callers feel is **response delay** — from the moment they stop speaking to the moment the agent starts. Roughly:
+
+| Delay | How it reads |
+| --- | --- |
+| Under 500ms | Natural |
+| 500ms – 1s | Slightly slow, unremarkable |
+| 1s – 2s | Noticeably laggy; callers start repeating themselves |
+| Over 2s | Callers assume the line dropped |
+
+The failure mode past a second is specific: the caller repeats their sentence, the agent now has two overlapping inputs, and the call degrades from there. This is why response delay matters more than raw processing speed.
+
+## Where the time goes
+
+<Steps>
+  <Step title="Detecting the end of speech">
+    The system must decide the caller has finished rather than paused. Too eager and it interrupts; too patient and every reply feels slow.
+  </Step>
+  <Step title="Understanding">
+    Turning audio into text and interpreting it.
+  </Step>
+  <Step title="Deciding">
+    Working out the reply, including whether an action is needed.
+  </Step>
+  <Step title="Acting">
+    If an action fires, the caller waits for your system. **This is usually the slowest step and the one you control.**
+  </Step>
+  <Step title="Speaking">
+    Generating audio. Streaming means the first syllable arrives well before the sentence is complete.
+  </Step>
+</Steps>
+
+## What you can actually change
+
+Most of the pipeline is not yours to tune. Two things are, and they dominate.
+
+### Make actions fast
+
+An action that takes three seconds adds three seconds of silence. Look at the slowest thing your agent calls and you will usually find the whole latency problem.
+
+- Cache what does not change often — catalogues, opening hours, product lists.
+- Set an aggressive timeout. A failed action with a graceful reply beats a five-second stall.
+- Do not chain calls where one will do.
+
+### Cover unavoidable waits with speech
+
+When an action is genuinely slow, have the agent narrate before calling it:
+
+```text
+Before calling check_order_status, say "let me look that up for you"
+and then call it.
+```
+
+The lookup still takes two seconds, but the caller hears a natural pause rather than dead air. This is the cheapest latency improvement available and it costs nothing.
+
+<Note>
+  Cover the wait, do not pad every turn. An agent that says "let me check" before instant replies sounds evasive.
+</Note>
+
+## Keep replies short
+
+Long replies feel slow even when they start instantly, and they invite barge-in mid-sentence. One or two sentences is the target for most lines; instruct for it explicitly.
+
+## Things that are not latency
+
+Two common complaints get misdiagnosed as speed:
+
+**The agent interrupts.** End-of-speech detection firing during a natural pause. Callers who think while speaking trigger this constantly.
+
+**The agent talks over the caller.** Usually a barge-in problem rather than a delay — see [Core concepts](/concepts).
+
+## Measuring it
+
+Measure on your own lines with your own traffic. Published figures are measured under conditions that will not match yours — different network path, different call length, different actions.
+
+<Steps>
+  <Step title="Record a baseline">
+    Twenty real calls before changing anything.
+  </Step>
+  <Step title="Time the actions separately">
+    Log how long each action takes in your own systems. This is where the answer usually is.
+  </Step>
+  <Step title="Change one thing">
+    Then re-measure on the same kind of traffic.
+  </Step>
+</Steps>

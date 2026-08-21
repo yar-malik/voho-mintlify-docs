@@ -4,26 +4,26 @@
   "name": "Voho",
   "description": "Saudi-first AI voice agents for every customer conversation.",
   "colors": {
-    "primary": "#6E3FF3",
-    "light": "#A78BFA",
-    "dark": "#5B21B6"
+    "primary": "#016838",
+    "light": "#2ec27e",
+    "dark": "#016838"
   },
   "favicon": "/favicon.svg",
   "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg",
-    "href": "/"
+    "light": "/logo/light.png",
+    "dark": "/logo/dark.png",
+    "href": "https://voho.ai"
   },
   "appearance": {
     "default": "system"
   },
   "fonts": {
     "heading": {
-      "family": "Inter",
+      "family": "Figtree",
       "weight": 600
     },
     "body": {
-      "family": "Inter"
+      "family": "Figtree"
     }
   },
   "styling": {
@@ -88,5 +88,11 @@
         ]
       }
     ]
+  },
+  "background": {
+    "color": {
+      "light": "#f4efe5",
+      "dark": "#191613"
+    }
   }
 }

@@ -1,0 +1,76 @@
+---
+title: "Voices and languages"
+description: "The Voho voice catalog, supported Arabic and English variants, and how to choose a voice for a line."
+---
+
+Every Voho agent speaks through a named voice. A voice carries a fixed timbre and delivery, and each one works across both Arabic and English — so an agent that switches language mid-call keeps the same identity instead of changing character.
+
+```json
+{
+  "voice": "layan",
+  "language": "ar-SA",
+  "reply_language": "ar-SA"
+}
+```
+
+## The catalog
+
+<Note>
+  Each voice below is available in every supported Arabic variant and in English. You select the voice once; the language is a separate setting.
+</Note>
+
+### Arabic-first voices
+
+Tuned for Gulf delivery and used as the default for Saudi deployments.
+
+| Voice | Gender | Sounds like | Best for |
+| --- | --- | --- | --- |
+| `layan` | Female | Warm, unhurried, level | Service desks and support lines |
+| `faisal` | Male | Steady, professional, low | Formal and government-facing lines |
+| `noura` | Female | Bright, quick, friendly | Sales, bookings, outbound |
+| `tariq` | Male | Relaxed, conversational | Everyday customer conversation |
+
+### Additional voices
+
+| Voice | Gender | Sounds like | Best for |
+| --- | --- | --- | --- |
+| `salma` | Female | Calm, measured, soft-spoken | Sensitive or high-stress calls |
+| `omar` | Male | Energetic, forward | Promotions and campaign lines |
+
+## Languages
+
+Voho recognises Arabic across the Gulf and wider region, plus English. Recognition is set per agent and can accept several languages at once.
+
+| Language | Code | Recognition | Speech |
+| --- | --- | --- | --- |
+| Arabic (Saudi Arabia) | `ar-SA` | Yes | Yes |
+| Arabic (UAE) | `ar-AE` | Yes | Yes |
+| Arabic (Qatar) | `ar-QA` | Yes | Yes |
+| Arabic (Kuwait) | `ar-KW` | Yes | Yes |
+| Arabic (Bahrain) | `ar-BH` | Yes | Yes |
+| Arabic (Oman) | `ar-OM` | Yes | Yes |
+| Arabic (Egypt) | `ar-EG` | Yes | Yes |
+| English (US) | `en-US` | Yes | Yes |
+| English (UK) | `en-GB` | Yes | Yes |
+
+## Code-switching
+
+Callers mix Arabic and English constantly — product names, numbers, and technical terms tend to arrive in English inside an Arabic sentence. Agents transcribe mixed input without being told which language to expect.
+
+Reply language is configured separately from recognition. A common setup accepts `ar-SA` and `en-US` on the way in while always replying in `ar-SA`, which keeps the caller experience consistent however the request was phrased.
+
+```json
+{
+  "voice": "faisal",
+  "recognize": ["ar-SA", "en-US"],
+  "reply_language": "ar-SA"
+}
+```
+
+## Choosing a voice
+
+Match the voice to the line, not to personal preference. Service and support lines read better with `layan` or `salma`, where an unhurried delivery gives callers room. Formal and official lines want `faisal`. Sales and outbound lines can carry the pace of `noura` or `omar`.
+
+<Tip>
+  Test with callers who speak the way your customers actually speak, not colleagues reading a script. Accent coverage is the most common source of early call failures, and it shows up within a handful of real calls.
+</Tip>

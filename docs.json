@@ -1,7 +1,7 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "luma",
-  "name": "Voho On-Prem Docs",
+  "name": "Voho Docs",
   "colors": {
     "primary": "#6E3FF3",
     "light": "#8B5CF6",
@@ -9,24 +9,18 @@
   },
   "favicon": "/favicon.svg",
   "navigation": {
-    "pages": [
+    "groups": [
       {
         "group": "Getting Started",
         "pages": [
           "index",
           "quickstart"
         ]
-      }
-    ],
-    "groups": [
+      },
       {
-        "group": "On-Prem",
+        "group": "Building agents",
         "pages": [
-          "on-prem/quickstart",
-          "on-prem/metrics",
-          "on-prem/load-balancing",
-          "on-prem/performance",
-          "on-prem/prometheus"
+          "voices"
         ]
       }
     ]

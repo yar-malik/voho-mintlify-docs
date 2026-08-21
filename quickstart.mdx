@@ -1,47 +1,47 @@
 ---
 title: "Quickstart"
-description: "Begin with a guide on the fastest path to a successful outcome"
+description: "Take a Voho voice agent from nothing to answering a live call."
 ---
 
-Describe how someone begins using your product. What is the first thing they need to do? Are there any prerequisites?
+This walks through standing up one agent on one phone line. Plan on a working prototype the same day and a tuned production line over the following week.
 
-A quickstart should take someone from zero to using your product. They'll get a quick win and a sense of what they can accomplish.
+## Before you start
 
-## Prerequisites
+You need:
 
-Before you begin, you must have:
-
-- Requirement one (for example, Node.js 18+, a free account, an API key)
-- Requirement two (for example, a compatible device, a compatible browser, a compatible operating system)
+- A Voho account with at least one agent slot provisioned. Contact your Voho representative if you are not sure.
+- A phone number to route to the agent, or a test number issued by Voho.
+- Somewhere for the agent to send its results — a ticketing system, CRM, or an endpoint of your own.
 
 ## Get started
 
 <Steps>
-  <Step title="Install">
-    Describe how to install your product or sign up.
-
-    ```bash
-    npm install your-package
-    ```
+  <Step title="Describe the job">
+    Write down what the agent answers, in plain language: who calls this line, what they usually want, and what counts as a resolved call. This becomes the agent's instructions, and it matters more to call quality than any other setting.
   </Step>
-  <Step title="Configure">
-    Describe any setup or configuration needed before first use.
-
-    ```bash
-    your-cli init
-    ```
+  <Step title="Set dialect and voice">
+    Choose the dialect the agent replies in and the voice that renders it. Najdi Arabic is the default for Saudi deployments. See [Voices and languages](/voices).
   </Step>
-  <Step title="Run it">
-    Show the first thing a user does to see it working.
-
-    ```bash
-    your-cli start
-    ```
+  <Step title="Connect your systems">
+    Give the agent the actions it is allowed to take — creating a ticket, looking up an order, updating a record. An agent with no actions can only talk; the actions are what make the call useful.
+  </Step>
+  <Step title="Call it yourself">
+    Ring the line and try the three most common requests, then try one deliberately awkward one: a caller who changes their mind, or who mixes Arabic and English mid-sentence. Listen for whether the agent stays in the right dialect.
+  </Step>
+  <Step title="Review and adjust">
+    Read the transcripts and summaries from your test calls. Most early problems are instruction problems, not model problems — tighten the wording and call again.
   </Step>
 </Steps>
 
-<Tip>
-  Give people a way to get help. This could be a link to a support page, a chat with a customer support agent, or a forum for your product.
+## Going to production
 
-  Example: Need help? Reach out to us at [support@yourcompany.com](mailto:support@yourcompany.com).
+Before pointing real traffic at the line:
+
+- **Test with real accents.** Recruit callers who speak the way your customers actually speak, not colleagues reading a script.
+- **Decide the handoff.** Every line needs a path to a human. Define what triggers it and where the call lands.
+- **Watch the first week.** Read transcripts daily at first. The failure patterns show up quickly and are usually cheap to fix.
+
+<Tip>
+  Need help? Reach out to your Voho contact, or email [support@voho.ai](mailto:support@voho.ai).
+  {/* TODO: confirm this is the correct public support address before publishing */}
 </Tip>

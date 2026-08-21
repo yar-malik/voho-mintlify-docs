@@ -1,0 +1,58 @@
+---
+title: "Prometheus Integration for On-Prem Rime Metrics"
+sidebarTitle: "Prometheus"
+description: "Scrape Rime on-prem metrics with Prometheus. Configure a scrape target, run Prometheus in Docker, and validate metric collection."
+---
+
+Prometheus is a monitoring and alerting system commonly used to scrape and review operational metrics from Rime on-prem deployments. This page walks you through configuring Prometheus to scrape the Arcana model container's vLLM metrics endpoint.
+
+## Prerequisites
+
+Before proceeding, confirm:
+
+1. You run an **Arcana** model container. Only Arcana's internal vLLM generator serves Prometheus metrics. Coda's generator speaks gRPC and Mist has no generator process, so neither serves `/metrics`; use the OpenTelemetry exporter (`OTEL_COLLECTOR_ENDPOINT`) for those.
+2. Metrics are **not** served on the engine's HTTP port (8080); that port serves synthesis (`POST /` and `POST /invocations`), the `/livez` and `/readyz` probes, and the `/statusz`, `/speakers`, `/textnorm`, and `/console` diagnostic routes.
+3. Set `GENERATOR_SERVICE_PORT` explicitly on the Arcana model container (for example `30000`) and scrape that port. If the variable is unset, the generator binds a random free port, which cannot be scraped reliably.
+4. You have permissions to edit the main configuration file, typically `prometheus.yml`.
+5. You have permissions to run a Docker container in your environment.
+
+## Running Prometheus
+
+<Steps>
+  <Step title="Include a Prometheus target">
+    Open `prometheus.yml`. Add a job pointing to your Rime Engine container:
+
+    ```yaml prometheus.yml
+    global:
+      scrape_interval: 5s  # Scrape metrics every 5 seconds
+    
+    scrape_configs:
+      - job_name: "model-rime-tts"
+        static_configs:
+          - targets: ["<instance_ip>:30000"]  # GENERATOR_SERVICE_PORT on the model container
+        metrics_path: "/metrics"  # Default path for Prometheus metrics
+    ```
+
+    Replace `instance_ip` with the relevant hostname or IP address, then save the file.
+  </Step>
+  <Step title="Run Prometheus in a container">
+    ```bash
+    docker run -d \
+      --rm \
+      -p 9090:9090 \
+      -v $(pwd)/prometheus.yml:/etc/prometheus/prometheus.yml \
+      prom/prometheus:latest
+    ```
+  </Step>
+  <Step title="Validate the setup">
+    Access the Prometheus UI (commonly at [http://localhost:9090](http://localhost:9090)), navigate to **Status \> Targets**, and look for the `model-rime-tts` job. Its status should be **UP**. That confirms Prometheus is collecting metrics.
+  </Step>
+</Steps>
+
+## Exploring Metrics
+
+Query the collected metrics from the Prometheus web interface or its API. Grafana and similar dashboarding tools can read from Prometheus to build dashboards and alerts.
+
+<Tip>
+  See [Metrics](/on-prem/metrics) for the full list of OpenTelemetry metrics the Rime engine exposes, including histogram tuning options.
+</Tip>

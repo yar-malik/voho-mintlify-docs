@@ -1,0 +1,150 @@
+---
+title: "WebSocket speech"
+sidebarTitle: "WebSocket"
+description: "WS /v1/speech/ws — send text incrementally and receive audio on the same connection."
+icon: "arrows-left-right"
+---
+
+<Info>
+  **WS** `wss://app.voho.ai/v1/speech/ws`
+</Info>
+
+The case neither SSE nor chunked HTTP serves: text arriving *incrementally* while audio flows back on the same connection. This is what you want when an LLM is emitting tokens into a live call — you start speaking the first sentence while the model is still writing the second.
+
+Audio begins before you have finished sending text. It is genuinely pipelined, not batched at the end.
+
+## Protocol
+
+Authenticate with your token, then drive the session with JSON text frames. Audio returns as binary frames.
+
+### Client to server
+
+<ResponseField name="start" type="frame">
+  Opens synthesis. `{ "type": "start", "voice": "layla", "model": "sada-1", "format": "opus" }` — `model` and `format` are optional.
+</ResponseField>
+
+<ResponseField name="text" type="frame">
+  Appends text to the utterance. Repeatable — send as many as you like as your source produces them. `{ "type": "text", "text": "أهلاً " }`
+</ResponseField>
+
+<ResponseField name="flush" type="frame">
+  Signals no more text is coming and the utterance should finish. `{ "type": "flush" }`
+</ResponseField>
+
+### Server to client
+
+<ResponseField name="ready" type="frame">
+  Authenticated, waiting for `start`.
+</ResponseField>
+
+<ResponseField name="started" type="frame">
+  Synthesis is open. Audio frames follow.
+</ResponseField>
+
+<ResponseField name="binary" type="frame">
+  Audio in the negotiated format. Concatenate in arrival order.
+</ResponseField>
+
+<ResponseField name="done" type="frame">
+  Utterance complete. Carries `bytes`, `characters`, `cost_cents`.
+</ResponseField>
+
+<ResponseField name="error" type="frame">
+  Carries `error.code` and `error.message`.
+</ResponseField>
+
+## Constraints
+
+Same as [streaming](/api-reference/speech-stream): **`sada-1` only**, formats `opus`, `mulaw`, or `pcm`, and 5,000 characters per utterance.
+
+<RequestExample>
+```javascript Node
+import WebSocket from "ws";
+
+const ws = new WebSocket("wss://app.voho.ai/v1/speech/ws", {
+  headers: { Authorization: `Bearer ${process.env.VOHO_API_KEY}` },
+});
+
+const chunks = [];
+
+ws.on("message", (data, isBinary) => {
+  if (isBinary) {
+    chunks.push(data);            // audio
+    return;
+  }
+  const msg = JSON.parse(data.toString());
+
+  if (msg.type === "ready") {
+    ws.send(JSON.stringify({ type: "start", voice: "layla", format: "opus" }));
+  }
+
+  if (msg.type === "started") {
+    // Text as it becomes available — e.g. tokens from an LLM.
+    ws.send(JSON.stringify({ type: "text", text: "أهلاً بك في فوهو، " }));
+    ws.send(JSON.stringify({ type: "text", text: "كيف أقدر أساعدك؟" }));
+    ws.send(JSON.stringify({ type: "flush" }));
+  }
+
+  if (msg.type === "done") {
+    console.log(msg.characters, "chars", msg.cost_cents, "cents");
+    ws.close();
+  }
+
+  if (msg.type === "error") {
+    console.error(msg.error.code, msg.error.message);
+    ws.close();
+  }
+});
+```
+
+```python Python
+import json, websockets, asyncio
+
+async def speak():
+    url = "wss://app.voho.ai/v1/speech/ws"
+    headers = {"Authorization": f"Bearer {API_KEY}"}
+    chunks = []
+
+    async with websockets.connect(url, additional_headers=headers) as ws:
+        async for raw in ws:
+            if isinstance(raw, bytes):
+                chunks.append(raw)
+                continue
+
+            msg = json.loads(raw)
+            if msg["type"] == "ready":
+                await ws.send(json.dumps(
+                    {"type": "start", "voice": "layla", "format": "opus"}))
+            elif msg["type"] == "started":
+                await ws.send(json.dumps({"type": "text", "text": "أهلاً بك، "}))
+                await ws.send(json.dumps({"type": "text", "text": "كيف أساعدك؟"}))
+                await ws.send(json.dumps({"type": "flush"}))
+            elif msg["type"] == "done":
+                print(msg["characters"], "chars", msg["cost_cents"], "cents")
+                break
+            elif msg["type"] == "error":
+                raise RuntimeError(msg["error"]["message"])
+
+    open("out.ogg", "wb").write(b"".join(chunks))
+
+asyncio.run(speak())
+```
+</RequestExample>
+
+## When to use which
+
+<CardGroup cols={3}>
+  <Card title="/v1/speech" icon="file-audio">
+    Text is known up front and you want a file. Simplest.
+  </Card>
+  <Card title="/v1/speech/stream" icon="tower-broadcast">
+    Text is known up front but playback should start immediately.
+  </Card>
+  <Card title="/v1/speech/ws" icon="arrows-left-right">
+    Text is still being produced while audio plays.
+  </Card>
+</CardGroup>
+
+<Tip>
+  If your text comes from an LLM, use the WebSocket. Waiting for the model to finish before synthesising adds its entire generation time to the silence the caller hears.
+</Tip>

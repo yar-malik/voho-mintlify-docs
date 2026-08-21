@@ -1,0 +1,79 @@
+---
+title: "Errors"
+description: "Every error code the Voho Speech API returns, what causes it, and whether to retry."
+icon: "circle-exclamation"
+---
+
+Errors are JSON with a stable `code` and a human-readable `message`.
+
+```json
+{ "error": { "code": "unknown_voice", "message": "Unknown voice \"nope\"." } }
+```
+
+<Warning>
+  Branch on `code`, never on `message`. Messages are written for humans and may be reworded; codes are part of the contract.
+</Warning>
+
+## Reference
+
+| Status | Code | Cause | Retry? |
+| --- | --- | --- | --- |
+| 400 | `invalid_request` | Body is not valid JSON | No — fix the request |
+| 400 | `empty_text` | `text` missing or blank | No |
+| 400 | `text_too_long` | Over 5,000 characters | No — split the text |
+| 400 | `unknown_format` | Unrecognised `format` | No |
+| 401 | `unauthorized` | Missing, malformed, or revoked token | No |
+| 402 | `insufficient_credit` | Credit balance exhausted | After topping up |
+| 404 | `unknown_voice` | No such voice ID | No |
+| 404 | `unknown_model` | No such model ID | No |
+| 502 | `synthesis_failed` | Synthesis produced no audio | Once, cautiously |
+| 503 | `unavailable` | Briefly at capacity | **Yes, with backoff** |
+| 500 | `internal_error` | Unexpected server fault | Once, then report |
+
+## Retry strategy
+
+Only `unavailable` is reliably transient. Retry it with exponential backoff and jitter — three attempts over a few seconds is usually enough.
+
+```python
+import time, random, requests
+
+def synthesize(payload, attempts=3):
+    for i in range(attempts):
+        r = requests.post(
+            "https://app.voho.ai/v1/speech",
+            headers={"Authorization": f"Bearer {API_KEY}"},
+            json=payload,
+        )
+        if r.ok:
+            return r.content
+
+        code = r.json().get("error", {}).get("code")
+        if code != "unavailable" or i == attempts - 1:
+            raise RuntimeError(f"{code}: {r.json()['error']['message']}")
+
+        time.sleep((2 ** i) * 0.5 + random.random() * 0.3)
+```
+
+<Note>
+  Do not retry `synthesis_failed` in a loop. It usually indicates something about the request rather than a transient fault, and repeated attempts will fail the same way.
+</Note>
+
+## Handling errors on a live call
+
+The 4xx codes are development-time problems and should never reach production traffic — validate voice and model IDs at configuration time, not per request.
+
+The ones that can occur mid-call are `insufficient_credit`, `unavailable`, and `synthesis_failed`. Each needs a defined behaviour:
+
+- **`insufficient_credit`** — alert operations. Callers should hear a graceful fallback, not silence. Monitor your balance so this never fires.
+- **`unavailable`** — retry once quickly. If it fails again, fall back to pre-recorded audio if you have it.
+- **`synthesis_failed`** — fall back immediately rather than retrying.
+
+<Tip>
+  Keep pre-recorded audio for your most critical prompts — greeting, hold, and handoff. A line that degrades to recorded prompts is still a working line.
+</Tip>
+
+## Errors never carry internal detail
+
+Error messages describe what you can act on. They never include upstream diagnostics, infrastructure identifiers, or stack traces — full detail stays in Voho's logs.
+
+If you need help diagnosing a specific failure, send the timestamp, the voice and model, and the `X-Voho-*` response headers to your Voho contact.

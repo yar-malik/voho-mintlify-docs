@@ -1,47 +1,147 @@
 ---
 title: "Quickstart"
-description: "Take a Voho voice agent from nothing to answering a live call."
+description: "From nothing to your first synthesised audio in about five minutes."
+icon: "rocket"
 ---
 
-This walks through standing up one agent on one phone line. Plan on a working prototype the same day and a tuned production line over the following week.
+Get an API token, synthesise a sentence, and hear it back.
 
-## Before you start
+## Prerequisites
 
-You need:
+- A Voho account at [app.voho.ai](https://app.voho.ai)
+- `curl`, or Python/Node if you prefer
 
-- A Voho account with at least one agent slot provisioned. Contact your Voho representative if you are not sure.
-- A phone number to route to the agent, or a test number issued by Voho.
-- Somewhere for the agent to send its results — a ticketing system, CRM, or an endpoint of your own.
-
-## Get started
+## Get a token
 
 <Steps>
-  <Step title="Describe the job">
-    Write down what the agent answers, in plain language: who calls this line, what they usually want, and what counts as a resolved call. This becomes the agent's instructions, and it matters more to call quality than any other setting.
+  <Step title="Open the console">
+    Sign in at [app.voho.ai](https://app.voho.ai) and go to API tokens.
   </Step>
-  <Step title="Set dialect and voice">
-    Choose the dialect the agent replies in and the voice that renders it. Najdi Arabic is the default for Saudi deployments. See [Voices and languages](/voices).
+  <Step title="Create a token">
+    Give it a name that says where it will be used — `billing-service`, `ivr-staging`. When a token needs revoking, you will want to know what breaks.
   </Step>
-  <Step title="Connect your systems">
-    Give the agent the actions it is allowed to take — creating a ticket, looking up an order, updating a record. An agent with no actions can only talk; the actions are what make the call useful.
-  </Step>
-  <Step title="Call it yourself">
-    Ring the line and try the three most common requests, then try one deliberately awkward one: a caller who changes their mind, or who mixes Arabic and English mid-sentence. Listen for whether the agent stays in the right dialect.
-  </Step>
-  <Step title="Review and adjust">
-    Read the transcripts and summaries from your test calls. Most early problems are instruction problems, not model problems — tighten the wording and call again.
+  <Step title="Copy it now">
+    The token is shown once and starts with `voho_sk_live_`.
+
+    <Warning>
+      Only the hash is stored, so a lost token cannot be recovered — you would create a new one and revoke the old. Put it in your secret manager before closing the page.
+    </Warning>
   </Step>
 </Steps>
 
-## Going to production
+```bash
+export VOHO_API_KEY="voho_sk_live_..."
+```
 
-Before pointing real traffic at the line:
+## Your first request
 
-- **Test with real accents.** Recruit callers who speak the way your customers actually speak, not colleagues reading a script.
-- **Decide the handoff.** Every line needs a path to a human. Define what triggers it and where the call lands.
-- **Watch the first week.** Read transcripts daily at first. The failure patterns show up quickly and are usually cheap to fix.
+<CodeGroup>
+```bash cURL
+curl -X POST https://app.voho.ai/v1/speech \
+  -H "Authorization: Bearer $VOHO_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "text": "أهلاً بك في فوهو، كيف أقدر أساعدك؟",
+    "voice": "layla"
+  }' \
+  --output hello.mp3
+```
 
-<Tip>
-  Need help? Reach out to your Voho contact, or email [support@voho.ai](mailto:support@voho.ai).
-  {/* TODO: confirm this is the correct public support address before publishing */}
-</Tip>
+```python Python
+import os, requests
+
+r = requests.post(
+    "https://app.voho.ai/v1/speech",
+    headers={"Authorization": f"Bearer {os.environ['VOHO_API_KEY']}"},
+    json={"text": "أهلاً بك في فوهو، كيف أقدر أساعدك؟", "voice": "layla"},
+)
+r.raise_for_status()
+open("hello.mp3", "wb").write(r.content)
+```
+
+```javascript Node
+import fs from "node:fs/promises";
+
+const res = await fetch("https://app.voho.ai/v1/speech", {
+  method: "POST",
+  headers: {
+    Authorization: `Bearer ${process.env.VOHO_API_KEY}`,
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    text: "أهلاً بك في فوهو، كيف أقدر أساعدك؟",
+    voice: "layla",
+  }),
+});
+
+if (!res.ok) throw new Error((await res.json()).error.message);
+await fs.writeFile("hello.mp3", Buffer.from(await res.arrayBuffer()));
+```
+</CodeGroup>
+
+Play `hello.mp3`. That is `layla` in Najdi Arabic on the default model.
+
+## Find a different voice
+
+The catalog is browsable by dialect, which is usually the first thing you want to filter on.
+
+```bash
+curl "https://app.voho.ai/v1/voices?dialect=najdi" \
+  -H "Authorization: Bearer $VOHO_API_KEY" | jq '.voices[] | {id, name, gender, styles}'
+```
+
+Any voice ID drops straight into the `voice` field. See [Voices and languages](/voices) for the full catalog.
+
+## For telephony
+
+If the audio is going onto a phone line, ask for `mulaw` at 8 kHz — that is what SIP trunks carry, so you skip a transcoding step:
+
+```bash
+curl -X POST https://app.voho.ai/v1/speech \
+  -H "Authorization: Bearer $VOHO_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"text":"أهلاً بك","voice":"layla","format":"mulaw"}' \
+  --output prompt.ulaw
+```
+
+## For live conversation
+
+Waiting for a complete file adds its whole synthesis time to the silence a caller hears. Stream instead — first audio arrives in roughly 200 ms rather than 1.7 s:
+
+```bash
+curl -N -X POST https://app.voho.ai/v1/speech/stream \
+  -H "Authorization: Bearer $VOHO_API_KEY" \
+  -H "Accept: text/event-stream" \
+  -H "Content-Type: application/json" \
+  -d '{"text":"أهلاً بك","voice":"layla","format":"opus"}'
+```
+
+If your text comes from an LLM and arrives incrementally, use the [WebSocket](/api-reference/websocket) — it accepts text while audio is already playing.
+
+## Check before you ship
+
+Run your templates through [`/v1/text/normalize`](/api-reference/text) once to see how numbers and currency will actually be spoken. Expansion is where most pronunciation surprises live.
+
+```bash
+curl -X POST https://app.voho.ai/v1/text/normalize \
+  -H "Authorization: Bearer $VOHO_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"text":"المبلغ SAR 1,250 مستحق في 15/03."}'
+```
+
+## Next
+
+<CardGroup cols={2}>
+  <Card title="API reference" icon="plug" href="/api-reference/introduction">
+    Every endpoint, parameter, and error code.
+  </Card>
+  <Card title="Voices" icon="waveform-lines" href="/voices">
+    All 14 voices with descriptions.
+  </Card>
+  <Card title="Models" icon="layer-group" href="/models">
+    Sada versus Nabra, and what each costs.
+  </Card>
+  <Card title="Streaming" icon="tower-broadcast" href="/api-reference/speech-stream">
+    Audio that starts before synthesis finishes.
+  </Card>
+</CardGroup>

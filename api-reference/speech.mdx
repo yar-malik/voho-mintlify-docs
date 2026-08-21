@@ -1,0 +1,171 @@
+---
+title: "Synthesise speech"
+sidebarTitle: "Speech"
+description: "POST /v1/speech — turn text into a complete audio file."
+icon: "waveform-lines"
+---
+
+<Info>
+  **POST** `https://app.voho.ai/v1/speech`
+</Info>
+
+Returns the finished audio as raw bytes, with the details of what was produced in the response headers. For audio that starts playing before synthesis completes, use [streaming](/api-reference/speech-stream) instead.
+
+## Body
+
+<ParamField body="text" type="string" required>
+  The text to speak. Maximum 5,000 characters.
+</ParamField>
+
+<ParamField body="voice" type="string" required>
+  Voice ID, for example `layla`. See [Voices](/api-reference/voices).
+</ParamField>
+
+<ParamField body="model" type="string" default="sada-1">
+  `sada-1` (flagship) or `nabra-1` (fast, economical). See [Models](/models).
+</ParamField>
+
+<ParamField body="format" type="string" default="mp3">
+  `mp3`, `wav`, `opus`, or `mulaw`. Overrides the `Accept` header when both are present.
+</ParamField>
+
+<ParamField body="sample_rate" type="integer">
+  Output sample rate in Hz. Defaults to the format's native rate — 24000 for `mp3`, `wav`, and `opus`; 8000 for `mulaw`.
+</ParamField>
+
+<ParamField body="speed" type="number" default="1.0">
+  Speaking rate. Below 1.0 is slower, above is faster.
+</ParamField>
+
+<ParamField body="pitch" type="number">
+  Pitch adjustment. **Only applies to `nabra-1`** — `sada-1` ignores it.
+</ParamField>
+
+## Formats
+
+| Format | Content type | Default rate | Use it for |
+| --- | --- | --- | --- |
+| `mp3` | `audio/mpeg` | 24000 | General playback, smallest files |
+| `wav` | `audio/wav` | 24000 | Uncompressed, further processing |
+| `opus` | `audio/ogg` | 24000 | Low-bandwidth streaming |
+| `mulaw` | `audio/basic` | 8000 | Telephony — SIP trunks, Cisco, Avaya |
+
+<Tip>
+  `mulaw` at 8 kHz is what telephony systems actually carry. Requesting it directly avoids a transcoding step and the quality loss that comes with it.
+</Tip>
+
+You can also negotiate the format with the `Accept` header, which is how most audio clients ask:
+
+```bash
+curl -X POST https://app.voho.ai/v1/speech \
+  -H "Authorization: Bearer $VOHO_API_KEY" \
+  -H "Accept: audio/basic" \
+  -H "Content-Type: application/json" \
+  -d '{"text":"أهلاً بك في فوهو","voice":"layla"}' \
+  --output greeting.ulaw
+```
+
+An explicit `format` in the body wins over `Accept`.
+
+## Response
+
+Raw audio bytes with `Content-Type` set for the format, plus the `X-Voho-*` headers describing the result.
+
+<RequestExample>
+```bash cURL
+curl -X POST https://app.voho.ai/v1/speech \
+  -H "Authorization: Bearer $VOHO_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "text": "أهلاً بك في فوهو، كيف أقدر أساعدك؟",
+    "voice": "layla",
+    "model": "sada-1",
+    "format": "mp3"
+  }' \
+  --output greeting.mp3
+```
+
+```python Python
+import requests
+
+r = requests.post(
+    "https://app.voho.ai/v1/speech",
+    headers={"Authorization": f"Bearer {API_KEY}"},
+    json={
+        "text": "أهلاً بك في فوهو، كيف أقدر أساعدك؟",
+        "voice": "layla",
+        "model": "sada-1",
+        "format": "mp3",
+    },
+)
+r.raise_for_status()
+open("greeting.mp3", "wb").write(r.content)
+
+print(r.headers["X-Voho-Characters"], "chars",
+      r.headers["X-Voho-Cost-Cents"], "cents")
+```
+
+```javascript Node
+const res = await fetch("https://app.voho.ai/v1/speech", {
+  method: "POST",
+  headers: {
+    Authorization: `Bearer ${process.env.VOHO_API_KEY}`,
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    text: "أهلاً بك في فوهو، كيف أقدر أساعدك؟",
+    voice: "layla",
+    model: "sada-1",
+    format: "mp3",
+  }),
+});
+
+if (!res.ok) throw new Error((await res.json()).error.message);
+const audio = Buffer.from(await res.arrayBuffer());
+await fs.writeFile("greeting.mp3", audio);
+```
+</RequestExample>
+
+<ResponseExample>
+```http Success
+HTTP/1.1 200 OK
+Content-Type: audio/mpeg
+X-Voho-Engine: voho-speech/1
+X-Voho-Model: sada-1
+X-Voho-Voice: layla
+X-Voho-Format: mp3
+X-Voho-Sample-Rate: 24000
+X-Voho-Characters: 34
+X-Voho-Cost-Cents: 1
+
+<binary audio>
+```
+
+```json Error
+{
+  "error": {
+    "code": "unknown_voice",
+    "message": "Unknown voice \"laila\"."
+  }
+}
+```
+</ResponseExample>
+
+## Errors
+
+| Status | Code | Cause |
+| --- | --- | --- |
+| 400 | `invalid_request` | Body is not valid JSON |
+| 400 | `empty_text` | `text` missing or blank |
+| 400 | `text_too_long` | Over 5,000 characters |
+| 400 | `unknown_format` | Unrecognised `format` |
+| 401 | `unauthorized` | Missing, malformed, or revoked token |
+| 402 | `insufficient_credit` | Balance exhausted |
+| 404 | `unknown_voice` | No such voice ID |
+| 404 | `unknown_model` | No such model ID |
+| 502 | `synthesis_failed` | Synthesis produced no audio |
+| 503 | `unavailable` | Briefly at capacity — retry |
+
+<Note>
+  `unavailable` is transient. Retry with backoff. `synthesis_failed` usually is not — check your request before retrying.
+</Note>

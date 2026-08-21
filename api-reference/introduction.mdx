@@ -1,0 +1,107 @@
+---
+title: "API introduction"
+sidebarTitle: "Introduction"
+description: "Base URL, authentication, response headers, credits, and error handling for the Voho Speech API."
+icon: "plug"
+---
+
+The Voho Speech API turns text into speech over HTTP or WebSocket. Every endpoint lives under one base URL and takes the same bearer token.
+
+```
+https://app.voho.ai
+```
+
+## Authentication
+
+Every request needs an API token in the `Authorization` header.
+
+```bash
+curl https://app.voho.ai/v1/voices \
+  -H "Authorization: Bearer voho_sk_live_..."
+```
+
+Tokens are created in the Voho console and begin with `voho_sk_live_`.
+
+<Warning>
+  The plaintext token is shown **once**, at creation. Only its hash is stored, so a lost token cannot be recovered — create a new one and revoke the old. Revoking takes effect immediately.
+</Warning>
+
+A missing, malformed, or revoked token returns `401`:
+
+```json
+{ "error": { "code": "unauthorized", "message": "Invalid or missing API token." } }
+```
+
+## Endpoints
+
+| Method | Path | Purpose |
+| --- | --- | --- |
+| `POST` | [`/v1/speech`](/api-reference/speech) | Synthesise a complete audio file |
+| `POST` | [`/v1/speech/stream`](/api-reference/speech-stream) | Stream audio as it is generated |
+| `WS` | [`/v1/speech/ws`](/api-reference/websocket) | Incremental text in, audio out, one connection |
+| `GET` | [`/v1/voices`](/api-reference/voices) | List and filter the voice catalog |
+| `GET` | [`/v1/voices/{id}`](/api-reference/voices#get-a-voice) | Details for one voice |
+| `POST` | [`/v1/text/normalize`](/api-reference/text) | See how text will be spoken |
+| `POST` | [`/v1/text/coverage`](/api-reference/text#coverage) | Flag likely mispronunciations |
+
+## Response headers
+
+Every response carries `X-Voho-Engine`. Successful synthesis calls add the details of what was produced:
+
+| Header | Example | Meaning |
+| --- | --- | --- |
+| `X-Voho-Engine` | `voho-speech/1` | API version, on every response |
+| `X-Voho-Model` | `sada-1` | Model that produced the audio |
+| `X-Voho-Voice` | `layla` | Voice used |
+| `X-Voho-Format` | `mp3` | Audio format |
+| `X-Voho-Sample-Rate` | `24000` | Sample rate in Hz |
+| `X-Voho-Characters` | `142` | Characters billed |
+| `X-Voho-Cost-Cents` | `1` | Cost of this call, in cents |
+
+<Tip>
+  `X-Voho-Characters` and `X-Voho-Cost-Cents` let you track spend per request without a separate usage call. Log them alongside your own request IDs.
+</Tip>
+
+## Credits
+
+Synthesis draws down a credit balance. Pricing is per 1,000 characters and depends on the model:
+
+| Model | Cents per 1,000 characters |
+| --- | --- |
+| `sada-1` | 5 |
+| `nabra-1` | 2 |
+
+Cost is rounded up, so a very short request still costs at least one cent.
+
+When the balance reaches zero, synthesis returns `402`:
+
+```json
+{ "error": { "code": "insufficient_credit", "message": "Your credit balance is exhausted. Top up to continue." } }
+```
+
+<Note>
+  Streaming calls are billed after the stream finishes, so a synthesis that fails partway is not charged.
+</Note>
+
+## Errors
+
+Errors are JSON with a stable `code` and a human-readable `message`. Branch on `code`, never on `message`.
+
+```json
+{ "error": { "code": "unknown_voice", "message": "Unknown voice \"nope\"." } }
+```
+
+See [Errors](/api-reference/errors) for the full list.
+
+## Limits
+
+- **5,000 characters** per request. Longer text returns `text_too_long` — split it into sentences and concatenate the audio.
+
+<CardGroup cols={2}>
+  <Card title="Synthesise speech" icon="waveform-lines" href="/api-reference/speech">
+    The core endpoint.
+  </Card>
+  <Card title="Browse voices" icon="list" href="/api-reference/voices">
+    Find a voice by dialect.
+  </Card>
+</CardGroup>

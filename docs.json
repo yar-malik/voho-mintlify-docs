@@ -55,17 +55,37 @@
         "icon": "rocket",
         "pages": [
           "index",
-          "quickstart",
-          "concepts"
+          "quickstart"
         ]
       },
       {
-        "group": "Building agents",
-        "icon": "wrench",
+        "group": "Speech API",
+        "icon": "plug",
         "pages": [
+          "api-reference/introduction",
+          "api-reference/speech",
+          "api-reference/speech-stream",
+          "api-reference/websocket",
+          "api-reference/voices",
+          "api-reference/text",
+          "api-reference/errors"
+        ]
+      },
+      {
+        "group": "Voices and models",
+        "icon": "waveform-lines",
+        "pages": [
+          "voices",
+          "models"
+        ]
+      },
+      {
+        "group": "Voice agents",
+        "icon": "headset",
+        "pages": [
+          "concepts",
           "instructions",
           "actions",
-          "voices",
           "handoff"
         ]
       },

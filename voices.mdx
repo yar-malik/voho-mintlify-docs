@@ -1,76 +1,109 @@
 ---
 title: "Voices and languages"
-description: "The Voho voice catalog, supported Arabic and English variants, and how to choose a voice for a line."
+description: "The Voho voice catalog — 14 voices across Najdi, Gulf, MSA, Egyptian, and English."
+icon: "waveform-lines"
 ---
 
-Every Voho agent speaks through a named voice. A voice carries a fixed timbre and delivery, and each one works across both Arabic and English — so an agent that switches language mid-call keeps the same identity instead of changing character.
+Every synthesis request names a voice through the `voice` field. Voices differ in dialect, timbre, apparent age, and delivery style — the choice sets the character of the output more than any other parameter.
 
 ```json
 {
-  "voice": "layan",
-  "language": "ar-SA",
-  "reply_language": "ar-SA"
+  "text": "أهلاً بك في فوهو",
+  "voice": "layla",
+  "model": "sada-1"
 }
 ```
 
-## The catalog
+<Tip>
+  Fetch the catalog programmatically with [`GET /v1/voices`](/api-reference/voices) so your application stays current as voices are added.
+</Tip>
+
+## Arabic voices
+
+The core of the catalog. Najdi leads because it is the accent this product is built around.
+
+### Najdi — Saudi Arabia
+
+| Voice | Gender | Age | Styles | Description |
+| --- | --- | --- | --- | --- |
+| `layla` | Female | 18–30 | Professional, Formal | Warm Najdi delivery. The default for inbound reception and appointment setting. |
+| `nouf` | Female | 30–50 | Professional | Measured and senior. Suits collections, escalations, and compliance scripts. |
+| `faisal` | Male | 30–50 | Professional, Formal | Even, authoritative Najdi. Reads long policy text without fatiguing the listener. |
+| `omar` | Male | 18–30 | Casual, Energetic | Bright and quick. Built for outbound offers and short confirmations. |
+
+### Gulf, MSA, and Egyptian
+
+| Voice | Gender | Age | Locale | Styles | Description |
+| --- | --- | --- | --- | --- | --- |
+| `reem` | Female | 18–30 | `ar-AE` | Casual, Energetic | Gulf accent with a light, conversational lift. |
+| `khalid` | Male | 60+ | `ar` | Formal | Modern Standard Arabic, broadcast register. Announcements and IVR trees. |
+| `yousef` | Male | 30–50 | `ar` | Professional, Formal | Neutral MSA. The safest choice when the caller dialect is unknown. |
+| `maha` | Female | 30–50 | `ar-EG` | Casual, Professional | Egyptian dialect, unhurried and reassuring. |
 
 <Note>
-  Each voice below is available in every supported Arabic variant and in English. You select the voice once; the language is a separate setting.
+  When you do not know which dialect your callers speak, `yousef` or `khalid` in Modern Standard Arabic is the safe default. MSA reads as formal but is understood everywhere; a mismatched regional dialect sounds foreign.
 </Note>
 
-### Arabic-first voices
+## English voices
 
-Tuned for Gulf delivery and used as the default for Saudi deployments.
+| Voice | Gender | Age | Locale | Styles | Description |
+| --- | --- | --- | --- | --- | --- |
+| `astra` | Female | 18–30 | `en-US` | Energetic, Formal | Crisp and upbeat. Good for product demos and onboarding flows. |
+| `clementine` | Female | 18–30 | `en-US` | Formal, Professional | Clear mid-range. The English counterpart to `layla`. |
+| `bancroft` | Male | 60+ | `en-US` | Formal, Professional | Deep and deliberate. Reads disclosures without sounding rushed. |
+| `cupola` | Male | 30–50 | `en-US` | Professional, Energetic | Confident sales register without the hard edge. |
+| `vespera` | Female | 30–50 | `en-GB` | Professional | Composed and precise. Financial services and healthcare scripts. |
+| `marlow` | Male | 18–30 | `en-GB` | Casual | Relaxed British delivery. |
 
-| Voice | Gender | Sounds like | Best for |
-| --- | --- | --- | --- |
-| `layan` | Female | Warm, unhurried, level | Service desks and support lines |
-| `faisal` | Male | Steady, professional, low | Formal and government-facing lines |
-| `noura` | Female | Bright, quick, friendly | Sales, bookings, outbound |
-| `tariq` | Male | Relaxed, conversational | Everyday customer conversation |
+## Dialects
 
-### Additional voices
+| Dialect | Filter value | Coverage |
+| --- | --- | --- |
+| Najdi | `najdi` | Central Saudi Arabia — the default for Saudi deployments |
+| Gulf | `gulf` | UAE and wider Gulf |
+| Modern Standard | `msa` | Formal, pan-Arab, understood everywhere |
+| Egyptian | `egyptian` | Egypt and widely understood across the region |
+| Hijazi | `hijazi` | Western Saudi Arabia |
 
-| Voice | Gender | Sounds like | Best for |
-| --- | --- | --- | --- |
-| `salma` | Female | Calm, measured, soft-spoken | Sensitive or high-stress calls |
-| `omar` | Male | Energetic, forward | Promotions and campaign lines |
+Filter the catalog by any of these:
 
-## Languages
-
-Voho recognises Arabic across the Gulf and wider region, plus English. Recognition is set per agent and can accept several languages at once.
-
-| Language | Code | Recognition | Speech |
-| --- | --- | --- | --- |
-| Arabic (Saudi Arabia) | `ar-SA` | Yes | Yes |
-| Arabic (UAE) | `ar-AE` | Yes | Yes |
-| Arabic (Qatar) | `ar-QA` | Yes | Yes |
-| Arabic (Kuwait) | `ar-KW` | Yes | Yes |
-| Arabic (Bahrain) | `ar-BH` | Yes | Yes |
-| Arabic (Oman) | `ar-OM` | Yes | Yes |
-| Arabic (Egypt) | `ar-EG` | Yes | Yes |
-| English (US) | `en-US` | Yes | Yes |
-| English (UK) | `en-GB` | Yes | Yes |
-
-## Code-switching
-
-Callers mix Arabic and English constantly — product names, numbers, and technical terms tend to arrive in English inside an Arabic sentence. Agents transcribe mixed input without being told which language to expect.
-
-Reply language is configured separately from recognition. A common setup accepts `ar-SA` and `en-US` on the way in while always replying in `ar-SA`, which keeps the caller experience consistent however the request was phrased.
-
-```json
-{
-  "voice": "faisal",
-  "recognize": ["ar-SA", "en-US"],
-  "reply_language": "ar-SA"
-}
+```bash
+curl "https://app.voho.ai/v1/voices?dialect=najdi&gender=female" \
+  -H "Authorization: Bearer $VOHO_API_KEY"
 ```
+
+## Styles
+
+Each voice carries one or more delivery styles. Match the style to the line rather than to preference.
+
+<CardGroup cols={2}>
+  <Card title="Professional" icon="briefcase">
+    Service desks, support lines, anything where the caller has a problem.
+  </Card>
+  <Card title="Formal" icon="landmark">
+    Government-facing, compliance, disclosures, announcements.
+  </Card>
+  <Card title="Casual" icon="comments">
+    Everyday conversation, consumer-facing lines.
+  </Card>
+  <Card title="Energetic" icon="bolt">
+    Sales, outbound campaigns, promotions.
+  </Card>
+</CardGroup>
 
 ## Choosing a voice
 
-Match the voice to the line, not to personal preference. Service and support lines read better with `layan` or `salma`, where an unhurried delivery gives callers room. Formal and official lines want `faisal`. Sales and outbound lines can carry the pace of `noura` or `omar`.
+Service and support lines read better with an unhurried delivery — `layla` or `nouf` in Arabic, `clementine` or `vespera` in English. Formal and official lines want `faisal` or `khalid`. Sales and outbound can carry the pace of `omar`, `astra`, or `cupola`.
 
-<Tip>
-  Test with callers who speak the way your customers actually speak, not colleagues reading a script. Accent coverage is the most common source of early call failures, and it shows up within a handful of real calls.
-</Tip>
+<Warning>
+  Test with callers who speak the way your customers actually speak, not colleagues reading a script. Accent coverage is the most common source of early failures, and it shows up within a handful of real calls.
+</Warning>
+
+## Auditioning quickly
+
+[`GET /v1/voices/{id}`](/api-reference/voices#get-a-voice) returns a ready-to-send `sample_request` in the right language for that voice — post it straight to `/v1/speech` to hear the voice without writing anything.
+
+```bash
+curl https://app.voho.ai/v1/voices/layla \
+  -H "Authorization: Bearer $VOHO_API_KEY" | jq .sample_request
+```

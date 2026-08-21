@@ -1,0 +1,155 @@
+---
+title: "Stream speech"
+sidebarTitle: "Streaming"
+description: "POST /v1/speech/stream — audio that starts arriving before synthesis finishes."
+icon: "tower-broadcast"
+---
+
+<Info>
+  **POST** `https://app.voho.ai/v1/speech/stream`
+</Info>
+
+Streaming sends audio as it is produced rather than after it is complete. On a live call this is the difference between a natural pause and dead air.
+
+One endpoint returns two shapes, chosen by the `Accept` header:
+
+- **`text/event-stream`** → Server-Sent Events with base64 chunks and a usage event
+- **anything else** → raw audio bytes, chunked as they arrive
+
+Raw is what a media pipeline wants — pipe it to a player or a SIP leg. SSE is what a browser or orchestration layer wants, because it carries chunk indices and cost alongside the audio.
+
+## Constraints
+
+<Warning>
+  Streaming supports **`sada-1` only**, and a narrower format set than [`/v1/speech`](/api-reference/speech). These are validated up front, so a bad combination fails immediately rather than mid-stream.
+</Warning>
+
+| Format | Content type | Sample rate |
+| --- | --- | --- |
+| `opus` | `audio/ogg` | 24000 |
+| `mulaw` | `audio/basic` | 8000 |
+| `pcm` | `audio/L16` | 24000 |
+
+## Time to first audio
+
+Measured on the deploy host, one Arabic sentence:
+
+| Path | Time to first audio |
+| --- | --- |
+| Streaming, `opus` 24 kHz | ~200 ms |
+| Streaming, `mulaw` 8 kHz | ~1.1 s |
+| Complete non-streaming response | ~1.7 s |
+
+The gap widens with length: streaming time-to-first-audio stays roughly flat, while a complete response scales with how much was asked for.
+
+## Body
+
+<ParamField body="text" type="string" required>
+  Text to speak. Maximum 5,000 characters.
+</ParamField>
+
+<ParamField body="voice" type="string" required>
+  Voice ID.
+</ParamField>
+
+<ParamField body="model" type="string" default="sada-1">
+  Must be `sada-1`.
+</ParamField>
+
+<ParamField body="format" type="string" default="opus">
+  `opus`, `mulaw`, or `pcm`.
+</ParamField>
+
+## SSE events
+
+<ResponseField name="start" type="event">
+  Sent once, before any audio. Carries `voice`, `model`, `format`, `sample_rate`, `content_type`.
+</ResponseField>
+
+<ResponseField name="audio" type="event">
+  Repeated. Carries `index` (0-based) and `audio` (base64). Concatenate in index order.
+</ResponseField>
+
+<ResponseField name="done" type="event">
+  Sent once at the end. Carries `bytes`, `characters`, `cost_cents`.
+</ResponseField>
+
+<ResponseField name="error" type="event">
+  Sent instead of `done` if synthesis fails mid-stream. Carries `error.code` and `error.message`.
+</ResponseField>
+
+<RequestExample>
+```bash Raw audio
+curl -X POST https://app.voho.ai/v1/speech/stream \
+  -H "Authorization: Bearer $VOHO_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"text":"أهلاً بك","voice":"layla","format":"mulaw"}' \
+  --output - | aplay -f MU_LAW -r 8000
+```
+
+```bash SSE
+curl -N -X POST https://app.voho.ai/v1/speech/stream \
+  -H "Authorization: Bearer $VOHO_API_KEY" \
+  -H "Accept: text/event-stream" \
+  -H "Content-Type: application/json" \
+  -d '{"text":"أهلاً بك","voice":"layla","format":"opus"}'
+```
+
+```python Python (SSE)
+import json, base64, requests
+
+r = requests.post(
+    "https://app.voho.ai/v1/speech/stream",
+    headers={
+        "Authorization": f"Bearer {API_KEY}",
+        "Accept": "text/event-stream",
+    },
+    json={"text": "أهلاً بك", "voice": "layla", "format": "opus"},
+    stream=True,
+)
+
+event, chunks = None, []
+for line in r.iter_lines(decode_unicode=True):
+    if not line:
+        continue
+    if line.startswith("event: "):
+        event = line[7:]
+    elif line.startswith("data: "):
+        data = json.loads(line[6:])
+        if event == "audio":
+            chunks.append(base64.b64decode(data["audio"]))
+        elif event == "done":
+            print(data["characters"], "chars", data["cost_cents"], "cents")
+        elif event == "error":
+            raise RuntimeError(data["error"]["message"])
+
+open("out.ogg", "wb").write(b"".join(chunks))
+```
+</RequestExample>
+
+<ResponseExample>
+```text SSE stream
+event: start
+data: {"voice":"layla","model":"sada-1","format":"opus","sample_rate":24000,"content_type":"audio/ogg"}
+
+event: audio
+data: {"index":0,"audio":"T2dnUwACAAAA..."}
+
+event: audio
+data: {"index":1,"audio":"AAAAAGa1bWQB..."}
+
+event: done
+data: {"bytes":18422,"characters":9,"cost_cents":1}
+```
+</ResponseExample>
+
+## Failure mid-stream
+
+The two shapes fail differently, because once the status line is sent there is no way to change it.
+
+- **SSE** emits an `error` event and closes. Handle it explicitly — a stream that ends without `done` did not succeed.
+- **Raw** aborts the response body. Appending an error would be decoded as audio, so the connection breaking *is* the signal. Treat a truncated body as a failure.
+
+<Note>
+  Billing happens after the stream drains. A synthesis that dies partway is not charged.
+</Note>

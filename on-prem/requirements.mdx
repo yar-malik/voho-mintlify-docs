@@ -1,0 +1,119 @@
+---
+title: "Requirements"
+description: "What your environment needs to provide, and what to measure before sizing a deployment."
+icon: "list-check"
+---
+
+An on-premise deployment is sized against your traffic, not against a fixed shopping list. This page covers what your environment must be able to provide, and the numbers to bring to scoping so the sizing is done once rather than three times.
+
+A deployment starts at a single GPU server. Scale is a matter of adding nodes, not of moving to a different class of machine.
+
+## Hardware
+
+One node needs:
+
+| | Minimum | Recommended |
+| --- | --- | --- |
+| **GPU** | A single modern GPU with 16 GB VRAM | 24 GB VRAM or more — an RTX 4090 or better, an H100 where the budget allows |
+| **CPU** | 8 cores | 8+ cores |
+| **RAM** | 32 GB | 32 GB or more |
+| **Storage** | 50 GB | 100 GB |
+
+A single GPU is genuinely the floor, not a stripped-down trial configuration. Organisations run production lines on one node and add more as concurrency grows.
+
+<Tip>
+  Size for headroom above peak, not at it. A voice deployment that is exactly sized fails during the busiest hour of the year, which is the hour it is judged on.
+</Tip>
+
+{/* TODO: still unanswered — concurrent calls per node. It is the first number every buyer asks for and the one that turns this table into a purchase order. Get it per GPU class (4090 vs H100) and per capability. */}
+
+## Software
+
+- **OS** — Linux. Ubuntu or Debian are the tested distributions.
+- **Container runtime** — Docker with NVIDIA GPU support, or Kubernetes for a multi-node cluster.
+- **GPU drivers** — NVIDIA drivers and the container toolkit, so containers can address the GPU.
+
+{/* TODO: confirm the minimum NVIDIA driver version, CUDA version, and the tested Ubuntu/Debian release numbers. A wrong version here is a failed install and a support call. */}
+
+## Deployment forms
+
+Three, so the deployment fits the platform you already run rather than the other way round.
+
+<CardGroup cols={3}>
+  <Card title="Docker" icon="docker">
+    A single GPU server. The usual starting point, and enough for a production line.
+  </Card>
+  <Card title="Kubernetes" icon="dharmachakra">
+    A cluster, for scaling across nodes and for estates that standardise on Kubernetes.
+  </Card>
+  <Card title="Single container" icon="cube">
+    One self-contained image, for platforms that require a single-container deployment.
+  </Card>
+</CardGroup>
+
+## Storage
+
+The 50–100 GB above covers the deployment itself. Records are separate and are sized by your retention policy:
+
+- Transcripts, summaries and action logs for the retention period you set.
+- Audio, if you choose to retain it — this dominates the volume, and it does not need the same retention as text.
+- Backup and restore, on your existing regime.
+
+Decide retention per data type before go-live rather than after. See [Security and data handling](/security).
+
+## Network
+
+<AccordionGroup>
+  <Accordion title="Inside the boundary" icon="network-wired">
+    Low-latency paths between call handling, the speech components and the agent runtime. Every round trip between them is added to the silence the caller hears.
+  </Accordion>
+
+  <Accordion title="To your telephony" icon="phone">
+    SIP connectivity from your trunk or PBX to the call-handling component. Audio is carried as 8 kHz mulaw, so no transcoding tier is needed.
+  </Accordion>
+
+  <Accordion title="To your systems" icon="plug">
+    Reachability from the action layer to each system the agent will act in, plus a service account on each with only the permissions those actions require.
+  </Accordion>
+
+  <Accordion title="Outbound" icon="globe">
+    No live connection is needed to keep the deployment running — licensing is checked locally against a signed file. Usage is reported back to Voho periodically for billing, which is the one outbound flow to account for in your firewall policy. See [Licensing and egress](/on-prem/architecture#licensing-and-egress).
+    {/* TODO: get the exact egress destination hosts and ports for the usage sync, its frequency, and whether an offline/manual usage submission exists for air-gapped sites. */}
+  </Accordion>
+</AccordionGroup>
+
+## Identity
+
+- A SAML or OIDC identity provider for operator sign-in.
+- SCIM, if you want provisioning and de-provisioning to follow your directory automatically.
+- Your role definitions — who may read transcripts, who may change agent instructions, who may export.
+
+## What to measure before scoping
+
+Bring these and the sizing conversation takes one call instead of four.
+
+<Steps>
+  <Step title="Peak concurrent calls">
+    Not calls per day — the highest number of calls live at the same moment. Pull it from your PBX or contact-centre reporting for the busiest hour of the last twelve months.
+  </Step>
+  <Step title="Call profile">
+    Average call length, and the split between languages and dialects. A three-minute Arabic service call and a twenty-second balance enquiry size very differently.
+  </Step>
+  <Step title="Traffic shape">
+    When your peaks land — time of day, day of week, and the seasonal spikes your business knows about. Ramadan, salary week and results day are real capacity events.
+  </Step>
+  <Step title="Systems in scope">
+    Which systems the agent must act in for the first workflow, and whether an API and a service account already exist for each.
+  </Step>
+  <Step title="Retention and residency obligations">
+    What you must keep, for how long, and where it must stay. This one can change the architecture, so it belongs at the start.
+  </Step>
+  <Step title="Who operates it">
+    The team that will run this after handover, and what they already run. Monitoring that does not fit their existing tooling does not get watched.
+  </Step>
+</Steps>
+
+<Card title="Send us these numbers" icon="paper-plane" href="mailto:support@voho.ai">
+  Sizing starts from your peak concurrency and call profile.
+  {/* TODO: confirm the correct routing address for enterprise and on-prem enquiries. */}
+</Card>

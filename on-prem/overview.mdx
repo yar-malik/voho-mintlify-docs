@@ -1,0 +1,97 @@
+---
+title: "On-premise overview"
+sidebarTitle: "Overview"
+description: "Run Voho inside infrastructure you control — your data centre, your GPUs, your country, with no dependency on the public internet."
+icon: "building-lock"
+---
+
+Voho runs entirely inside infrastructure you control. Call audio, transcripts, the agent's reasoning and every record it produces stay inside your network boundary, on hardware you own or lease, in the country you choose.
+
+This is the configuration for organisations that cannot send customer conversations to a third party — regulated sectors, government, and anyone whose own contracts commit them to keeping processing in-country.
+
+<Note>
+  On-premise is delivered as an engagement, not a self-service download. Your environment is sized against your real call volume before anything is installed. See [Getting started](/on-prem/quickstart) for what that path looks like.
+</Note>
+
+## What "on-premise" can mean
+
+Four shapes, in decreasing order of how much you operate yourself. All four keep processing under your control; they differ in who owns the metal and whether anything reaches the internet.
+
+<CardGroup cols={2}>
+  <Card title="Your data centre" icon="server">
+    Voho runs on your own servers, in your own building, on your own GPUs. You own the hardware and the operational responsibility.
+  </Card>
+  <Card title="Disconnected" icon="plug-circle-xmark">
+    Models, call handling and records all sit inside your network, and licensing is checked against a local signed file — so nothing needs to be reachable for the line to keep answering. See [Licensing and egress](/on-prem/architecture#licensing-and-egress).
+  </Card>
+  <Card title="Your private cloud" icon="cloud-arrow-up">
+    Your own cloud tenancy or VPC, under your accounts and your network policy, rather than shared infrastructure.
+  </Card>
+  <Card title="In-country hosted" icon="location-dot">
+    A dedicated deployment in a Saudi data centre, operated for you, when in-country residency is the requirement but running it yourself is not.
+  </Card>
+</CardGroup>
+
+## It fits the platform you already run
+
+A deployment starts at one GPU server and grows by adding nodes. It ships in three forms so it lands on the infrastructure you have:
+
+| Form | For |
+| --- | --- |
+| **Docker** | A single GPU server — the usual starting point, and enough for a production line |
+| **Kubernetes** | A cluster, for scaling across nodes and for estates standardised on Kubernetes |
+| **Single container** | One self-contained image, for platforms that require a single-container deployment |
+
+The hardware floor is a single modern GPU with 16–24 GB of VRAM, 8 cores and 32 GB of RAM. See [Requirements](/on-prem/requirements).
+
+## What runs locally
+
+In a self-hosted deployment, the full conversational loop runs inside your boundary:
+
+| Capability | What it does |
+| --- | --- |
+| Speech synthesis | Turns the agent's words into audio, including telephony-ready 8 kHz mulaw. |
+| Speech recognition | Turns caller audio into text, including Najdi and Gulf Arabic and Arabic–English code-switching. |
+| Agent runtime | Decides what the caller wants, when to call an action, and when to hand over to a person. |
+| Actions | Calls into your systems — SAP, Oracle, ServiceNow, Archibus, core banking, your own databases — as a service account whose permissions you control. |
+| Records | Transcripts, summaries and the action log, written to storage you own. |
+
+{/* TODO: confirm with engineering which capabilities are shipped as locally-runnable units today, and whether any of them has a managed-only dependency. Do not publish a capability here until it is verified. */}
+
+## What changes for your team
+
+On-premise moves real operational work to you. That trade is worth making when an obligation requires it, and rarely worth making when it does not.
+
+| | Voho | You |
+| --- | --- | --- |
+| Software and updates | Ships releases and the upgrade runbook | Decides when to apply them |
+| Sizing | Sizes the deployment against your call volume | Provides and maintains the hardware |
+| Monitoring | Defines what to watch and what good looks like | Runs the monitoring and responds to alerts |
+| Identity and access | Integrates with your IdP | Owns the directory, the roles and the joiners/leavers process |
+| Data | Never holds it | Owns retention, backup and deletion |
+| Support | Named solutions engineer during the engagement | First-line operations after handover |
+
+{/* TODO: confirm the post-handover support model and response commitments with the commercial team before this table is quoted in a contract. */}
+
+## Choosing between on-premise and managed
+
+Take on-premise when a specific obligation requires processing to stay inside your environment — a residency rule, a sector regulation, or a term in your own customer contracts.
+
+If the driver is a general preference for control rather than a named obligation, the managed service with the right contractual terms is usually the better trade. See [Deployment options](/deployment) for the comparison.
+
+## Next
+
+<CardGroup cols={2}>
+  <Card title="Architecture" icon="sitemap" href="/on-prem/architecture">
+    What runs where, and what crosses the boundary.
+  </Card>
+  <Card title="Requirements" icon="list-check" href="/on-prem/requirements">
+    What your environment needs to provide.
+  </Card>
+  <Card title="Getting started" icon="rocket" href="/on-prem/quickstart">
+    From scoping call to live traffic.
+  </Card>
+  <Card title="Data residency" icon="shield-check" href="/on-prem/residency">
+    Where data sits, and the evidence your auditors will ask for.
+  </Card>
+</CardGroup>

@@ -1,0 +1,129 @@
+---
+title: "Getting started"
+sidebarTitle: "Getting started"
+description: "The path from a scoping call to live traffic on your own infrastructure, and what to prepare before day one."
+icon: "rocket"
+---
+
+An on-premise deployment is installed with you rather than handed over as a download. A named solutions engineer works alongside your team, and the first workflow is normally live within a month.
+
+Voho ships as container images, in three deployment forms — Docker on a single GPU server, Kubernetes for a cluster, or one self-contained image where the platform requires it — with a signed licence file the deployment validates locally.
+
+<Note>
+  The registry, image references and configuration values are specific to the release you will run and are provided with the runbook for your deployment.
+  {/* TODO: once the registry hostname and customer authentication method are confirmed, add a real install section here: registry login, image tags, a compose and a Helm example, ports, every environment variable with its default, licence file placement, and a verification step with real expected output. */}
+</Note>
+
+## Choose the deployment form
+
+<Tabs>
+  <Tab title="Docker">
+    One GPU server, Docker with NVIDIA GPU support. The usual starting point — a single node is a production configuration, not a trial one. Choose this unless you have a reason not to.
+  </Tab>
+  <Tab title="Kubernetes">
+    A cluster. Choose this when you are scaling past one node, or when your estate standardises on Kubernetes and a lone Docker host would be the exception nobody patches.
+  </Tab>
+  <Tab title="Single container">
+    One self-contained image, for platforms that only accept a single-container deployment. Choose this when your hosting platform forces it, not by preference.
+  </Tab>
+</Tabs>
+
+## The path
+
+<Steps>
+  <Step title="Scoping" icon="clipboard-list">
+    One call covering capacity, environment, obligations and operations. Bring the numbers from [Requirements](/on-prem/requirements) — peak concurrent calls above all.
+
+    **Out of it:** a sizing for your traffic, a deployment shape, and the list of what each side provides.
+  </Step>
+
+  <Step title="Environment pre-flight" icon="server">
+    Your team provisions hosts, GPUs, storage and network paths, and creates the service accounts the agent will act through. Voho reviews the environment against the sizing before anything is installed.
+
+    **Out of it:** an environment that passes review, so install day is install day.
+  </Step>
+
+  <Step title="Install" icon="download">
+    Voho and your team deploy together, in your environment, against your runbook: pull the images, place the signed licence file, start the deployment, and confirm the GPU is addressed. Nothing is installed that your team has not seen installed.
+
+    **Out of it:** a running deployment, health-checked, with the local dashboard showing usage and system health.
+  </Step>
+
+  <Step title="Connect telephony" icon="phone">
+    Point a test number at the deployment over your existing trunk. Audio is 8 kHz mulaw, so there is no transcoding tier to build.
+
+    **Out of it:** a real call, answered, in your building.
+  </Step>
+
+  <Step title="Build the first workflow" icon="bolt">
+    Configure the agent's instructions and wire the actions it needs into your systems. Start with one workflow that matters and finishes — a status enquiry, a ticket being raised — not a broad assistant.
+
+    See [Instructions](/instructions) and [Actions](/actions).
+
+    **Out of it:** an agent that completes a task end to end, including its handover path.
+  </Step>
+
+  <Step title="Test before traffic" icon="vial">
+    Run it against real recordings and awkward cases: heavy dialect, code-switching mid-sentence, callers who interrupt, reference numbers read back digit by digit. See [Testing](/testing).
+
+    **Out of it:** a pass criterion agreed before the first customer hears it.
+  </Step>
+
+  <Step title="Pilot" icon="chart-line">
+    Route a slice of live traffic. Watch time to first audio, handover rate and action failures. Fix what the transcripts show rather than what the demo suggested.
+
+    **Out of it:** evidence from your own callers.
+  </Step>
+
+  <Step title="Cutover and handover" icon="key">
+    Widen traffic, and move first-line operations to your team with the runbooks, dashboards and escalation path in place.
+
+    **Out of it:** a deployment your team runs. See [Operations](/on-prem/operations).
+  </Step>
+</Steps>
+
+## Prepare before day one
+
+Every item here is something only your organisation can produce, and each one blocks the step it belongs to.
+
+- **Peak concurrent calls**, from the busiest hour of the last year.
+- **A GPU host** provisioned to the sizing — 16–24 GB VRAM or better, 8 cores, 32 GB RAM, 50–100 GB disk — on Ubuntu or Debian, with NVIDIA drivers and Docker GPU support in place.
+- **Network paths** opened: trunk to call handling, action layer to each target system.
+- **Service accounts** on each system the agent will act in, scoped to only what its actions need.
+- **Identity provider** ready for SSO, with your role definitions decided.
+- **Retention policy** per data type — audio, transcripts, summaries — agreed with your legal and data protection people.
+- **A test number** you can route freely without touching production traffic.
+- **A firewall decision** on the periodic usage sync, or an agreed offline path if you are deploying with zero egress.
+- **The first workflow chosen**, with the person who owns that process available.
+
+## Who needs to be in the room
+
+| Role | Needed for |
+| --- | --- |
+| Infrastructure / platform | Hosts, GPUs, storage, network |
+| Telephony | Trunk configuration and test numbering |
+| Security | Boundary review, service accounts, audit routing |
+| Identity | SSO and SCIM |
+| Application owners | APIs and service accounts on the target systems |
+| Process owner | What the first workflow must actually do |
+| Legal / data protection | Retention, residency and caller notification |
+
+<Tip>
+  The two things that most often slow a deployment down are service accounts on target systems and a firewall change nobody raised a ticket for. Start both in week one.
+</Tip>
+
+## Next
+
+<CardGroup cols={2}>
+  <Card title="Requirements" icon="list-check" href="/on-prem/requirements">
+    What to size and provision.
+  </Card>
+  <Card title="Data residency" icon="shield-check" href="/on-prem/residency">
+    What your security review will ask.
+  </Card>
+</CardGroup>
+
+<Card title="Start a scoping conversation" icon="building-lock" href="mailto:support@voho.ai">
+  Bring your peak concurrency, your obligations, and the first workflow you want live.
+  {/* TODO: confirm the correct routing address for enterprise and on-prem enquiries. */}
+</Card>

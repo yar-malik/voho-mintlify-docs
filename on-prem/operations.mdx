@@ -1,0 +1,91 @@
+---
+title: "Operations"
+description: "Running a Voho deployment after handover — what to watch, how to upgrade, and how to know you still have headroom."
+icon: "gauge-high"
+---
+
+After cutover your team owns first-line operations. This page is what that job consists of.
+
+## What to watch
+
+Four signals tell you whether the deployment is healthy. Everything else is diagnosis.
+
+<AccordionGroup>
+  <Accordion title="Time to first audio" icon="stopwatch">
+    How long the caller waits before the agent starts speaking. It is the metric callers actually experience, and the first one to move when the deployment is under pressure. See [Latency](/latency).
+  </Accordion>
+
+  <Accordion title="Concurrent calls against capacity" icon="chart-line">
+    Peak concurrency as a proportion of what the deployment was sized for. This is your capacity early-warning: it rises for weeks before anything breaks.
+  </Accordion>
+
+  <Accordion title="Handover rate" icon="user-check">
+    The share of calls passed to a person. A rising rate usually means callers are asking for something the agent was never configured to do — which is a content problem, not an infrastructure one.
+  </Accordion>
+
+  <Accordion title="Action failures" icon="triangle-exclamation">
+    Actions that error or time out against your systems. These are the failures callers feel as an agent that promised something and did not deliver it. Alert on them separately from everything else.
+  </Accordion>
+</AccordionGroup>
+
+A local dashboard, served from the deployment, shows usage and system health without sending anything outside your network to render it.
+
+{/* TODO: confirm what the local dashboard actually shows, and add the health and readiness endpoints, the metrics exposed and in what format, and log locations and levels, so this can be wired into the customer's own monitoring rather than watched in a browser. */}
+
+## Licence renewal
+
+The deployment validates a signed licence file locally, so it does not depend on reaching Voho to keep running. If a licence is not renewed in time the deployment degrades gracefully rather than cutting off — a line does not stop answering because a renewal was sitting in someone's inbox.
+
+Treat that as a safety net, not a plan. Put the expiry date in the same calendar as your certificate renewals.
+
+{/* TODO: document what "degrades gracefully" means concretely, the warning period before expiry, and where the operator sees it. Then state how a renewed licence file is installed. */}
+
+## Logs and audit
+
+Operational logs stay on your hosts under your log policy. Configuration changes, access events and exports form a separate audit trail that can be streamed to your SIEM, so evidence lives in the system your auditors already read.
+
+Keep the two separate. Debug logging is noisy and short-lived; the audit trail is neither.
+
+## Upgrades
+
+Upgrades are yours to schedule. In a disconnected deployment they arrive as media you import; in a connected one they are still applied on your window rather than pushed.
+
+- Take the release notes and the upgrade runbook for the version you are moving to.
+- Apply to a non-production deployment first if you have one, or during a low-traffic window if you do not.
+- Keep the previous version available until the new one has held through a real peak, not just through a smoke test.
+- Re-run your test set afterwards. Voice regressions show up in dialect handling and number reading long before they show up in error rates. See [Testing](/testing).
+
+{/* TODO: document the actual upgrade and rollback procedure, and whether there is state that must be backed up first. */}
+
+## Capacity
+
+Capacity is a planning exercise, not an alert. Review it on a schedule:
+
+- Track peak concurrency month over month against the sizing.
+- Add headroom before the season you already know is coming, not during it.
+- When you add hardware, re-measure time to first audio — capacity that does not hold latency has not been added.
+
+<Tip>
+  The number to defend is peak concurrency during your busiest hour of the year. Average utilisation looks comfortable right up until the hour that matters.
+</Tip>
+
+## Records and retention
+
+You own the records, so you own the lifecycle: retention per data type, backup, and the ability to locate and delete one caller's data across audio, transcripts, summaries and anything the actions wrote downstream.
+
+Test the deletion path before someone requests it. See [Security and data handling](/security).
+
+## When to escalate
+
+Keep the boundary clear between what your team fixes and what goes back to Voho.
+
+| Symptom | Usually yours | Usually ours |
+| --- | --- | --- |
+| Agent says the wrong thing | Instructions and workflow configuration | — |
+| Action fails or times out | The target system, its credentials, the network path | — |
+| Latency rises with load | Capacity and placement | Sizing guidance |
+| Audio quality or pronunciation regression | — | Release issue |
+| Component will not start after upgrade | Environment and prerequisites | Release issue |
+| Licence expiry warnings | Renewal with your account team | — |
+
+{/* TODO: confirm the post-handover support model, response commitments and escalation channel with the commercial team before this is quoted anywhere. */}

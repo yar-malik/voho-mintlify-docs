@@ -96,6 +96,18 @@
               "deployment",
               "security"
             ]
+          },
+          {
+            "group": "On-premise",
+            "icon": "building-lock",
+            "pages": [
+              "on-prem/overview",
+              "on-prem/architecture",
+              "on-prem/requirements",
+              "on-prem/quickstart",
+              "on-prem/operations",
+              "on-prem/residency"
+            ]
           }
         ]
       },

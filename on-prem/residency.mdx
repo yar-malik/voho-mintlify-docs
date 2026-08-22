@@ -1,0 +1,88 @@
+---
+title: "Data residency and sovereignty"
+sidebarTitle: "Data residency"
+description: "Where call data sits in each deployment configuration, what crosses the boundary, and the evidence a security review will ask for."
+icon: "shield-check"
+---
+
+"Where does our data live?" is the first question in this market, and it deserves a precise answer rather than a reassuring one. The honest answer differs per configuration, so this page states it per configuration.
+
+<Warning>
+  Nothing here is legal advice, and nothing here is a compliance claim about a specific obligation. Whether a configuration satisfies a rule that applies to you depends on your contract, your sector and your jurisdiction. Get the commitments that matter to you in writing.
+</Warning>
+
+## Where data sits, per configuration
+
+| Configuration | Where processing happens | Where records sit | What leaves your network |
+| --- | --- | --- | --- |
+| Self-hosted | Your hardware | Your storage | Periodic usage metering for billing — no call audio, transcripts or records |
+| Self-hosted, zero egress | Your hardware | Your storage | Agreed in scoping — licensing works offline, usage submission needs a path |
+| Your private cloud | Your cloud tenancy | Your storage | As self-hosted |
+| In-country hosted | A dedicated deployment in your chosen region | That deployment | Governed by your contract |
+| Managed cloud | Voho infrastructure | Voho infrastructure | Call audio and transcripts |
+
+Licensing is checked against a signed file held on the deployment, so no configuration depends on a live connection to keep answering calls. See [Licensing and egress](/on-prem/architecture#licensing-and-egress).
+
+{/* TODO: this table is the single most consequential thing on the site — it will be pasted into procurement documents. Every cell must be verified per tier by engineering and signed off by legal before this page ships. In particular: the "what leaves" column for the connected modes, and whether the managed row is region-selectable. Never carry an on-prem residency claim onto the cloud tier. */}
+
+<Note>
+  Residency selection between Saudi Arabia and the EU, private deployment, and a self-hosted control plane are enterprise-tier options. They are scoped per engagement rather than switched on in a console.
+</Note>
+
+## Sovereignty is more than location
+
+A deployment can sit physically in Riyadh and still fail a sovereignty review. The questions that actually get asked:
+
+<AccordionGroup>
+  <Accordion title="Who can technically access it?" icon="key">
+    Not who is contractually permitted to — who holds credentials that would work. In a self-hosted deployment, that is your directory and nobody else's.
+  </Accordion>
+
+  <Accordion title="What egress exists at all?" icon="globe">
+    A security review will scan for it rather than take the answer on trust. In a self-hosted deployment the answer is the periodic usage sync for billing, and nothing else. See [Licensing and egress](/on-prem/architecture#licensing-and-egress).
+  </Accordion>
+
+  <Accordion title="Where do the models come from, and how are they updated?" icon="box">
+    Update media, how it is delivered, and who can trigger an update in your environment.
+  </Accordion>
+
+  <Accordion title="Is call data used for training?" icon="graduation-cap">
+    Ask it explicitly, ask whether it can be switched off, and get the answer in the contract rather than in a slide.
+    {/* TODO: state Voho's verified position per tier here once legal confirms the wording. */}
+  </Accordion>
+
+  <Accordion title="What happens when the contract ends?" icon="door-open">
+    In a self-hosted deployment the data is already yours and stays where it is. Confirm what happens to the software.
+  </Accordion>
+</AccordionGroup>
+
+## PDPL and the Gulf
+
+Saudi Arabia's Personal Data Protection Law places specific requirements on processing personal data, including rules on transfers outside the Kingdom. Comparable regimes apply across the Gulf. Call audio is personal data in its own right in most jurisdictions, and biometric data in some.
+
+Where an obligation restricts transfers outside the country, a deployment that processes calls inside your own environment removes the transfer from the picture rather than justifying it. That is the argument on-premise is usually bought for — but it is your legal team's argument to make, against your obligations.
+
+{/* TODO: legal to review this section and supply any wording Voho is willing to stand behind on PDPL specifically. Until then, keep it as description of the mechanism rather than a compliance claim. */}
+
+## Evidence your reviewers will ask for
+
+Have these ready before the security review rather than during it:
+
+- A network diagram showing the boundary and every path that crosses it. See [Architecture](/on-prem/architecture).
+- The egress answer for your mode, and how it is enforced.
+- Retention periods per data type — audio, transcripts, summaries, action logs.
+- The access model: who can read transcripts, under which role, through which identity provider.
+- The audit trail and where it is streamed.
+- The deletion procedure, tested.
+- The caller notification your line plays, and when in the call it plays.
+
+## Related
+
+<CardGroup cols={2}>
+  <Card title="Security and data handling" icon="shield" href="/security">
+    What a voice line collects, and what to settle before launch.
+  </Card>
+  <Card title="Architecture" icon="sitemap" href="/on-prem/architecture">
+    The boundary, drawn.
+  </Card>
+</CardGroup>

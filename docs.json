@@ -108,6 +108,13 @@
               "on-prem/operations",
               "on-prem/residency"
             ]
+          },
+          {
+            "group": "Commercial",
+            "hidden": true,
+            "pages": [
+              "pricing-onprem"
+            ]
           }
         ]
       },

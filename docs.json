@@ -58,7 +58,8 @@
             "icon": "rocket",
             "pages": [
               "index",
-              "quickstart"
+              "quickstart",
+              "faq"
             ]
           },
           {
@@ -76,7 +77,16 @@
               "concepts",
               "instructions",
               "actions",
+              "integrations",
               "handoff"
+            ]
+          },
+          {
+            "group": "Telephony",
+            "icon": "phone",
+            "pages": [
+              "telephony",
+              "numbers"
             ]
           },
           {
@@ -110,9 +120,18 @@
             ]
           },
           {
+            "group": "Partners",
+            "icon": "handshake",
+            "pages": [
+              "partners/overview",
+              "partners/white-label"
+            ]
+          },
+          {
             "group": "Commercial",
             "hidden": true,
             "pages": [
+              "pricing-cloud",
               "pricing-onprem"
             ]
           }

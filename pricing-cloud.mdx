@@ -1,0 +1,69 @@
+---
+title: "Cloud pricing"
+sidebarTitle: "Cloud pricing"
+description: "How the managed cloud service is priced — pay-as-you-go per minute, or an enterprise agreement."
+icon: "tag"
+noindex: true
+---
+
+<Note>
+  Pricing for the **managed cloud service**. [On-premise pricing](/pricing-onprem) is a separate model, and telephony is quoted separately in both.
+</Note>
+
+## Two models
+
+<CardGroup cols={2}>
+  <Card title="Pay as you go" icon="gauge-simple">
+    Billed per minute of conversation. No seats, no platform minimum, no annual commitment. You pay for the calls you actually take.
+  </Card>
+  <Card title="Enterprise" icon="building-columns">
+    For high-volume or regulated operations. Reserved capacity, an SLA, controlled deployment, residency options, and a named solutions team.
+  </Card>
+</CardGroup>
+
+{/* TODO: no per-minute rate, volume band, or enterprise floor is published here — none has been signed off for publication. Fill in from the commercial rate card once confirmed, and keep this page in the hidden Commercial group until that happens. */}
+
+## What a minute includes
+
+A minute is a minute of agent conversation on a connected call. Recognition, the agent's reasoning, synthesis, actions against your systems, and the transcript and summary afterwards are all part of it.
+
+Voice minutes are passed through at cost — Voho does not mark up the speech minutes themselves.
+
+{/* TODO: confirm with engineering that billing measures connected agent time, and what happens to time after a handoff to a person. The same TODO exists on pricing-onprem.mdx and both answers must match. */}
+
+## What is quoted separately
+
+<AccordionGroup>
+  <Accordion title="Telephony and numbers" icon="phone">
+    Number rental and call carriage are carrier costs, quoted by region and number type and passed through at cost. See [Phone numbers](/numbers).
+  </Accordion>
+
+  <Accordion title="Implementation" icon="wrench">
+    Building the first workflow against your systems, where you want that done for you rather than by your own team.
+  </Accordion>
+
+  <Accordion title="The systems the agent acts in" icon="plug">
+    Your CRM, ticketing, and scheduling licences remain yours. See [Integrations](/integrations).
+  </Accordion>
+</AccordionGroup>
+
+## What enterprise adds
+
+- **Reserved capacity** against your peak concurrency, rather than best effort.
+- **A service level**, with the response commitments written down.
+- **Residency options**, including in-country hosted deployment — see [Deployment options](/deployment).
+- **SSO and SCIM**, so access follows your directory.
+- **Audit-log streaming** into your own SIEM.
+- **Security documentation** for procurement review.
+- **A named solutions team** rather than a shared queue.
+
+{/* TODO: confirm which of these are actually available on the managed cloud tier today versus on-premise only. SSO/SCIM and SIEM streaming are stated on the on-prem cluster licence in pricing-onprem.mdx; do not assume they exist on cloud without checking. */}
+
+## Agencies and resellers
+
+Partners running Voho for their own clients are priced under a partner arrangement rather than this page — see [Agencies and resellers](/partners/overview).
+
+<Card title="Get a quote against your volume" icon="paper-plane" href="mailto:support@voho.ai">
+  Bring expected monthly minutes, average call length, the inbound/outbound split, and your deployment model.
+  {/* TODO: confirm the correct routing address for commercial enquiries. */}
+</Card>

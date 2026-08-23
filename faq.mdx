@@ -1,0 +1,121 @@
+---
+title: "Common questions"
+sidebarTitle: "FAQ"
+description: "The questions that come up most often when teams evaluate Voho — dialects, telephony, numbers, scale, integrations, deployment, and pricing."
+icon: "circle-question"
+---
+
+The questions teams ask before they build, with the page that answers each one properly.
+
+## Language and dialects
+
+<AccordionGroup>
+  <Accordion title="Which Arabic dialects are supported?" icon="language">
+    Voices ship in Najdi, Hijazi, Gulf, Egyptian, and Modern Standard Arabic, plus English. Saudi Arabic is the focus rather than an afterthought.
+
+    See [Voices](/voices) for the full catalogue by dialect, style, and age.
+
+    {/* TODO: sales correspondence has also claimed Levantine. There is no Levantine voice in the catalogue and no `levantine` filter value in voices.mdx. Either add the voice or stop claiming it — do not list it here until it exists. Separately, confirm which dialects recognition covers, since that is not necessarily the same list as synthesis. */}
+  </Accordion>
+
+  <Accordion title="What if a caller switches between Arabic and English?" icon="arrow-right-arrow-left">
+    Agents follow code-switching mid-sentence rather than forcing the caller to pick a language. It is normal speech in the region and is treated as such.
+  </Accordion>
+
+  <Accordion title="Which voice should we start with?" icon="waveform-lines">
+    If you know your callers, match the dialect. If you do not, Modern Standard Arabic is the safe default — see [Voices](/voices#dialects).
+  </Accordion>
+</AccordionGroup>
+
+## Calls and numbers
+
+<AccordionGroup>
+  <Accordion title="Can agents handle inbound and outbound calls?" icon="phone">
+    Both, from the same configuration: inbound answering, and outbound campaigns, callbacks, reminders, qualification, and confirmations. See [Telephony](/telephony#inbound-and-outbound).
+  </Accordion>
+
+  <Accordion title="Do we have to replace our phone system?" icon="network-wired">
+    No. Voho connects over SIP to the trunk or PBX you already run — Cisco, Avaya, hosted, or direct from a carrier. Your numbers and routing stay as they are. See [Telephony](/telephony#bring-your-own-trunk).
+  </Accordion>
+
+  <Accordion title="Can we get Saudi +966 numbers?" icon="hashtag">
+    Provisioning is arranged across Saudi Arabia and the Gulf. What is available depends on the number type, the direction, and carrier inventory, and verification is a carrier process. See [Phone numbers](/numbers).
+  </Accordion>
+
+  <Accordion title="Can a caller press keys instead of speaking?" icon="grid">
+    Yes — keypad input works as a fallback for digits, menu choices, and confirmations. See [Keypad input](/telephony#keypad-input).
+  </Accordion>
+
+  <Accordion title="Can the agent transfer to a human?" icon="user-check">
+    Yes, with the context from the conversation carried across so the caller does not repeat themselves. Every production line should have this path. See [Handoff to humans](/handoff).
+  </Accordion>
+</AccordionGroup>
+
+## Scale
+
+<AccordionGroup>
+  <Accordion title="How many concurrent calls can we run?" icon="chart-line">
+    Capacity is sized against your peak concurrency — the busiest hour of your busiest day — rather than sold as a fixed ceiling. Bring that number, your average call length, and the inbound/outbound split to scoping. See [Concurrency](/telephony#concurrency).
+  </Accordion>
+
+  <Accordion title="How many agents can we run?" icon="headset">
+    There is no published cap. What a deployment supports is decided by concurrent call capacity, not by how many agent configurations exist. See [Agencies and resellers](/partners/overview#how-many-clients-and-agents).
+  </Accordion>
+</AccordionGroup>
+
+## Building and integrating
+
+<AccordionGroup>
+  <Accordion title="Is there an API?" icon="code">
+    Yes — REST and streaming endpoints, WebSocket, and voice management. See the [API reference](/api-reference/introduction).
+  </Accordion>
+
+  <Accordion title="Can we connect n8n, Zapier, or our CRM?" icon="plug">
+    Yes, through the REST API and webhooks — no dedicated connector needed. See [Integrations](/integrations).
+  </Accordion>
+
+  <Accordion title="Can the agent do things in our systems during a call?" icon="bolt">
+    That is what actions are for: logging tickets, checking orders, updating records, mid-conversation. See [Actions](/actions).
+  </Accordion>
+
+  <Accordion title="Do we get transcripts?" icon="file-lines">
+    Every call leaves a transcript and a bilingual summary, in the console and through the API. See [Transcripts and summaries](/transcripts).
+  </Accordion>
+</AccordionGroup>
+
+## Deployment and data
+
+<AccordionGroup>
+  <Accordion title="What are the deployment options?" icon="server">
+    Managed cloud, an in-country hosted deployment, your own private cloud, or fully on-premise including air-gapped. See [Deployment options](/deployment).
+  </Accordion>
+
+  <Accordion title="Can everything stay inside our own environment?" icon="building-lock">
+    Yes — on-premise runs the whole call path inside your boundary, on hardware you control. See [On-premise overview](/on-prem/overview).
+  </Accordion>
+
+  <Accordion title="Where is our data processed?" icon="shield-check">
+    It depends on the configuration, and it is worth settling in writing before you build. See [Data residency](/on-prem/residency) and [Security and data handling](/security).
+  </Accordion>
+</AccordionGroup>
+
+## Commercial
+
+<AccordionGroup>
+  <Accordion title="Can we resell Voho to our own clients?" icon="handshake">
+    Yes — separate workspaces per client, usage broken out per account, your own pricing, and your brand on what the client sees. See [Agencies and resellers](/partners/overview).
+  </Accordion>
+
+  <Accordion title="How does pricing work?" icon="tag">
+    Two shapes: pay-as-you-go per minute with no seats or commitment, and an enterprise agreement for high-volume or regulated operations. Telephony and numbers are quoted separately and passed through at cost.
+
+    <Card title="Ask for pricing against your volume" icon="paper-plane" href="mailto:support@voho.ai">
+      Bring expected monthly minutes, average call length, and the deployment model.
+      {/* TODO: confirm the routing address for commercial enquiries. */}
+    </Card>
+  </Accordion>
+</AccordionGroup>
+
+<Note>
+  Something missing here that a customer asked you? It belongs on the page that owns the topic, with a line added to this list pointing at it.
+</Note>

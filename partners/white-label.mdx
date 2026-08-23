@@ -1,0 +1,70 @@
+---
+title: "White-label"
+description: "Putting your agency's brand in front of your clients — what the client sees, what stays shared, and what to settle before launch."
+icon: "palette"
+---
+
+Your clients should experience the service as yours. White-label covers the surfaces they actually touch: the portal they sign into, the reports they receive, and the person they contact when something is wrong.
+
+## What your clients see
+
+<CardGroup cols={2}>
+  <Card title="A portal under your brand" icon="window-maximize">
+    Your name, logo, and colours on the client-facing console, so the workspace reads as your product.
+  </Card>
+  <Card title="Reports from you" icon="file-chart-column">
+    Call volumes, outcomes, and summaries presented as your reporting rather than a third party's export.
+  </Card>
+  <Card title="Support through you" icon="headset">
+    Your team is the client's first line. Voho supports you, not your clients, unless you agree otherwise.
+  </Card>
+  <Card title="Your commercial relationship" icon="file-signature">
+    You contract with your client, set the price, and issue the invoice. See [Commercial model](/partners/overview#commercial-model).
+  </Card>
+</CardGroup>
+
+<Note>
+  The exact branding scope is agreed per partner engagement. Confirm which surfaces are covered before you show a client a mockup — that conversation is cheap early and expensive after a pitch.
+</Note>
+
+{/* TODO: this page deliberately names no specific brandable element beyond the client console, reporting, and support routing. Confirm with engineering exactly what is themeable (logo, colours, custom domain, sender addresses, login page) and with legal what may carry a partner's brand, before naming any of it. Related open item: white-label rights for everything shipped in an on-premise deployment — see .voho-internal/on-prem-docs-checklist.md, section 7. */}
+
+## What stays shared
+
+Some things are the platform, not the skin on it. Being straight with clients about this avoids a bad conversation later:
+
+- **Voice and dialect behaviour** is the same platform capability across every partner — see [Voices](/voices).
+- **Capacity** is drawn from the deployment you and Voho sized together, and one client's peak affects the pool your other clients draw from.
+- **Release timing** follows the platform, not each client's change window, on the managed service. An [on-premise](/on-prem/overview) deployment gives you control of that.
+
+## Isolation between clients
+
+Each client workspace is separate: agents, numbers, call records, transcripts, and users. One client cannot see another's calls, and a user belongs to the workspace you put them in.
+
+Your agency team is the exception by design — administrative access spans your clients so you can operate the estate. Decide deliberately who on your team holds it.
+
+<Warning>
+  You are handling your clients' customer conversations, which makes you a processor in your own right. Your contracts with your clients need to say what is retained, for how long, and where it is processed — and those answers have to match what you have agreed with Voho. See [Security and data handling](/security).
+</Warning>
+
+## Before you put your name on it
+
+<Steps>
+  <Step title="Agree the branding scope" icon="palette">
+    Which surfaces carry your brand, in writing, before it is in a pitch deck.
+  </Step>
+  <Step title="Settle data handling" icon="shield-check">
+    Retention, processing location, and what happens at contract end — for your clients, not just for you.
+  </Step>
+  <Step title="Define the support path" icon="headset">
+    What your client can raise with you, what you escalate, and the response times each side commits to.
+  </Step>
+  <Step title="Fix the billing model" icon="credit-card">
+    Whether Voho bills you or your clients, and how usage is reconciled against what you invoice.
+  </Step>
+</Steps>
+
+<Card title="Talk to us about a partner arrangement" icon="paper-plane" href="mailto:support@voho.ai">
+  Start with [Agencies and resellers](/partners/overview) for what to bring.
+  {/* TODO: confirm the routing address for partner enquiries. */}
+</Card>

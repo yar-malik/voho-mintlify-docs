@@ -1,0 +1,60 @@
+---
+openapi: "POST /v1/agents/{id}/reply"
+title: "Get an agent's reply"
+sidebarTitle: "Reply"
+description: "Drive an agent from your own telephony — text in, text and audio out."
+icon: "comments"
+---
+
+What the agent says next, given what the caller just said. This is the turn-based path: you hold the call, you decide when to speak, and Voho supplies the reply and the audio for it.
+
+Use it when the telephony is yours. If you want Voho to hold the line instead, see [Telephony](/telephony).
+
+## How a call is assembled
+
+You send what the caller said and the turns so far. Only the last 20 turns are used, so trim rather than growing the array forever.
+
+```bash
+curl https://app.voho.ai/v1/agents/ag_7f2c19/reply \
+  -H "Authorization: Bearer voho_sk_live_..." \
+  -H "Content-Type: application/json" \
+  -d '{
+    "text": "وين طلبي؟ رقمه سبعة تسعة واحد اثنين",
+    "history": [
+      { "role": "agent", "text": "مرحباً بك، كيف أقدر أساعدك؟" }
+    ],
+    "variables": { "branch": "الملز" }
+  }'
+```
+
+The response carries the reply as text and, unless you asked it not to, as base64 audio ready to play down the line.
+
+```json
+{
+  "reply": "طلبك خرج للتوصيل اليوم. أرسل لك رابط التتبع؟",
+  "greeting": "مرحباً بك في فرع الملز، كيف أقدر أساعدك؟",
+  "audio": "SUQzBAAAAAAA...",
+  "content_type": "audio/mpeg",
+  "cost_cents": 3
+}
+```
+
+## Variables
+
+`variables` are per request, and that is the whole point of them: one agent, a different value on every call. Anything you send overrides the defaults stored on the agent, and the values are filled into both the instructions and the greeting.
+
+<ParamField body="variables" type="object">
+  String values, keyed by the variable name used in the agent's instructions.
+</ParamField>
+
+## Skipping the audio
+
+Set `audio` to `false` when you only want the text — a chat channel, a test harness, an evaluation run. The turn is still charged; the synthesis is not.
+
+## Cost
+
+Two cents a turn, plus the speech of the reply at the agent's model rate. Both are in `cost_cents` and in the `X-Voho-Cost-Cents` header.
+
+<Note>
+  A live call held by Voho is priced by the minute instead, because the line is open whether or not anyone is speaking. See [Pricing](/pricing).
+</Note>

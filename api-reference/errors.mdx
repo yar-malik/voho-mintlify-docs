@@ -1,6 +1,6 @@
 ---
 title: "Errors"
-description: "Every error code the Voho Speech API returns, what causes it, and whether to retry."
+description: "Every error code the Voho API returns, what causes it, and whether to retry."
 icon: "circle-exclamation"
 ---
 
@@ -22,10 +22,16 @@ Errors are JSON with a stable `code` and a human-readable `message`.
 | 400 | `empty_text` | `text` missing or blank | No |
 | 400 | `text_too_long` | Over 5,000 characters | No — split the text |
 | 400 | `unknown_format` | Unrecognised `format` | No |
+| 400 | `empty` | `text` missing or blank on a non-speech endpoint | No |
+| 400 | `no_file` | No file attached, and no base64 `file` in the body | No |
+| 400 | `no_question` | `question` missing on [ask](/api-reference/documents-ask) | No |
 | 401 | `unauthorized` | Missing, malformed, or revoked token | No |
 | 402 | `insufficient_credit` | Credit balance exhausted | After topping up |
 | 404 | `unknown_voice` | No such voice ID | No |
 | 404 | `unknown_model` | No such model ID | No |
+| 404 | `not_found` | No agent with that ID on this account | No |
+| 413 | `too_large` | Upload over 8 MB | No — send less |
+| 415 | `unsupported_type` | File type or `mime_type` not accepted | No |
 | 502 | `synthesis_failed` | Synthesis produced no audio | Once, cautiously |
 | 503 | `unavailable` | Briefly at capacity | **Yes, with backoff** |
 | 500 | `internal_error` | Unexpected server fault | Once, then report |

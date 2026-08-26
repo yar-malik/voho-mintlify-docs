@@ -1,0 +1,45 @@
+---
+openapi: "POST /v1/documents/extract"
+title: "Extract fields from a document"
+sidebarTitle: "Extract"
+description: "Invoices, contracts, IDs and bad scans, returned as the fields the next system needs."
+icon: "file-invoice"
+---
+
+Reads the paperwork a process is waiting on and returns structured fields — amounts, dates, names, ID and iqama numbers, VAT numbers, line items — from Arabic and English on the same page, including mixed handwriting.
+
+```bash
+curl https://app.voho.ai/v1/documents/extract \
+  -H "Authorization: Bearer voho_sk_live_..." \
+  -F "file=@invoice.pdf"
+```
+
+```json
+{
+  "document_type": "Supplier invoice",
+  "summary": "Invoice from مؤسسة النخبة for maintenance work, due 15/03.",
+  "fields": [
+    { "label": "Supplier", "value": "مؤسسة النخبة للمقاولات", "confidence": "high" },
+    { "label": "VAT number", "value": "310122393500003", "confidence": "high" },
+    { "label": "Total", "value": "SAR 12,450.00", "confidence": "medium" }
+  ],
+  "warnings": ["Handwritten correction over the due date."],
+  "cost_cents": 4
+}
+```
+
+## Reading the result
+
+**Labels are always English** so a field can be mapped to a system even when its value is Arabic. **Values are verbatim** — nothing is translated and no number or date is reformatted, because a value that has been helpfully tidied is a value you can no longer reconcile.
+
+**Confidence is honest.** `high` means printed clearly, `medium` means legible but ambiguous, `low` means inferred from a poor scan or from context. Route `low` to a person rather than into a ledger.
+
+**Warnings are the things that would make a person distrust the page**: a cut-off edge, a handwritten correction, two conflicting totals, a stamp across a field. An empty array is a meaningful result.
+
+<Warning>
+  A field that is not in the document is never invented. If something you expected is missing from `fields`, it was not found — check `warnings` before assuming the document was misread.
+</Warning>
+
+## Limits and cost
+
+PDF, PNG, JPEG or WebP, up to 8 MB. Four cents a document. A read that fails is not charged.

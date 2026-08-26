@@ -1,0 +1,36 @@
+---
+openapi: "GET /v1/agents"
+title: "List agents"
+sidebarTitle: "List agents"
+description: "The agents on the account your token belongs to."
+icon: "list"
+---
+
+Returns every agent on the account, most recently updated first. Use it to find the ID you need for [Reply](/api-reference/agents-reply).
+
+Agents are built in the console — instructions, a voice, and a list of actions. This endpoint reads them; it does not create them.
+
+```bash
+curl https://app.voho.ai/v1/agents \
+  -H "Authorization: Bearer voho_sk_live_..."
+```
+
+```json
+{
+  "agents": [
+    {
+      "id": "ag_7f2c19",
+      "name": "Reception",
+      "voice_id": "layla",
+      "model": "sada-1",
+      "language": "ar-SA",
+      "status": "live",
+      "updated_at": "2026-08-21T09:14:02.115Z"
+    }
+  ]
+}
+```
+
+<Note>
+  A token only ever sees the agents on its own account. There is no cross-account listing.
+</Note>

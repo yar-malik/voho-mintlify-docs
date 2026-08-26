@@ -1,9 +1,9 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "Voho Speech API",
+    "title": "Voho API",
     "version": "1",
-    "description": "Turn text into speech over HTTP or WebSocket. Every endpoint takes a bearer token issued from the Voho console."
+    "description": "Speech, agents and understanding over one HTTP API. Every endpoint takes a bearer token issued from the Voho console and draws down the same credit balance."
   },
   "servers": [
     {
@@ -125,7 +125,7 @@
                     "type": "string",
                     "maxLength": 5000,
                     "description": "Text to speak. Maximum 5,000 characters.",
-                    "example": "\u0623\u0647\u0644\u0627\u064b \u0628\u0643 \u0641\u064a \u0641\u0648\u0647\u0648"
+                    "example": "أهلاً بك في فوهو"
                   },
                   "voice": {
                     "type": "string",
@@ -358,7 +358,7 @@
                   "text": {
                     "type": "string",
                     "maxLength": 5000,
-                    "example": "\u0623\u0647\u0644\u0627\u064b \u0628\u0643"
+                    "example": "أهلاً بك"
                   },
                   "voice": {
                     "type": "string",
@@ -755,7 +755,7 @@
                 "properties": {
                   "text": {
                     "type": "string",
-                    "example": "\u0627\u0644\u0645\u0628\u0644\u063a SAR 1,250 \u0645\u0633\u062a\u062d\u0642 \u0641\u064a 15/03."
+                    "example": "المبلغ SAR 1,250 مستحق في 15/03."
                   },
                   "lang": {
                     "type": "string",
@@ -845,7 +845,7 @@
       "post": {
         "summary": "Check pronunciation coverage",
         "operationId": "textCoverage",
-        "description": "Flags tokens likely to be mispronounced \u2014 Latin words inside Arabic text, unexpanded digits, asset tags, and acronyms. A lexical check, not a pronunciation model.",
+        "description": "Flags tokens likely to be mispronounced — Latin words inside Arabic text, unexpanded digits, asset tags, and acronyms. A lexical check, not a pronunciation model.",
         "tags": [
           "Text"
         ],
@@ -861,7 +861,7 @@
                 "properties": {
                   "text": {
                     "type": "string",
-                    "example": "\u0639\u0637\u0644 \u0641\u064a \u0627\u0644\u0645\u0643\u064a\u0641 AC-4417 \u0641\u064a \u0645\u0628\u0646\u0649 HVAC"
+                    "example": "عطل في المكيف AC-4417 في مبنى HVAC"
                   }
                 }
               }
@@ -945,6 +945,1089 @@
                     "code": "unauthorized",
                     "message": "Invalid or missing API token."
                   }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/agents": {
+      "get": {
+        "summary": "List agents",
+        "operationId": "listAgents",
+        "description": "Every agent on the account the token belongs to, most recently updated first.",
+        "tags": [
+          "Agents"
+        ],
+        "responses": {
+          "200": {
+            "description": "The agents on this account.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "agents": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string",
+                            "example": "Reception"
+                          },
+                          "voice_id": {
+                            "type": "string",
+                            "example": "layla"
+                          },
+                          "model": {
+                            "type": "string",
+                            "example": "sada-1"
+                          },
+                          "language": {
+                            "type": "string",
+                            "example": "ar-SA"
+                          },
+                          "status": {
+                            "type": "string",
+                            "example": "live"
+                          },
+                          "updated_at": {
+                            "type": "string",
+                            "format": "date-time"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, malformed, or revoked token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "unauthorized",
+                    "message": "Invalid or missing API token."
+                  }
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "Credit balance exhausted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "insufficient_credit",
+                    "message": "Your credit balance is exhausted. Top up to continue."
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server fault.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/agents/{id}/reply": {
+      "post": {
+        "summary": "Get an agent's reply",
+        "operationId": "agentReply",
+        "description": "What the agent says next, given what the caller just said. Text in, text and audio out, so your own telephony can drive an agent configured in the console.\n\nBilled 2 cents a turn, plus the speech of the reply at the agent's model rate.",
+        "tags": [
+          "Agents"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The agent's ID, from `/v1/agents`."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "text"
+                ],
+                "properties": {
+                  "text": {
+                    "type": "string",
+                    "description": "What the caller said. Truncated at 4,000 characters.",
+                    "example": "وين طلبي؟ رقمه سبعة تسعة واحد اثنين"
+                  },
+                  "history": {
+                    "type": "array",
+                    "description": "The conversation so far. Only the last 20 turns are used.",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "role": {
+                          "type": "string",
+                          "enum": [
+                            "user",
+                            "agent"
+                          ]
+                        },
+                        "text": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  },
+                  "variables": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "string"
+                    },
+                    "description": "Values for this call. They override the agent's stored defaults, which is the point of them — one agent, a value per call.",
+                    "example": {
+                      "customer_name": "أحمد",
+                      "branch": "الملز"
+                    }
+                  },
+                  "audio": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Set to `false` to get text only and skip the synthesis charge."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The reply.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "reply": {
+                      "type": "string"
+                    },
+                    "greeting": {
+                      "type": "string",
+                      "description": "The agent's greeting with variables filled in, for the start of a call."
+                    },
+                    "audio": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "description": "The spoken reply, base64 encoded. Null when `audio` was false."
+                    },
+                    "content_type": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "example": "audio/mpeg"
+                    },
+                    "cost_cents": {
+                      "type": "integer",
+                      "description": "What this call cost, in cents. Also returned as the `X-Voho-Cost-Cents` header."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is missing something it needs.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, malformed, or revoked token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "unauthorized",
+                    "message": "Invalid or missing API token."
+                  }
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "Credit balance exhausted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "insufficient_credit",
+                    "message": "Your credit balance is exhausted. Top up to continue."
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No such resource on this account.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server fault.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/transcribe": {
+      "post": {
+        "summary": "Transcribe audio",
+        "operationId": "transcribe",
+        "description": "Speech to text, Arabic with English mixed in. The synchronous path: clips up to 60 seconds and 8 MB.\n\nBilled 3 cents a minute, rounded up.",
+        "tags": [
+          "Understanding"
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "Send `multipart/form-data` with the file attached, or JSON with the file base64 encoded.",
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "file"
+                ],
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "The file itself. Accepted types: `audio/wav`, `audio/x-wav`, `audio/mpeg`, `audio/mp3`, `audio/ogg`, `audio/webm`, `audio/flac`."
+                  },
+                  "language": {
+                    "type": "string",
+                    "default": "ar-SA",
+                    "description": "BCP-47 tag for what is being spoken."
+                  }
+                }
+              }
+            },
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "file",
+                  "mime_type"
+                ],
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "description": "The file, base64 encoded."
+                  },
+                  "mime_type": {
+                    "type": "string",
+                    "enum": [
+                      "audio/wav",
+                      "audio/x-wav",
+                      "audio/mpeg",
+                      "audio/mp3",
+                      "audio/ogg",
+                      "audio/webm",
+                      "audio/flac"
+                    ]
+                  },
+                  "filename": {
+                    "type": "string",
+                    "description": "Recorded on the run, for your own attribution."
+                  },
+                  "language": {
+                    "type": "string",
+                    "default": "ar-SA",
+                    "description": "BCP-47 tag for what is being spoken."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The transcript.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "text": {
+                      "type": "string"
+                    },
+                    "seconds": {
+                      "type": "number",
+                      "description": "Length of the audio."
+                    },
+                    "confidence": {
+                      "type": "number",
+                      "description": "0 to 1."
+                    },
+                    "cost_cents": {
+                      "type": "integer",
+                      "description": "What this call cost, in cents. Also returned as the `X-Voho-Cost-Cents` header."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is missing something it needs.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, malformed, or revoked token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "unauthorized",
+                    "message": "Invalid or missing API token."
+                  }
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "Credit balance exhausted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "insufficient_credit",
+                    "message": "Your credit balance is exhausted. Top up to continue."
+                  }
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "File is too large.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "That content type is not supported.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server fault.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/documents/extract": {
+      "post": {
+        "summary": "Extract fields from a document",
+        "operationId": "extractDocument",
+        "description": "Reads an invoice, contract, ID or delivery note — including bad scans and mixed Arabic and English handwriting — and returns the fields the next system needs. Values come back exactly as they appear, never translated or reformatted.\n\nBilled 4 cents a document. Files up to 8 MB.",
+        "tags": [
+          "Understanding"
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "Send `multipart/form-data` with the file attached, or JSON with the file base64 encoded.",
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "file"
+                ],
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "The file itself. Accepted types: `application/pdf`, `image/png`, `image/jpeg`, `image/webp`."
+                  }
+                }
+              }
+            },
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "file",
+                  "mime_type"
+                ],
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "description": "The file, base64 encoded."
+                  },
+                  "mime_type": {
+                    "type": "string",
+                    "enum": [
+                      "application/pdf",
+                      "image/png",
+                      "image/jpeg",
+                      "image/webp"
+                    ]
+                  },
+                  "filename": {
+                    "type": "string",
+                    "description": "Recorded on the run, for your own attribution."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "What the document says.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "document_type": {
+                      "type": "string",
+                      "example": "Supplier invoice"
+                    },
+                    "summary": {
+                      "type": "string"
+                    },
+                    "fields": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "label": {
+                            "type": "string",
+                            "description": "Always English, so it can be mapped to a system, even when the value is Arabic.",
+                            "example": "VAT number"
+                          },
+                          "value": {
+                            "type": "string"
+                          },
+                          "confidence": {
+                            "type": "string",
+                            "enum": [
+                              "high",
+                              "medium",
+                              "low"
+                            ],
+                            "description": "`low` means it was inferred from a poor scan or from context — check those before they reach a ledger."
+                          }
+                        }
+                      }
+                    },
+                    "warnings": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "Anything that would make a person distrust the result: a cut-off page, a handwritten correction, two conflicting totals."
+                    },
+                    "cost_cents": {
+                      "type": "integer",
+                      "description": "What this call cost, in cents. Also returned as the `X-Voho-Cost-Cents` header."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is missing something it needs.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, malformed, or revoked token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "unauthorized",
+                    "message": "Invalid or missing API token."
+                  }
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "Credit balance exhausted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "insufficient_credit",
+                    "message": "Your credit balance is exhausted. Top up to continue."
+                  }
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "File is too large.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "That content type is not supported.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server fault.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/documents/ask": {
+      "post": {
+        "summary": "Ask a question about a document",
+        "operationId": "askDocument",
+        "description": "Answers a question against one document and quotes the lines the answer rests on. When the document does not contain the answer it says so rather than filling the gap with general knowledge.\n\nBilled 4 cents a question. Files up to 8 MB.",
+        "tags": [
+          "Understanding"
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "Send `multipart/form-data` with the file attached, or JSON with the file base64 encoded.",
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "file",
+                  "question"
+                ],
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "The file itself. Accepted types: `application/pdf`, `image/png`, `image/jpeg`, `image/webp`."
+                  },
+                  "question": {
+                    "type": "string",
+                    "description": "Truncated at 2,000 characters.",
+                    "example": "What is the torque spec for the pump on line three, and which revision is this?"
+                  }
+                }
+              }
+            },
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "file",
+                  "mime_type",
+                  "question"
+                ],
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "description": "The file, base64 encoded."
+                  },
+                  "mime_type": {
+                    "type": "string",
+                    "enum": [
+                      "application/pdf",
+                      "image/png",
+                      "image/jpeg",
+                      "image/webp"
+                    ]
+                  },
+                  "filename": {
+                    "type": "string",
+                    "description": "Recorded on the run, for your own attribution."
+                  },
+                  "question": {
+                    "type": "string",
+                    "description": "Truncated at 2,000 characters.",
+                    "example": "What is the torque spec for the pump on line three, and which revision is this?"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The answer.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "answer": {
+                      "type": "string"
+                    },
+                    "quotes": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "Verbatim lines from the document, in its own language."
+                    },
+                    "answered": {
+                      "type": "boolean",
+                      "description": "False when the document does not contain the answer. `answer` then says what is missing."
+                    },
+                    "cost_cents": {
+                      "type": "integer",
+                      "description": "What this call cost, in cents. Also returned as the `X-Voho-Cost-Cents` header."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is missing something it needs.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, malformed, or revoked token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "unauthorized",
+                    "message": "Invalid or missing API token."
+                  }
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "Credit balance exhausted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "insufficient_credit",
+                    "message": "Your credit balance is exhausted. Top up to continue."
+                  }
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "File is too large.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "That content type is not supported.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server fault.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/privacy/redact": {
+      "post": {
+        "summary": "Check what would leave your estate",
+        "operationId": "redact",
+        "description": "The boundary check: what a Saudi compliance officer would object to seeing sent outside the organisation, and the text with it stripped.\n\nBilled 4 cents a check. Text is truncated at 6,000 characters.",
+        "tags": [
+          "Understanding"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "text"
+                ],
+                "properties": {
+                  "text": {
+                    "type": "string",
+                    "example": "العميل أحمد الشمري، هوية 1023456789، اتصل بخصوص بطاقته المنتهية 4539 8821 0034 7712."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The report.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "redacted": {
+                      "type": "string",
+                      "description": "The text with redactions applied inline, the rest of the wording untouched."
+                    },
+                    "findings": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "kind": {
+                            "type": "string",
+                            "example": "National ID"
+                          },
+                          "value": {
+                            "type": "string"
+                          },
+                          "action": {
+                            "type": "string",
+                            "enum": [
+                              "redact",
+                              "mask",
+                              "keep"
+                            ]
+                          },
+                          "why": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "verdict": {
+                      "type": "string",
+                      "description": "One plain sentence a non-technical manager can act on."
+                    },
+                    "cost_cents": {
+                      "type": "integer",
+                      "description": "What this call cost, in cents. Also returned as the `X-Voho-Cost-Cents` header."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is missing something it needs.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, malformed, or revoked token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "unauthorized",
+                    "message": "Invalid or missing API token."
+                  }
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "Credit balance exhausted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "insufficient_credit",
+                    "message": "Your credit balance is exhausted. Top up to continue."
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server fault.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/facilities/work-order": {
+      "post": {
+        "summary": "Turn a reported fault into a work order",
+        "operationId": "createWorkOrder",
+        "description": "Takes a fault described the way a tenant describes it and returns the fields a CAFM system such as Archibus or SAP PM requires.\n\nBilled 4 cents a ticket. Text is truncated at 4,000 characters.",
+        "tags": [
+          "Understanding"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "text"
+                ],
+                "properties": {
+                  "text": {
+                    "type": "string",
+                    "example": "There's a smell of burning on the fourth floor, near the east stairwell."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The work order.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "summary": {
+                      "type": "string"
+                    },
+                    "asset": {
+                      "type": "string",
+                      "example": "AHU-04"
+                    },
+                    "location": {
+                      "type": "string",
+                      "example": "Level 4, east stairwell"
+                    },
+                    "trade": {
+                      "type": "string",
+                      "example": "HVAC"
+                    },
+                    "priority": {
+                      "type": "string",
+                      "enum": [
+                        "emergency",
+                        "urgent",
+                        "routine"
+                      ]
+                    },
+                    "sla_hours": {
+                      "type": "integer",
+                      "description": "Matches the priority: 1 for emergency, 8 for urgent, 72 for routine."
+                    },
+                    "escalate": {
+                      "type": "boolean"
+                    },
+                    "missing": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "What the caller did not say that the system will want."
+                    },
+                    "cost_cents": {
+                      "type": "integer",
+                      "description": "What this call cost, in cents. Also returned as the `X-Voho-Cost-Cents` header."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is missing something it needs.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, malformed, or revoked token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "unauthorized",
+                    "message": "Invalid or missing API token."
+                  }
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "Credit balance exhausted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "insufficient_credit",
+                    "message": "Your credit balance is exhausted. Top up to continue."
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server fault.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
                 }
               }
             }

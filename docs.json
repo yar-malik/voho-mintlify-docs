@@ -131,9 +131,11 @@
             "group": "Commercial",
             "hidden": true,
             "pages": [
+              "pricing",
               "pricing-cloud",
               "pricing-onprem"
-            ]
+            ],
+            "icon": "tag"
           }
         ]
       },
@@ -161,6 +163,23 @@
             "pages": [
               "api-reference/voices-list",
               "api-reference/voices-get"
+            ]
+          },
+          {
+            "group": "Agents",
+            "pages": [
+              "api-reference/agents-list",
+              "api-reference/agents-reply"
+            ]
+          },
+          {
+            "group": "Understanding",
+            "pages": [
+              "api-reference/transcribe",
+              "api-reference/documents-extract",
+              "api-reference/documents-ask",
+              "api-reference/privacy-redact",
+              "api-reference/facilities-work-order"
             ]
           },
           {

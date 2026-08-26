@@ -1,11 +1,11 @@
 ---
 title: "API reference index"
 sidebarTitle: "Overview"
-description: "Base URL, authentication, response headers, credits, and error handling for the Voho Speech API."
+description: "Base URL, authentication, response headers, credits, and error handling for the Voho API."
 icon: "plug"
 ---
 
-The Voho Speech API turns text into speech over HTTP or WebSocket. Every endpoint lives under one base URL and takes the same bearer token.
+The Voho API covers speech, agents, and the endpoints that read something rather than say it. Every endpoint lives under one base URL, takes the same bearer token, and draws down the same credit balance.
 
 ```
 https://app.voho.ai
@@ -43,6 +43,15 @@ A missing, malformed, or revoked token returns `401`:
 | `GET` | [`/v1/voices/{id}`](/api-reference/voices-get) | Details for one voice |
 | `POST` | [`/v1/text/normalize`](/api-reference/text-normalize) | See how text will be spoken |
 | `POST` | [`/v1/text/coverage`](/api-reference/text-coverage) | Flag likely mispronunciations |
+| `GET` | [`/v1/agents`](/api-reference/agents-list) | List the agents on your account |
+| `POST` | [`/v1/agents/{id}/reply`](/api-reference/agents-reply) | What the agent says next |
+| `POST` | [`/v1/transcribe`](/api-reference/transcribe) | Turn a clip into text |
+| `POST` | [`/v1/documents/extract`](/api-reference/documents-extract) | Fields out of a document |
+| `POST` | [`/v1/documents/ask`](/api-reference/documents-ask) | A question answered, with quotes |
+| `POST` | [`/v1/privacy/redact`](/api-reference/privacy-redact) | What would leave your estate |
+| `POST` | [`/v1/facilities/work-order`](/api-reference/facilities-work-order) | A fault as a CAFM ticket |
+
+Everything the console can do is reachable here, billed from the same balance, with the same error codes.
 
 ## Response headers
 
@@ -50,7 +59,7 @@ Every response carries `X-Voho-Engine`. Successful synthesis calls add the detai
 
 | Header | Example | Meaning |
 | --- | --- | --- |
-| `X-Voho-Engine` | `voho-speech/1` | API version, on every response |
+| `X-Voho-Engine` | `voho-speech/1` | API version, on every response. Reads `voho-api/1` on the agent and understanding endpoints |
 | `X-Voho-Model` | `sada-1` | Model that produced the audio |
 | `X-Voho-Voice` | `layla` | Voice used |
 | `X-Voho-Format` | `mp3` | Audio format |
@@ -64,16 +73,21 @@ Every response carries `X-Voho-Engine`. Successful synthesis calls add the detai
 
 ## Credits
 
-Synthesis draws down a credit balance. Pricing is per 1,000 characters and depends on the model:
+One balance funds every endpoint. Each is billed for the thing it produces, and the cost of each call comes back in `X-Voho-Cost-Cents`.
 
-| Model | Cents per 1,000 characters |
-| --- | --- |
-| `sada-1` | 5 |
-| `nabra-1` | 2 |
+| What you called | Unit | Cents |
+| --- | --- | --- |
+| Synthesis on `sada-1` | 1,000 characters | 5 |
+| Synthesis on `nabra-1` | 1,000 characters | 2 |
+| [An agent turn](/api-reference/agents-reply) | Turn, plus the speech it speaks | 2 |
+| [Transcription](/api-reference/transcribe) | Minute | 3 |
+| [Extract](/api-reference/documents-extract), [ask](/api-reference/documents-ask), [redact](/api-reference/privacy-redact), [work order](/api-reference/facilities-work-order) | Run | 4 |
 
-Cost is rounded up, so a very short request still costs at least one cent.
+Cost is rounded up, so a very short request still costs at least one cent. The [text utilities](/api-reference/text-normalize) are free — they neither synthesise nor read anything.
 
-When the balance reaches zero, synthesis returns `402`:
+The full rate card, including what a live call costs by the minute, is on [Pricing](/pricing).
+
+When the balance reaches zero, every billable endpoint returns `402`:
 
 ```json
 { "error": { "code": "insufficient_credit", "message": "Your credit balance is exhausted. Top up to continue." } }
@@ -95,7 +109,9 @@ See [Errors](/api-reference/errors) for the full list.
 
 ## Limits
 
-- **5,000 characters** per request. Longer text returns `text_too_long` — split it into sentences and concatenate the audio.
+- **Synthesis: 5,000 characters** per request. Longer text returns `text_too_long` — split it into sentences and concatenate the audio.
+- **Uploads: 8 MB.** Documents are PDF, PNG, JPEG or WebP; audio is WAV, MP3, OGG, WebM or FLAC, up to 60 seconds.
+- Files go up as `multipart/form-data` with the file attached, or as JSON with a base64 `file` and a `mime_type`. Both are accepted everywhere a file is.
 
 <CardGroup cols={2}>
   <Card title="Synthesise speech" icon="waveform-lines" href="/api-reference/speech">

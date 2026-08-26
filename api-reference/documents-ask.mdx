@@ -1,0 +1,48 @@
+---
+openapi: "POST /v1/documents/ask"
+title: "Ask a question about a document"
+sidebarTitle: "Ask"
+description: "An answer from your own drawings and manuals, with the lines it rests on quoted back."
+icon: "circle-question"
+---
+
+Answers a question against one document and quotes the exact lines the answer came from, so an engineer can check it rather than trust it.
+
+```bash
+curl https://app.voho.ai/v1/documents/ask \
+  -H "Authorization: Bearer voho_sk_live_..." \
+  -F "file=@pump-manual.pdf" \
+  -F "question=What is the torque spec for the pump on line three?"
+```
+
+```json
+{
+  "answer": "45 N·m, dry, on revision C of the manual.",
+  "quotes": ["Torque, dry: 45 N·m (33 lbf·ft) — Rev C, section 4.2"],
+  "answered": true,
+  "cost_cents": 4
+}
+```
+
+## When the document does not say
+
+`answered` comes back `false` and `answer` says what is missing. Nothing is filled in from general knowledge, and a safety-relevant answer is never softened.
+
+```json
+{
+  "answer": "This manual covers revisions A and B only. The line-three pump is revision C and its torque table is not in this document.",
+  "quotes": [],
+  "answered": false,
+  "cost_cents": 4
+}
+```
+
+Branch on `answered` rather than parsing the prose.
+
+## One file at a time
+
+This endpoint reads the document you send it. Indexing a whole archive — drawings, standards, maintenance history, on an offline site — is a deployment rather than an API call. See [Deployment options](/deployment).
+
+## Limits and cost
+
+PDF, PNG, JPEG or WebP, up to 8 MB. Questions are truncated at 2,000 characters. Four cents a question, whether or not the document had the answer.

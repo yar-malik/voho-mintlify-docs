@@ -1,0 +1,46 @@
+---
+openapi: "POST /v1/privacy/redact"
+title: "Check what would leave your estate"
+sidebarTitle: "Redact"
+description: "What a compliance officer would object to seeing sent outside the organisation."
+icon: "shield-halved"
+---
+
+The boundary check. Send a record and see exactly what would be stripped before it left your estate — national ID and iqama numbers, passport and card numbers, and the rest of what a Saudi compliance officer would stop at the door.
+
+```bash
+curl https://app.voho.ai/v1/privacy/redact \
+  -H "Authorization: Bearer voho_sk_live_..." \
+  -H "Content-Type: application/json" \
+  -d '{ "text": "العميل أحمد الشمري، هوية 1023456789، اتصل بخصوص بطاقته." }'
+```
+
+```json
+{
+  "redacted": "العميل [REDACTED: name]، هوية [REDACTED: national ID]، اتصل بخصوص بطاقته.",
+  "findings": [
+    {
+      "kind": "National ID",
+      "value": "1023456789",
+      "action": "redact",
+      "why": "A national ID identifies a person directly and is regulated under PDPL."
+    }
+  ],
+  "verdict": "This record cannot be sent outside the organisation as written.",
+  "cost_cents": 4
+}
+```
+
+## Reading the result
+
+`redacted` is the original text with redactions applied inline and the rest of the wording untouched, in its own language and script. `action` is `redact`, `mask` or `keep` — masking preserves a checkable suffix where a full redaction would make the record useless.
+
+`verdict` is one plain sentence, written to be read by a manager rather than by a reviewer.
+
+<Note>
+  Run against the managed service, this shows you what *would* be stripped. On your own deployment the same check runs inside your boundary and nothing leaves at all — see [On-premise overview](/on-prem/overview).
+</Note>
+
+## Limits and cost
+
+Text is truncated at 6,000 characters. Four cents a check.

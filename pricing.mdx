@@ -1,0 +1,234 @@
+---
+title: "Pricing"
+sidebarTitle: "Pricing"
+description: "What Voho costs — cloud rates for every product, and the pricing model behind each deployment option."
+icon: "tag"
+noindex: true
+---
+
+<Note>
+  This page is not in the site navigation. It is shared by link, and the rates on it are list rates in US dollars, exclusive of VAT.
+
+  **Cloud rates are live** — they are the rates the console meters and charges today. **Deployment pricing is indicative** — every private-cloud and on-premise deployment is quoted against your own concurrency, workflows and environment.
+</Note>
+
+## How Voho is priced
+
+Three things are true across every product and every deployment.
+
+<CardGroup cols={3}>
+  <Card title="You pay for work done" icon="gauge-simple">
+    A minute of conversation, a document read, a question answered. There are no seats to buy and nobody to licence.
+  </Card>
+  <Card title="One balance" icon="wallet">
+    Credit is held against your account, not against a product. Moving between products is a change of screen, not a change of contract.
+  </Card>
+  <Card title="Every call is itemised" icon="receipt">
+    Each API response returns `X-Voho-Cost-Cents`, and every run is written to a ledger you can read back. You can attribute spend per request without asking us.
+  </Card>
+</CardGroup>
+
+## AI Call Center
+
+The rates below are for the **AI Call Center** — agents that answer the phone, act in your systems, and hand over to a person. The other five products are priced further down.
+
+| What you are billed for | Unit | Rate |
+| --- | --- | --- |
+| A live call with an agent | Connected minute, rounded up | **$0.09** |
+| An agent turn over the API | Turn, plus the speech it speaks | **$0.02** |
+| Speech — Sada, the flagship voice tier | 1,000 characters | **$0.05** |
+| Speech — Nabra, the high-volume tier | 1,000 characters | **$0.02** |
+| Transcription | Minute, rounded up | **$0.03** |
+| Drafting an agent from your website | Agent | **$0.06** |
+| Rewriting a prompt into Arabic | Prompt | **$0.02** |
+
+A live call is charged by the minute rather than by turn, because that is how a line is actually consumed: it is held open whether or not anyone is speaking, and a caller thinking in silence costs what a caller talking costs.
+
+### What a minute includes
+
+Everything between the caller and the answer. Hearing them in Najdi, Gulf, Egyptian or Modern Standard Arabic, working out what they want, calling into your systems to do it, speaking the reply, and writing the bilingual transcript and summary afterwards.
+
+There is nothing metered on top of the minute for dialect coverage, for actions, or for transcripts.
+
+<Note>
+  Telephony is not in the minute. Number rental and call carriage are carrier costs, quoted by region and passed through without a Voho markup. See [Phone numbers](/numbers).
+</Note>
+
+### What a month looks like
+
+At $0.09 a minute, an hour of agent conversation costs $5.40.
+
+| Calls per month | Average length | Agent minutes | Cloud cost |
+| --- | --- | --- | --- |
+| 500 | 3 minutes | 1,500 | **$135** |
+| 2,000 | 4 minutes | 8,000 | **$720** |
+| 10,000 | 4 minutes | 40,000 | **$3,600** |
+| 50,000 | 5 minutes | 250,000 | **$22,500** |
+
+Size the deployment from peak concurrency rather than from the monthly total — the busiest hour of the busiest day is what has to survive. See [Concurrency](/telephony#concurrency).
+
+<Tip>
+  Two levers move this number more than the rate does: how fast the agent gets to the point, and how many calls it resolves without a handover. A minute saved on average call length is worth more than a discount at most volumes.
+</Tip>
+
+### Building and testing
+
+Building an agent costs almost nothing. A test call in the console is charged at the live rate and capped at five minutes, so a tab left open cannot quietly spend the balance. Previewing what an agent says is charged as speech, at the tier the agent uses.
+
+## Every product
+
+One balance funds all six. Each is billed for the thing it produces.
+
+| Product | Billed for | Unit | Rate |
+| --- | --- | --- | --- |
+| **AI Call Center** | A live conversation with a caller | Connected minute | **$0.09** |
+| **AI Voice Assistant** | Dictation turned into written text | Minute, rounded up | **$0.03** |
+| **Document AI** | A document read and its fields returned | Document | **$0.04** |
+| **Engineering AI** | A question answered against your files | Question | **$0.04** |
+| **Private Enterprise AI** | A boundary check on a record | Check | **$0.04** |
+| **Smart Buildings & Cities** | A reported fault turned into a work order | Ticket | **$0.04** |
+
+Wherever a product speaks rather than writes, the speech is charged at the model rate in the table above. A run that fails is not charged.
+
+<AccordionGroup>
+  <Accordion title="AI Call Center — $0.09 per connected minute" icon="headset">
+    Agents that answer inbound calls in Saudi Arabic, take an action in your systems mid-call, hand over to a person with the context, and return a bilingual transcript and summary.
+
+    10,000 calls a month at four minutes each is $3,600 in agent time.
+  </Accordion>
+
+  <Accordion title="AI Voice Assistant — $0.03 per minute" icon="microphone">
+    Dictation that understands Saudi Arabic as it is spoken, with English terms mid-sentence, landing text in the field the cursor is in.
+
+    A hundred staff dictating twenty minutes a day, twenty-two days a month, is 44,000 minutes — $1,320.
+  </Accordion>
+
+  <Accordion title="Document AI — $0.04 per document" icon="file-invoice">
+    Invoices, contracts, IDs, delivery notes, handwritten forms and bad scans, returned as the fields the next system needs, with low-confidence fields flagged rather than guessed.
+
+    50,000 invoices a month is $2,000.
+  </Accordion>
+
+  <Accordion title="Engineering AI — $0.04 per question" icon="drafting-compass">
+    Answers about drawings, manuals, standards and maintenance history, each citing the document and page it came from.
+
+    Priced per question asked, not per document indexed.
+  </Accordion>
+
+  <Accordion title="Private Enterprise AI — $0.04 per check" icon="shield-halved">
+    The boundary check: what would be stripped from a record before it left your estate. On your own deployment the same check runs inside it and nothing leaves at all.
+
+    The deployment itself is priced under [On-premise pricing](/pricing-onprem); this rate is for the check run against the managed service.
+  </Accordion>
+
+  <Accordion title="Smart Buildings & Cities — $0.04 per ticket" icon="building">
+    A fault described the way a tenant describes it, resolved into an asset, a trade, a priority, an SLA and an escalation.
+
+    Writing it into your Archibus or SAP is part of implementation, not a metered charge.
+  </Accordion>
+</AccordionGroup>
+
+## Deployment options
+
+The rate card above is the managed cloud. The same product runs four other ways, and what changes is the commercial shape rather than the capability.
+
+| Deployment | What you pay for | Starts at |
+| --- | --- | --- |
+| **Managed cloud, pay as you go** | Usage only, from prepaid credit | No minimum |
+| **Managed cloud, enterprise** | Committed volume, reserved concurrency, an SLA | Quoted against your minutes |
+| **Your private cloud or VPC** | Platform licence plus committed capacity | Quoted |
+| **On-premise, your own GPUs** | Annual licence plus prepaid hours | $85,000 licence per year |
+| **Air-gapped or multi-site** | Annual licence plus prepaid hours | from $320,000 licence per year |
+
+<AccordionGroup>
+  <Accordion title="Managed cloud, pay as you go" icon="cloud">
+    Top up a balance with a card and use what you use. No seats, no platform minimum, no annual commitment, and nothing to install.
+
+    Concurrency is burst-on-demand rather than reserved. Support is documentation and email with published response times.
+
+    Right for putting live traffic on voice AI and finding out what it does before committing to anything.
+  </Accordion>
+
+  <Accordion title="Managed cloud, enterprise" icon="building-columns">
+    The same platform, on a contract. You commit to a volume and are invoiced against it instead of holding a card on file, and the commitment is what buys the rate.
+
+    Adds reserved capacity against your peak concurrency, a contractual uptime SLA and incident response window, SSO, SCIM and role-based access, audit logs streamed to your SIEM, security review support and a DPA, and a named solutions engineer.
+
+    Quoted against your committed minutes. Bring expected monthly minutes, average call length and the inbound/outbound split.
+  </Accordion>
+
+  <Accordion title="Your private cloud or VPC" icon="cloud-arrow-up">
+    Voho deployed into your own cloud tenancy, under your accounts and your network policy, rather than onto shared infrastructure. Processing happens inside a boundary your compliance team already approved.
+
+    Priced as an annual platform licence plus committed capacity, the same shape as on-premise. The infrastructure bill is yours and stays with your cloud provider.
+  </Accordion>
+
+  <Accordion title="On-premise, your own GPUs" icon="server">
+    Voho on your servers, in your building. Call audio and transcripts are processed in your environment and never reach ours.
+
+    An annual platform licence by deployment size, plus voice capacity prepaid annually in hours — discounted 30% when you bring your own GPUs, because that is real infrastructure you are providing. You operate it at no charge, or Voho operates it for you.
+
+    Full detail, tiers and worked examples: [On-premise pricing](/pricing-onprem).
+  </Accordion>
+
+  <Accordion title="Air-gapped or multi-site" icon="building-lock">
+    Nothing reaches the internet. Models, call handling and records sit inside your network, and licensing is checked against a local signed file, so the line keeps answering with no route out.
+
+    Priced as multi-site on the on-premise licence, from $320,000 a year, covering multiple sites and disaster recovery. See [Licensing and egress](/on-prem/architecture#licensing-and-egress).
+  </Accordion>
+</AccordionGroup>
+
+### Choosing between cloud and on-premise
+
+On-premise engagements start at **$150,000 a year** across licence and capacity. At cloud rates that is roughly 1.6 million agent minutes — far more conversation than most operations have.
+
+So take on-premise when an obligation genuinely requires processing to stay inside your environment, not to reduce the bill. If the driver is a general security preference rather than a specific rule, the managed service on an enterprise agreement is the better trade, and the honest recommendation. See [Data residency](/on-prem/residency) for what each configuration actually commits to.
+
+## Paying
+
+<AccordionGroup>
+  <Accordion title="Prepaid credit" icon="credit-card">
+    Cloud usage draws down a balance you top up in advance, from $5 to $5,000 a payment. Auto-recharge tops it up from a saved card when it falls below a threshold you set, under a fixed daily ceiling that cannot be raised from the console.
+
+    When the balance reaches zero, the API returns `402 insufficient_credit` rather than running up a bill.
+  </Accordion>
+
+  <Accordion title="Invoicing" icon="file-invoice-dollar">
+    Enterprise, private cloud and on-premise agreements are invoiced rather than charged to a card. Licence and committed capacity are prepaid annually in advance — that prepayment is what makes the committed rates possible.
+  </Accordion>
+
+  <Accordion title="Currency and VAT" icon="percent">
+    Rates are quoted in US dollars and exclude VAT. Where Voho is registered to collect it, VAT is added at checkout or on the invoice. Card statements read `VOHO AI* CREDIT`.
+  </Accordion>
+
+  <Accordion title="Overage and under-use" icon="chart-line">
+    On a committed agreement, overage is billed quarterly in arrears at your tier rate, and crossing into a better tier applies that rate from the point you cross it rather than at renewal.
+
+    Committed volume does not roll into the next year. Commit to what you are confident of and top up mid-year — a top-up at your tier rate costs the same as having committed it at signature.
+  </Accordion>
+</AccordionGroup>
+
+## What is quoted separately
+
+<CardGroup cols={2}>
+  <Card title="Telephony and numbers" icon="phone" href="/numbers">
+    Number rental and call carriage, by region and number type, passed through at cost.
+  </Card>
+  <Card title="Implementation" icon="wrench" href="/on-prem/quickstart">
+    Building the first workflow against your systems, where you want that done for you rather than by your own team. From $60,000 on an on-premise engagement.
+  </Card>
+  <Card title="Hardware" icon="microchip" href="/on-prem/requirements">
+    GPUs are yours to provide on an on-premise deployment, unless you take the Voho-provided option.
+  </Card>
+  <Card title="The systems the agent acts in" icon="plug" href="/integrations">
+    Your CRM, ticketing and scheduling licences remain yours.
+  </Card>
+</CardGroup>
+
+## Partners
+
+Agencies and resellers running Voho for their own clients are priced under a partner arrangement rather than this page. See [Agencies and resellers](/partners/overview).
+
+<Card title="Get a quote against your numbers" icon="paper-plane" href="mailto:support@voho.ai">
+  Bring peak concurrent calls, average call length, expected monthly volume, and the first workflow you want live. A quote comes back against those figures rather than against a tier.
+</Card>

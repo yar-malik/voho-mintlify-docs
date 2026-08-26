@@ -1,0 +1,52 @@
+---
+openapi: "POST /v1/transcribe"
+title: "Transcribe audio"
+sidebarTitle: "Transcribe"
+description: "Speech to text in Saudi Arabic, with English mixed in mid-sentence."
+icon: "microphone"
+---
+
+Turns a clip into text. Built for Arabic as it is actually spoken — Najdi, Hijazi and Gulf — including the English product names and abbreviations that arrive in the middle of a sentence.
+
+## Sending audio
+
+Two ways in, because a `curl` user and an SDK user reach for different ones.
+
+<CodeGroup>
+```bash Multipart
+curl https://app.voho.ai/v1/transcribe \
+  -H "Authorization: Bearer voho_sk_live_..." \
+  -F "file=@note.wav" \
+  -F "language=ar-SA"
+```
+
+```bash JSON
+curl https://app.voho.ai/v1/transcribe \
+  -H "Authorization: Bearer voho_sk_live_..." \
+  -H "Content-Type: application/json" \
+  -d "{\"file\":\"$(base64 -i note.wav)\",\"mime_type\":\"audio/wav\",\"language\":\"ar-SA\"}"
+```
+</CodeGroup>
+
+```json
+{
+  "text": "الموقع الشمالي، المضخة الثانية فيها تسريب، نحتاج seal جديد.",
+  "seconds": 7.4,
+  "confidence": 0.94,
+  "cost_cents": 3
+}
+```
+
+## Limits
+
+| | |
+| --- | --- |
+| Accepted types | `audio/wav`, `audio/x-wav`, `audio/mpeg`, `audio/mp3`, `audio/ogg`, `audio/webm`, `audio/flac` |
+| Maximum size | 8 MB |
+| Maximum length | 60 seconds |
+
+This is the synchronous path deliberately. Longer recordings need somewhere to stage the audio, and that is handled in a deployment rather than on this endpoint.
+
+## Cost
+
+Three cents a minute, rounded up, so a seven-second clip costs three cents. Batch a long dictation into one request rather than many short ones.

@@ -1,0 +1,54 @@
+---
+openapi: "POST /v1/facilities/work-order"
+title: "Turn a reported fault into a work order"
+sidebarTitle: "Work order"
+description: "A tenant's description in, the fields a CAFM system requires out."
+icon: "screwdriver-wrench"
+---
+
+Takes a fault described the way a tenant actually describes it and returns the fields Archibus, SAP PM or your own CAFM system needs to open a ticket.
+
+```bash
+curl https://app.voho.ai/v1/facilities/work-order \
+  -H "Authorization: Bearer voho_sk_live_..." \
+  -H "Content-Type: application/json" \
+  -d '{ "text": "There is a smell of burning on the fourth floor, near the east stairwell." }'
+```
+
+```json
+{
+  "summary": "Burning smell reported on level 4 near the east stairwell.",
+  "asset": "AHU-04",
+  "location": "Level 4, east stairwell",
+  "trade": "HVAC",
+  "priority": "emergency",
+  "sla_hours": 1,
+  "escalate": true,
+  "missing": ["Whether the smell is still present", "A callback number"],
+  "cost_cents": 4
+}
+```
+
+## Priority and SLA
+
+`sla_hours` always matches the priority, to the response times a Saudi facilities team actually works to.
+
+| Priority | SLA |
+| --- | --- |
+| `emergency` | Within 1 hour |
+| `urgent` | Within 8 hours |
+| `routine` | Within 72 hours |
+
+`escalate` is the signal to page someone rather than to queue the ticket. Wire it to whatever your out-of-hours process already is.
+
+## What the caller did not say
+
+`missing` lists the fields your system will want that the report did not contain. On a live line, that is the list of things worth asking before hanging up — see [Actions](/actions).
+
+## Writing it into your system
+
+This endpoint produces the work order. Posting it into Archibus or SAP is an integration, connected during implementation. See [Integrations](/integrations).
+
+## Limits and cost
+
+Text is truncated at 4,000 characters. Four cents a ticket.

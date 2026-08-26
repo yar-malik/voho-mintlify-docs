@@ -1,54 +1,71 @@
 ---
 title: "Pricing"
-sidebarTitle: "Pricing"
+sidebarTitle: "Overview"
 description: "One rate per minute, in riyals or dollars, with everything included."
 icon: "tag"
 noindex: true
 ---
 
 <Note>
-  Prices are shown in **both currencies** throughout. The riyal is pegged to the dollar at **SAR 3.75 = $1**, so the two columns are the same price and neither moves with the exchange rate.
-
-  Rates exclude VAT.
+  Every price is shown in **both currencies**, at the peg of **SAR 3.75 = $1** — so neither moves with the exchange rate. Cent-level rates are rounded up to the nearest halala in riyals. Rates exclude VAT.
 </Note>
 
-## One rate
+## The short version
+
+A call is **SAR 0.15 / $0.04 a minute**, and that covers the whole call. Everything that is not a call is a cent a run. On your own hardware it is a flat annual licence and nothing is metered at all.
+
+## Pick the product
 
 <CardGroup cols={2}>
-  <Card title="SAR 0.15 per minute" icon="phone">
-    Every minute your agent spends on a call. Nothing else is metered.
+  <Card title="AI Call Center" icon="headset" href="/pricing/ai-call-center">
+    **SAR 0.15 / $0.04** a minute — agents that answer the phone.
   </Card>
-  <Card title="$0.04 per minute" icon="dollar-sign">
-    The same price in dollars, at the peg.
+  <Card title="AI Voice Assistant" icon="microphone" href="/pricing/ai-voice-assistant">
+    **SAR 0.04 / $0.01** a minute — dictation into your systems.
+  </Card>
+  <Card title="Document AI" icon="file-invoice" href="/pricing/document-ai">
+    **SAR 0.04 / $0.01** a document — paperwork read automatically.
+  </Card>
+  <Card title="Engineering AI" icon="drafting-compass" href="/pricing/engineering-ai">
+    **SAR 0.04 / $0.01** a question — answers from your own files.
+  </Card>
+  <Card title="Private Enterprise AI" icon="shield-halved" href="/pricing/private-enterprise-ai">
+    **SAR 0.04 / $0.01** a check — and the deployment the rest run on.
+  </Card>
+  <Card title="Smart Buildings & Cities" icon="building" href="/pricing/smart-buildings-cities">
+    **SAR 0.04 / $0.01** a work order — faults into tickets.
   </Card>
 </CardGroup>
 
-That one number covers the whole call: understanding Najdi, Gulf, Egyptian or Modern Standard Arabic, working out what the caller wants, doing it in your systems, speaking the reply, and writing the transcript and summary afterwards.
+## Pick the deployment
 
-There is no seat fee, no platform fee, no per-agent charge, no charge for dialects, and no charge for transcripts.
+The price of the work does not change with the deployment. What changes is what sits underneath it.
 
-<Tip>
-  Committing to 50,000 minutes a year brings it to **SAR 0.11 / $0.03** a minute.
-</Tip>
+<Tabs>
+  <Tab title="Cloud">
+    Managed by Voho. Nothing to install, live in days, no minimum and no commitment. You pay the per-minute or per-run rate and nothing else.
 
-## What a month costs
+    Right for everyone unless a written obligation says otherwise.
+  </Tab>
 
-| Calls a month | Average call | Minutes | Riyals | Dollars |
-| --- | --- | --- | --- | --- |
-| 500 | 3 minutes | 1,500 | **SAR 225** | $60 |
-| 2,000 | 4 minutes | 8,000 | **SAR 1,200** | $320 |
-| 10,000 | 4 minutes | 40,000 | **SAR 6,000** | $1,600 |
-| 50,000 | 5 minutes | 250,000 | **SAR 28,125** | $7,500 |
+  <Tab title="In-Kingdom hosted">
+    A dedicated deployment in a Saudi data centre, operated for you. Data stays in the Kingdom, and you still do not run anything.
 
-The last row is at the committed rate.
+    The same per-minute rate, plus **SAR 7,500 / $2,000 a month** for the dedicated deployment.
+  </Tab>
 
-<Tip>
-  A receptionist in Saudi Arabia costs SAR 2,000 to 5,000 a month and works eight hours a day, five days a week. The first row above is a line answered every hour of every day for less than a tenth of one salary.
-</Tip>
+  <Tab title="On-premise">
+    Your servers, your GPUs, your building. Call audio and records never leave your environment.
 
-## How that compares
+    A flat **SAR 112,500 / $30,000 a year**, and **nothing is metered** — you already pay for the hardware, so the only limit is what your own GPUs carry. Air-gapped or multi-site is **SAR 281,250 / $75,000 a year**.
 
-Most voice AI is quoted as a platform fee with the expensive parts left out — you then pay separately for the language model, the speech recognition, the voice, and the telephony. The number below is what a minute actually costs once those are added.
+    See [Data residency](/on-prem/residency) and [Requirements](/on-prem/requirements).
+  </Tab>
+</Tabs>
+
+## How it compares
+
+Most voice AI is quoted as a platform fee with the expensive parts left out — you then pay separately for the language model, the speech recognition, the voice and the telephony. This is what a minute costs once those are added.
 
 | | All-in, per minute |
 | --- | --- |
@@ -59,59 +76,11 @@ Most voice AI is quoted as a platform fee with the expensive parts left out — 
 
 No provider in the Saudi market publishes a per-minute price. This one is published, and it is the price.
 
-## The other products
+## What is never included
 
-Same account, same balance, one rate each.
+**Telephony.** Renting the number and carrying the calls are the phone company's charges, quoted by region and passed through at cost with nothing added — see [Phone numbers](/numbers). If you already have a trunk or a PBX, Voho connects to it and there is nothing further to buy.
 
-| | Charged per | Riyals | Dollars |
-| --- | --- | --- | --- |
-| **AI Voice Assistant** — dictation into your systems | Minute | SAR 0.04 | $0.01 |
-| **Document AI** — a document read, fields returned | Document | SAR 0.04 | $0.01 |
-| **Engineering AI** — a question answered from your files | Question | SAR 0.04 | $0.01 |
-| **Private Enterprise AI** — a record checked before it leaves | Check | SAR 0.04 | $0.01 |
-| **Smart Buildings & Cities** — a fault turned into a work order | Work order | SAR 0.04 | $0.01 |
-
-A run that fails is not charged. The [Speech API](/api-reference/introduction), if you use it on its own, is SAR 0.19 / $0.05 per 1,000 characters on the flagship voice tier and SAR 0.08 / $0.02 on the high-volume tier.
-
-## Where it runs
-
-The price of the conversation does not change with the deployment. What changes is what sits underneath it.
-
-| | Riyals | Dollars |
-| --- | --- | --- |
-| **Cloud** — managed by Voho, nothing to install | SAR 0.15 a minute | $0.04 a minute |
-| **In-Kingdom hosted** — a dedicated deployment in a Saudi data centre, data stays in the Kingdom | SAR 0.15 a minute<br />+ SAR 7,500 a month | $0.04 a minute<br />+ $2,000 a month |
-| **On-premise** — your servers, your GPUs, your building | SAR 112,500 a year<br />**minutes not metered** | $30,000 a year |
-| **Air-gapped or multi-site** — nothing reaches the internet | SAR 281,250 a year<br />**minutes not metered** | $75,000 a year |
-
-On-premise is a flat annual licence and nothing per minute. You are already paying for the hardware, so the only limit on how much you use it is how much your own GPUs can carry. See [Requirements](/on-prem/requirements) for what a node handles.
-
-<Note>
-  Setting the first workflow up against your systems is a one-off **SAR 37,500 / $10,000**, on any deployment, and only if you want it done for you rather than by your own team. Each further workflow is SAR 18,750 / $5,000.
-</Note>
-
-### Which one
-
-<CardGroup cols={2}>
-  <Card title="Take the cloud" icon="cloud">
-    Unless a written obligation says processing must stay inside your own environment. It is live in days, costs nothing to start, and the same agents run on it.
-  </Card>
-  <Card title="Take on-premise" icon="building-lock">
-    When residency is a requirement you have to evidence. Past roughly 750,000 minutes a year the flat licence is also simply cheaper. See [Data residency](/on-prem/residency).
-  </Card>
-</CardGroup>
-
-## What is not included
-
-**Telephony.** Renting the number and carrying the calls are the phone company's charges. They are quoted by region and number type and passed through at cost with nothing added — see [Phone numbers](/numbers). If you already have a trunk or a PBX, Voho connects to it and there is nothing further to buy.
-
-That is the whole list. Your CRM and ticketing licences stay yours, and on an on-premise deployment so do the GPUs.
-
-## Paying
-
-Cloud usage runs from a prepaid balance you top up by card, from SAR 19 / $5 upwards, and stops rather than overruns when it reaches zero. Anything with a committed rate, a hosted deployment or an on-premise licence is invoiced instead, annually in advance.
-
-{/* TODO: confirm with engineering whether metering stops at the moment a call is transferred to a person. The page implies it does. */}
+**Setting it up**, if you want that done for you rather than by your own team: a one-off **SAR 37,500 / $10,000** for the first workflow on any deployment, and **SAR 18,750 / $5,000** for each one after it.
 
 <Card title="Get it in writing" icon="paper-plane" href="mailto:support@voho.ai">
   Send your expected calls a month, your average call length, and whether residency is a requirement. A quote comes back on those three numbers.

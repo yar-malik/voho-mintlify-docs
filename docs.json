@@ -131,7 +131,13 @@
             "group": "Commercial",
             "hidden": true,
             "pages": [
-              "pricing"
+              "pricing",
+              "pricing/ai-call-center",
+              "pricing/ai-voice-assistant",
+              "pricing/document-ai",
+              "pricing/engineering-ai",
+              "pricing/private-enterprise-ai",
+              "pricing/smart-buildings-cities"
             ],
             "icon": "tag"
           }

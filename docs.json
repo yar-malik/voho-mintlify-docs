@@ -131,9 +131,7 @@
             "group": "Commercial",
             "hidden": true,
             "pages": [
-              "pricing",
-              "pricing-cloud",
-              "pricing-onprem"
+              "pricing"
             ],
             "icon": "tag"
           }
@@ -198,5 +196,15 @@
       "light": "#f4efe5",
       "dark": "#191613"
     }
-  }
+  },
+  "redirects": [
+    {
+      "source": "/pricing-onprem",
+      "destination": "/pricing"
+    },
+    {
+      "source": "/pricing-cloud",
+      "destination": "/pricing"
+    }
+  ]
 }

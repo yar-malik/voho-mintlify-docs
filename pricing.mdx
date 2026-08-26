@@ -1,15 +1,15 @@
 ---
 title: "Pricing"
 sidebarTitle: "Pricing"
-description: "What Voho costs — cloud rates for every product, and the pricing model behind each deployment option."
+description: "What Voho costs — cloud rates for every product, and the pricing for each deployment option."
 icon: "tag"
 noindex: true
 ---
 
 <Note>
-  This page is not in the site navigation. It is shared by link, and the rates on it are list rates in US dollars, exclusive of VAT.
+  This page is not in the site navigation. It is shared by link, and it is the only pricing page — cloud and on-premise both live here, so there is never a second figure to keep current.
 
-  **Cloud rates are live** — they are the rates the console meters and charges today. **Deployment pricing is indicative** — every private-cloud and on-premise deployment is quoted against your own concurrency, workflows and environment.
+  Rates are list rates in US dollars, exclusive of VAT. **Cloud rates are live** — they are what the console meters and charges today. **Deployment pricing is indicative** — every private-cloud and on-premise deployment is quoted against your own concurrency, workflows and environment. Treat it as the shape of a deal and the range to budget against, not a final quote.
 </Note>
 
 ## How Voho is priced
@@ -49,6 +49,8 @@ A live call is charged by the minute rather than by turn, because that is how a 
 Everything between the caller and the answer. Hearing them in Najdi, Gulf, Egyptian or Modern Standard Arabic, working out what they want, calling into your systems to do it, speaking the reply, and writing the bilingual transcript and summary afterwards.
 
 There is nothing metered on top of the minute for dialect coverage, for actions, or for transcripts.
+
+{/* TODO: confirm what happens to time after a handoff to a person — whether metering stops at the transfer. The on-premise hours section below states that it does; both must match, and neither should be quoted until engineering confirms. */}
 
 <Note>
   Telephony is not in the minute. Number rental and call carriage are carrier costs, quoted by region and passed through without a Voho markup. See [Phone numbers](/numbers).
@@ -118,7 +120,7 @@ Wherever a product speaks rather than writes, the speech is charged at the model
   <Accordion title="Private Enterprise AI — $0.04 per check" icon="shield-halved">
     The boundary check: what would be stripped from a record before it left your estate. On your own deployment the same check runs inside it and nothing leaves at all.
 
-    The deployment itself is priced under [On-premise pricing](/pricing-onprem); this rate is for the check run against the managed service.
+    The deployment itself is priced under [On-premise](#on-premise-in-detail) below; this rate is for the check run against the managed service.
   </Accordion>
 
   <Accordion title="Smart Buildings & Cities — $0.04 per ticket" icon="building">
@@ -154,21 +156,21 @@ The rate card above is the managed cloud. The same product runs four other ways,
 
     Adds reserved capacity against your peak concurrency, a contractual uptime SLA and incident response window, SSO, SCIM and role-based access, audit logs streamed to your SIEM, security review support and a DPA, and a named solutions engineer.
 
-    Quoted against your committed minutes. Bring expected monthly minutes, average call length and the inbound/outbound split.
+    Quoted against your committed minutes; volume bands are set in the agreement rather than listed. Bring expected monthly minutes, average call length and the inbound/outbound split.
+
+    {/* TODO: confirm which of these are available on the managed cloud tier today versus on-premise only. SSO/SCIM and SIEM streaming are stated on the on-prem cluster licence below; do not assume they exist on cloud without checking. */}
   </Accordion>
 
   <Accordion title="Your private cloud or VPC" icon="cloud-arrow-up">
     Voho deployed into your own cloud tenancy, under your accounts and your network policy, rather than onto shared infrastructure. Processing happens inside a boundary your compliance team already approved.
 
-    Priced as an annual platform licence plus committed capacity, the same shape as on-premise. The infrastructure bill is yours and stays with your cloud provider.
+    Priced as an annual platform licence plus committed capacity, the same shape as on-premise below. The infrastructure bill is yours and stays with your cloud provider.
   </Accordion>
 
   <Accordion title="On-premise, your own GPUs" icon="server">
     Voho on your servers, in your building. Call audio and transcripts are processed in your environment and never reach ours.
 
-    An annual platform licence by deployment size, plus voice capacity prepaid annually in hours — discounted 30% when you bring your own GPUs, because that is real infrastructure you are providing. You operate it at no charge, or Voho operates it for you.
-
-    Full detail, tiers and worked examples: [On-premise pricing](/pricing-onprem).
+    An annual platform licence by deployment size, plus voice capacity prepaid annually in hours. You operate it at no charge, or Voho operates it for you. Priced in full below.
   </Accordion>
 
   <Accordion title="Air-gapped or multi-site" icon="building-lock">
@@ -178,11 +180,120 @@ The rate card above is the managed cloud. The same product runs four other ways,
   </Accordion>
 </AccordionGroup>
 
-### Choosing between cloud and on-premise
+## On-premise in detail
 
-On-premise engagements start at **$150,000 a year** across licence and capacity. At cloud rates that is roughly 1.6 million agent minutes — far more conversation than most operations have.
+Three components, plus telephony. The split matters: you pay for the platform once a year, and for the conversation your callers actually have.
 
-So take on-premise when an obligation genuinely requires processing to stay inside your environment, not to reduce the bill. If the driver is a general security preference rather than a specific rule, the managed service on an enterprise agreement is the better trade, and the honest recommendation. See [Data residency](/on-prem/residency) for what each configuration actually commits to.
+<CardGroup cols={3}>
+  <Card title="Platform licence" icon="key">
+    Annual, by deployment size. The agent runtime, dialect models, actions, console, updates and support.
+  </Card>
+  <Card title="Voice capacity" icon="clock">
+    Prepaid annually in hours of conversation. Discounted when you bring your own GPUs.
+  </Card>
+  <Card title="Operations" icon="gauge-high">
+    Optional. Voho runs the deployment, or your team does and it costs nothing.
+  </Card>
+</CardGroup>
+
+### Platform licence
+
+| | Annual | For |
+| --- | --- | --- |
+| **Single node** | $85,000 | One GPU node. A production line, one site. |
+| **Cluster** | $180,000 | Up to four nodes, multi-workflow, SSO, SCIM and SIEM streaming. |
+| **Multi-site** | from $320,000 | Multiple sites, disaster recovery, air-gapped deployments. |
+
+All tiers include the deployment itself, dialect coverage across Najdi, Gulf, MSA and Egyptian, the operator console, releases, and the local usage and health dashboard.
+
+### Voice capacity
+
+Capacity is committed and prepaid for the year. The more you commit, the lower the rate — and running it on your own GPUs takes 30% off, because that is real infrastructure you are providing.
+
+| Committed hours per year | On Voho-provided GPUs | On your own GPUs |
+| --- | --- | --- |
+| 20,000 | $4.50 / hour | $3.15 / hour |
+| 75,000 | $3.60 / hour | $2.50 / hour |
+| 200,000+ | $2.90 / hour | $2.00 / hour |
+
+<Tip>
+  20,000 hours a year is roughly 55 hours of conversation a day. Size it from peak concurrency and average call length — see [Requirements](/on-prem/requirements) — rather than from a headcount figure.
+</Tip>
+
+An hour is an hour of agent conversation, measured on connected call time. Silence while the caller waits for a person after handover is not billed.
+
+{/* TODO: confirm with engineering that billing measures connected agent time and stops at handover. If the usage sync meters something else, this sentence has to change before it is quoted, and the cloud statement above has to change with it. */}
+
+### Operations
+
+Who runs the GPUs is your decision, and it is a real one.
+
+<CardGroup cols={2}>
+  <Card title="You operate it" icon="user-gear">
+    **No charge.** Your team runs the deployment using the runbooks and dashboards. Budget for a person who owns it — see [Operations](/on-prem/operations).
+  </Card>
+  <Card title="Voho operates it" icon="headset">
+    **From $9,500 / month.** Voho monitors the deployment, applies releases on your window, and holds first-line operational response.
+    {/* TODO: this rate is a proposal, not a confirmed figure — the supplier management fee behind it is still unquoted. Confirm before it goes in a contract. */}
+  </Card>
+</CardGroup>
+
+### Implementation
+
+A guided implementation with a named solutions engineer, sized to the first workflow.
+
+| | One-off |
+| --- | --- |
+| Implementation, including the first workflow live | from $60,000 |
+| Each additional workflow | $15,000 |
+
+Covers environment review, install, telephony integration, the first workflow built against your systems, testing on real traffic and handover to your operators. See [Getting started](/on-prem/quickstart).
+
+### Worked examples
+
+<AccordionGroup>
+  <Accordion title="Regional bank — one site, own GPUs, one workflow" icon="building-columns">
+    A single node in the bank's own data centre, running balance and card-status enquiries in Najdi Arabic, self-operated.
+
+    | | Year one | Year two |
+    | --- | --- | --- |
+    | Platform licence, single node | $85,000 | $85,000 |
+    | 20,000 hours on own GPUs | $63,000 | $63,000 |
+    | Implementation | $60,000 | — |
+    | **Total** | **$208,000** | **$148,000** |
+
+    Approximately SAR 780,000 in year one.
+  </Accordion>
+
+  <Accordion title="National contact centre — cluster, managed by Voho" icon="headset">
+    A four-node cluster handling service calls across three business lines, with Voho holding operational response.
+
+    | | Year one | Year two |
+    | --- | --- | --- |
+    | Platform licence, cluster | $180,000 | $180,000 |
+    | 75,000 hours on own GPUs | $187,500 | $187,500 |
+    | Managed operations | $114,000 | $114,000 |
+    | Implementation, three workflows | $90,000 | — |
+    | **Total** | **$571,500** | **$481,500** |
+  </Accordion>
+
+  <Accordion title="Government — air-gapped, multi-site" icon="building-lock">
+    A disconnected deployment across two sites with disaster recovery, operated entirely by the customer's own team.
+
+    | | Year one | Year two |
+    | --- | --- | --- |
+    | Platform licence, multi-site | from $320,000 | from $320,000 |
+    | 200,000 hours on own GPUs | $400,000 | $400,000 |
+    | Implementation | $120,000 | — |
+    | **Total** | **from $840,000** | **from $720,000** |
+  </Accordion>
+</AccordionGroup>
+
+## Choosing between cloud and on-premise
+
+On-premise engagements start at **$150,000 a year** across licence and capacity. At cloud rates that is roughly 1.6 million agent minutes — far more conversation than most operations have. Below that floor the managed cloud service is the better commercial fit and the honest recommendation.
+
+So take on-premise when an obligation genuinely requires processing to stay inside your environment, not to reduce the bill. If the driver is a general security preference rather than a specific rule, the managed service on an enterprise agreement is the better trade. See [Data residency](/on-prem/residency) for what each configuration actually commits to.
 
 ## Paying
 
@@ -201,10 +312,12 @@ So take on-premise when an obligation genuinely requires processing to stay insi
     Rates are quoted in US dollars and exclude VAT. Where Voho is registered to collect it, VAT is added at checkout or on the invoice. Card statements read `VOHO AI* CREDIT`.
   </Accordion>
 
-  <Accordion title="Overage and under-use" icon="chart-line">
-    On a committed agreement, overage is billed quarterly in arrears at your tier rate, and crossing into a better tier applies that rate from the point you cross it rather than at renewal.
+  <Accordion title="If you exceed your commitment" icon="chart-line">
+    Overage is billed quarterly in arrears at your tier rate. If your usage crosses into a better tier, that rate applies from the point you cross it rather than at renewal.
+  </Accordion>
 
-    Committed volume does not roll into the next year. Commit to what you are confident of and top up mid-year — a top-up at your tier rate costs the same as having committed it at signature.
+  <Accordion title="If you under-use" icon="hourglass">
+    Committed hours do not roll into the next year. Commit to the volume you are confident of and top up mid-year rather than over-committing at signature — a top-up at your tier rate costs the same as having committed it.
   </Accordion>
 </AccordionGroup>
 
@@ -212,7 +325,7 @@ So take on-premise when an obligation genuinely requires processing to stay insi
 
 <CardGroup cols={2}>
   <Card title="Telephony and numbers" icon="phone" href="/numbers">
-    Number rental and call carriage, by region and number type, passed through at cost.
+    Number rental and call carriage, by region and number type, passed through at cost. Voho does not mark up carrier minutes.
   </Card>
   <Card title="Implementation" icon="wrench" href="/on-prem/quickstart">
     Building the first workflow against your systems, where you want that done for you rather than by your own team. From $60,000 on an on-premise engagement.
@@ -230,5 +343,6 @@ So take on-premise when an obligation genuinely requires processing to stay insi
 Agencies and resellers running Voho for their own clients are priced under a partner arrangement rather than this page. See [Agencies and resellers](/partners/overview).
 
 <Card title="Get a quote against your numbers" icon="paper-plane" href="mailto:support@voho.ai">
-  Bring peak concurrent calls, average call length, expected monthly volume, and the first workflow you want live. A quote comes back against those figures rather than against a tier.
+  Bring peak concurrent calls, average call length, expected monthly volume, and the first workflow you want live. A quote comes back against those figures rather than against a tier. See [Requirements](/on-prem/requirements) for the full list on an on-premise deployment.
+  {/* TODO: confirm the correct routing address for commercial, enterprise and on-prem enquiries. */}
 </Card>

@@ -845,7 +845,7 @@
       "post": {
         "summary": "Check pronunciation coverage",
         "operationId": "textCoverage",
-        "description": "Flags tokens likely to be mispronounced — Latin words inside Arabic text, unexpanded digits, asset tags, and acronyms. A lexical check, not a pronunciation model.",
+        "description": "Flags tokens likely to be mispronounced: Latin words inside Arabic text, unexpanded digits, asset tags, and acronyms. A lexical check, not a pronunciation model.",
         "tags": [
           "Text"
         ],
@@ -1111,7 +1111,7 @@
                     "additionalProperties": {
                       "type": "string"
                     },
-                    "description": "Values for this call. They override the agent's stored defaults, which is the point of them — one agent, a value per call.",
+                    "description": "Values for this call. They override the agent's stored defaults, which is the point of them: one agent, a value per call.",
                     "example": {
                       "customer_name": "أحمد",
                       "branch": "الملز"
@@ -1407,7 +1407,7 @@
       "post": {
         "summary": "Extract fields from a document",
         "operationId": "extractDocument",
-        "description": "Reads an invoice, contract, ID or delivery note — including bad scans and mixed Arabic and English handwriting — and returns the fields the next system needs. Values come back exactly as they appear, never translated or reformatted.\n\nBilled 4 cents a document. Files up to 8 MB.",
+        "description": "Reads an invoice, contract, ID or delivery note, including bad scans and mixed Arabic and English handwriting, and returns the fields the next system needs. Values come back exactly as they appear, never translated or reformatted.\n\nBilled 4 cents a document. Files up to 8 MB.",
         "tags": [
           "Understanding"
         ],
@@ -1495,7 +1495,7 @@
                               "medium",
                               "low"
                             ],
-                            "description": "`low` means it was inferred from a poor scan or from context — check those before they reach a ledger."
+                            "description": "`low` means it was inferred from a poor scan or from context. Check those before they reach a ledger."
                           }
                         }
                       }

@@ -1,6 +1,6 @@
 ---
 title: "Architecture"
-description: "What runs inside your network boundary, what connects to what, and what — if anything — leaves."
+description: "What runs inside your network boundary, what connects to what, and what, if anything, leaves."
 icon: "sitemap"
 ---
 
@@ -42,7 +42,7 @@ Everything in the box runs on your hardware. The caller's audio enters through y
   </Accordion>
 
   <Accordion title="Agent runtime" icon="headset">
-    Works out what the caller wants, follows the instructions you configured, decides when an action should fire, and applies your handover rules. Handover is a rule you set, not a judgement the agent makes on its own — see [Handover](/handoff).
+    Works out what the caller wants, follows the instructions you configured, decides when an action should fire, and applies your handover rules. Handover is a rule you set, not a judgement the agent makes on its own. See [Handover](/handoff).
   </Accordion>
 
   <Accordion title="Speech synthesis" icon="waveform-lines">
@@ -54,7 +54,7 @@ Everything in the box runs on your hardware. The caller's audio enters through y
   </Accordion>
 
   <Accordion title="Records" icon="file-lines">
-    Turn-by-turn transcript, bilingual summary, and every action taken with its result — written to storage you own, under your retention policy. See [Transcripts and records](/transcripts).
+    Turn-by-turn transcript, bilingual summary, and every action taken with its result: written to storage you own, under your retention policy. See [Transcripts and records](/transcripts).
   </Accordion>
 </AccordionGroup>
 
@@ -63,12 +63,12 @@ Everything in the box runs on your hardware. The caller's audio enters through y
 Voho meets the phone system you already run. Audio is available as 8 kHz mulaw, which is what SIP trunks, Cisco and Avaya estates already carry, so there is no transcoding hop and no new numbers to provision.
 
 <Tip>
-  Keep the call-handling component and your SIP termination close to each other on the network. Round trips between them land directly in the silence the caller hears — the metric that matters is time to first audio. See [Latency](/latency).
+  Keep the call-handling component and your SIP termination close to each other on the network. Round trips between them land directly in the silence the caller hears, the metric that matters is time to first audio. See [Latency](/latency).
 </Tip>
 
 ## Identity and access
 
-Operators sign in with your existing corporate identity — SAML or OIDC single sign-on, with SCIM for provisioning and de-provisioning. Roles are yours to define: reviewing calls for quality is a legitimate reason to read transcripts, and company-wide availability is not.
+Operators sign in with your existing corporate identity: SAML or OIDC single sign-on, with SCIM for provisioning and de-provisioning. Roles are yours to define: reviewing calls for quality is a legitimate reason to read transcripts, and company-wide availability is not.
 
 {/* TODO: confirm exactly which SSO protocols and SCIM version the on-prem build supports, and whether local accounts are available as a break-glass path. */}
 
@@ -86,14 +86,14 @@ This is the first thing a security review tests, so it is worth stating precisel
 
 **Licensing does not require a live connection.** The deployment checks a signed licence file held locally. It keeps running whether or not it can reach anything outside your network, and if a licence is not renewed in time it degrades gracefully rather than cutting the line off mid-call.
 
-{/* TODO: define "degrades gracefully" concretely — what capability is reduced, at what point, and what the operator sees. A security review will ask, and "gracefully" is not an answer. */}
+{/* TODO: define "degrades gracefully" concretely: what capability is reduced, at what point, and what the operator sees. A security review will ask, and "gracefully" is not an answer. */}
 
-**Usage metering is reported back periodically for billing.** This is the one outbound flow in a standard deployment. Your records — audio, transcripts, summaries and the action log — are written to your storage and are not what this flow is for. Ask for the exact contents in writing during scoping, the same way you would of any vendor.
+**Usage metering is reported back periodically for billing.** This is the one outbound flow in a standard deployment. Your records (audio, transcripts, summaries and the action log) are written to your storage and are not what this flow is for. Ask for the exact contents in writing during scoping, the same way you would of any vendor.
 
-{/* TODO: confirm the exact contents of the usage report (call counts? durations? anything else?), destination hosts and ports, and frequency — then state it here affirmatively and drop the "ask in scoping" hedge. Deliberately not asserting "no call content leaves" until engineering confirms it, because that sentence gets quoted in security reviews. */}
+{/* TODO: confirm the exact contents of the usage report (call counts? durations? anything else?), destination hosts and ports, and frequency, then state it here affirmatively and drop the "ask in scoping" hedge. Deliberately not asserting "no call content leaves" until engineering confirms it, because that sentence gets quoted in security reviews. */}
 
 <Warning>
-  If your requirement is a genuinely air-gapped deployment with zero egress, raise it explicitly in scoping. Licensing works offline, but the billing usage sync needs an agreed answer — an offline submission path, or a contractual arrangement that removes it.
+  If your requirement is a genuinely air-gapped deployment with zero egress, raise it explicitly in scoping. Licensing works offline, but the billing usage sync needs an agreed answer: an offline submission path, or a contractual arrangement that removes it.
   {/* TODO: confirm whether an offline usage submission exists. The public site currently claims fully disconnected operation with nothing leaving; until this is answered, that claim and this stack are not obviously consistent. Flagged to Yar 2026-08-22. */}
 </Warning>
 

@@ -1,6 +1,6 @@
 ---
 title: "Telephony"
-description: "How calls reach a Voho agent — a number from Voho, or your own SIP trunk in front of the phone system you already run."
+description: "How calls reach a Voho agent: a number from Voho, or your own SIP trunk in front of the phone system you already run."
 icon: "phone"
 ---
 
@@ -17,14 +17,14 @@ An agent is only worth building once calls actually reach it. There are two ways
 
 ## Bring your own trunk
 
-Voho connects over SIP to the telephony you already run. Cisco, Avaya, a hosted PBX, or a trunk direct from your carrier — the agent sits behind it as a destination, so you keep your numbers, your call routing, and your existing contracts.
+Voho connects over SIP to the telephony you already run. Cisco, Avaya, a hosted PBX, or a trunk direct from your carrier: the agent sits behind it as a destination, so you keep your numbers, your call routing, and your existing contracts.
 
 There is no requirement to replace or migrate anything. A common first rollout points a single test number or a low-volume queue at the agent and leaves everything else untouched.
 
-Audio is carried as 8 kHz mulaw, which is what SIP trunks carry natively. Requesting it directly avoids a transcoding tier and the quality loss that comes with it — see [Audio formats](/api-reference/speech#formats).
+Audio is carried as 8 kHz mulaw, which is what SIP trunks carry natively. Requesting it directly avoids a transcoding tier and the quality loss that comes with it. See [Audio formats](/api-reference/speech#formats).
 
 <Tip>
-  Keep SIP termination and the agent close to each other on the network. Round trips between them land directly in the pause the caller hears — see [Latency](/latency).
+  Keep SIP termination and the agent close to each other on the network. Round trips between them land directly in the pause the caller hears. See [Latency](/latency).
 </Tip>
 
 ## Inbound and outbound
@@ -33,31 +33,31 @@ The same agent configuration works in both directions. What changes is who start
 
 <AccordionGroup>
   <Accordion title="Inbound" icon="phone-arrow-down-left">
-    The agent answers, greets the caller in your configured dialect, and handles the request — logging a ticket, checking an order, booking a slot, or transferring to a person. This is where most lines start.
+    The agent answers, greets the caller in your configured dialect, and handles the request: logging a ticket, checking an order, booking a slot, or transferring to a person. This is where most lines start.
   </Accordion>
 
   <Accordion title="Outbound" icon="phone-arrow-up-right">
-    The agent places the call: campaigns, callbacks, appointment reminders, qualification, and confirmations. Outbound runs from a list you supply or a trigger from your own systems — see [Integrations](/integrations).
+    The agent places the call: campaigns, callbacks, appointment reminders, qualification, and confirmations. Outbound runs from a list you supply or a trigger from your own systems. See [Integrations](/integrations).
   </Accordion>
 
   <Accordion title="Mixed" icon="arrow-right-arrow-left">
-    Nothing stops one deployment doing both. Keep the instructions separate per direction — an outbound reminder call opens completely differently from an inbound service call. See [Writing instructions](/instructions).
+    Nothing stops one deployment doing both. Keep the instructions separate per direction, an outbound reminder call opens completely differently from an inbound service call. See [Writing instructions](/instructions).
   </Accordion>
 </AccordionGroup>
 
 <Warning>
-  Outbound calling carries obligations that inbound does not — consent, calling hours, identification of the caller, and do-not-call handling all vary by jurisdiction. Settle these with your legal team before the first campaign, not after.
+  Outbound calling carries obligations that inbound does not: consent, calling hours, identification of the caller, and do-not-call handling all vary by jurisdiction. Settle these with your legal team before the first campaign, not after.
 </Warning>
 
 ## Keypad input
 
-Callers reach for the keypad when speech is not working — a noisy line, a long reference number, or simply habit from years of IVR menus. Agents accept DTMF tones as a fallback so those callers are not stuck.
+Callers reach for the keypad when speech is not working: a noisy line, a long reference number, or simply habit from years of IVR menus. Agents accept DTMF tones as a fallback so those callers are not stuck.
 
 Use it for what it is good at: digits, menu selections, and confirmations. Do not rebuild an eight-level IVR tree behind an agent that could have asked the question.
 
 ## Transfer to a person
 
-Warm transfer hands the call to a human over the same trunk, with the context from the conversation carried across so the caller does not start again. When and how that fires is a design decision worth its own page — see [Handoff to humans](/handoff).
+Warm transfer hands the call to a human over the same trunk, with the context from the conversation carried across so the caller does not start again. When and how that fires is a design decision worth its own page. See [Handoff to humans](/handoff).
 
 ## Concurrency
 
@@ -69,7 +69,7 @@ Bring that figure to scoping along with average call length and the inbound/outb
 
 ## What Voho does not do
 
-Voho is not your carrier. Call carriage, number rental, and per-minute telephony charges come from a carrier and are quoted separately by region — see [Phone numbers](/numbers).
+Voho is not your carrier. Call carriage, number rental, and per-minute telephony charges come from a carrier and are quoted separately by region. See [Phone numbers](/numbers).
 
 <CardGroup cols={2}>
   <Card title="Phone numbers" icon="hashtag" href="/numbers">

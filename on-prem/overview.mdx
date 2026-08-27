@@ -1,13 +1,13 @@
 ---
 title: "On-premise overview"
 sidebarTitle: "Overview"
-description: "Run Voho inside infrastructure you control — your data centre, your GPUs, your country, with no dependency on the public internet."
+description: "Run Voho inside infrastructure you control: your data centre, your GPUs, your country, with no dependency on the public internet."
 icon: "building-lock"
 ---
 
 Voho runs entirely inside infrastructure you control. Call audio, transcripts, the agent's reasoning and every record it produces stay inside your network boundary, on hardware you own or lease, in the country you choose.
 
-This is the configuration for organisations that cannot send customer conversations to a third party — regulated sectors, government, and anyone whose own contracts commit them to keeping processing in-country.
+This is the configuration for organisations that cannot send customer conversations to a third party: regulated sectors, government, and anyone whose own contracts commit them to keeping processing in-country.
 
 <Note>
   On-premise is delivered as an engagement, not a self-service download. Your environment is sized against your real call volume before anything is installed. See [Getting started](/on-prem/quickstart) for what that path looks like.
@@ -22,7 +22,7 @@ Four shapes, in decreasing order of how much you operate yourself. All four keep
     Voho runs on your own servers, in your own building, on your own GPUs. You own the hardware and the operational responsibility.
   </Card>
   <Card title="Disconnected" icon="plug-circle-xmark">
-    Models, call handling and records all sit inside your network, and licensing is checked against a local signed file — so nothing needs to be reachable for the line to keep answering. See [Licensing and egress](/on-prem/architecture#licensing-and-egress).
+    Models, call handling and records all sit inside your network, and licensing is checked against a local signed file, so nothing needs to be reachable for the line to keep answering. See [Licensing and egress](/on-prem/architecture#licensing-and-egress).
   </Card>
   <Card title="Your private cloud" icon="cloud-arrow-up">
     Your own cloud tenancy or VPC, under your accounts and your network policy, rather than shared infrastructure.
@@ -38,7 +38,7 @@ A deployment starts at one GPU server and grows by adding nodes. It ships in thr
 
 | Form | For |
 | --- | --- |
-| **Docker** | A single GPU server — the usual starting point, and enough for a production line |
+| **Docker** | A single GPU server: the usual starting point, and enough for a production line |
 | **Kubernetes** | A cluster, for scaling across nodes and for estates standardised on Kubernetes |
 | **Single container** | One self-contained image, for platforms that require a single-container deployment |
 
@@ -53,7 +53,7 @@ In a self-hosted deployment, the full conversational loop runs inside your bound
 | Speech synthesis | Turns the agent's words into audio, including telephony-ready 8 kHz mulaw. |
 | Speech recognition | Turns caller audio into text, including Najdi and Gulf Arabic and Arabic–English code-switching. |
 | Agent runtime | Decides what the caller wants, when to call an action, and when to hand over to a person. |
-| Actions | Calls into your systems — SAP, Oracle, ServiceNow, Archibus, core banking, your own databases — as a service account whose permissions you control. |
+| Actions | Calls into your systems (SAP, Oracle, ServiceNow, Archibus, core banking, your own databases) as a service account whose permissions you control. |
 | Records | Transcripts, summaries and the action log, written to storage you own. |
 
 {/* TODO: confirm with engineering which capabilities are shipped as locally-runnable units today, and whether any of them has a managed-only dependency. Do not publish a capability here until it is verified. */}
@@ -75,7 +75,7 @@ On-premise moves real operational work to you. That trade is worth making when a
 
 ## Choosing between on-premise and managed
 
-Take on-premise when a specific obligation requires processing to stay inside your environment — a residency rule, a sector regulation, or a term in your own customer contracts.
+Take on-premise when a specific obligation requires processing to stay inside your environment: a residency rule, a sector regulation, or a term in your own customer contracts.
 
 If the driver is a general preference for control rather than a named obligation, the managed service with the right contractual terms is usually the better trade. See [Deployment options](/deployment) for the comparison.
 

@@ -8,7 +8,7 @@ Latency in a voice agent is not one number. Callers notice specific gaps at spec
 
 ## The gap that matters
 
-The one callers feel is **response delay** — from the moment they stop speaking to the moment the agent starts. Roughly:
+The one callers feel is **response delay**. From the moment they stop speaking to the moment the agent starts. Roughly:
 
 | Delay | How it reads |
 | --- | --- |
@@ -47,7 +47,7 @@ Most of the pipeline is not yours to tune. Two things are, and they dominate.
 
 An action that takes three seconds adds three seconds of silence. Look at the slowest thing your agent calls and you will usually find the whole latency problem.
 
-- Cache what does not change often — catalogues, opening hours, product lists.
+- Cache what does not change often: catalogues, opening hours, product lists.
 - Set an aggressive timeout. A failed action with a graceful reply beats a five-second stall.
 - Do not chain calls where one will do.
 
@@ -76,11 +76,11 @@ Two common complaints get misdiagnosed as speed:
 
 **The agent interrupts.** End-of-speech detection firing during a natural pause. Callers who think while speaking trigger this constantly.
 
-**The agent talks over the caller.** Usually a barge-in problem rather than a delay — see [Core concepts](/concepts).
+**The agent talks over the caller.** Usually a barge-in problem rather than a delay. See [Core concepts](/concepts).
 
 ## Measuring it
 
-Measure on your own lines with your own traffic. Published figures are measured under conditions that will not match yours — different network path, different call length, different actions.
+Measure on your own lines with your own traffic. Published figures are measured under conditions that will not match yours: different network path, different call length, different actions.
 
 <Steps>
   <Step title="Record a baseline">

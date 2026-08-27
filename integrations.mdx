@@ -1,6 +1,6 @@
 ---
 title: "Integrations"
-description: "Connect agents to the systems you already run — CRMs, ticketing, schedulers, and automation tools like n8n — over the API and webhooks."
+description: "Connect agents to the systems you already run (CRMs, ticketing, schedulers, and automation tools like n8n) over the API and webhooks."
 icon: "plug"
 ---
 
@@ -8,7 +8,7 @@ An agent that cannot reach your systems is a very expensive answering machine. T
 
 <CardGroup cols={2}>
   <Card title="Agent reaches out" icon="arrow-right-from-bracket" href="/actions">
-    During the call, the agent calls your systems — logging a ticket, checking an order, booking a slot. These are [actions](/actions).
+    During the call, the agent calls your systems: logging a ticket, checking an order, booking a slot. These are [actions](/actions).
   </Card>
   <Card title="Voho pushes to you" icon="arrow-right-to-bracket" href="#webhooks">
     After a call, Voho notifies your systems with what happened, so downstream work starts without anyone watching a dashboard.
@@ -19,15 +19,15 @@ An agent that cannot reach your systems is a very expensive answering machine. T
 
 Actions are the integration surface that matters most. Each one calls a single endpoint in one of your systems, authenticated as a service account you control, and returns something the agent can say out loud.
 
-Design them for speech and for latency — a three-second lookup is three seconds of silence on the line. See [Actions](/actions) and [Latency](/latency).
+Design them for speech and for latency, a three-second lookup is three seconds of silence on the line. See [Actions](/actions) and [Latency](/latency).
 
 ## Webhooks
 
 Voho can notify your systems when a call ends, so a completed conversation triggers whatever comes next: a CRM record, a ticket, a notification to a team channel, a follow-up task.
 
-This is what makes an agent part of an operation rather than a silo. The alternative — someone reading transcripts and re-keying them — undoes most of the value.
+This is what makes an agent part of an operation rather than a silo. The alternative, someone reading transcripts and re-keying them, undoes most of the value.
 
-{/* TODO: the concrete webhook contract is not documented yet — event names, payload schema, retry behaviour, and signature verification all need confirming with engineering before they can be written here or added to api-reference/openapi.json. Do not invent them. */}
+{/* TODO: the concrete webhook contract is not documented yet: event names, payload schema, retry behaviour, and signature verification all need confirming with engineering before they can be written here or added to api-reference/openapi.json. Do not invent them. */}
 
 ## Transcripts and exports
 
@@ -37,17 +37,17 @@ Common destinations: a data warehouse for quality reporting, a CRM record attach
 
 ## Automation tools
 
-Tools like n8n, Zapier, and Make connect through the same REST API and webhooks — no dedicated connector required.
+Tools like n8n, Zapier, and Make connect through the same REST API and webhooks, no dedicated connector required.
 
 The typical shape is a loop: a webhook from Voho starts a workflow, the workflow updates a CRM or creates a ticket, and a step in that workflow can trigger an outbound call back to the customer.
 
 <AccordionGroup>
   <Accordion title="Trigger a workflow from a call" icon="bolt">
-    A finished call fires a webhook into your automation tool, which routes on the outcome — a complaint opens a ticket, a qualified lead lands in the CRM, an emergency pages someone.
+    A finished call fires a webhook into your automation tool, which routes on the outcome: a complaint opens a ticket, a qualified lead lands in the CRM, an emergency pages someone.
   </Accordion>
 
   <Accordion title="Trigger a call from a workflow" icon="phone-arrow-up-right">
-    Your workflow calls the Voho API to place an outbound call — a reminder the day before an appointment, a callback after a form submission. See [Telephony](/telephony#inbound-and-outbound).
+    Your workflow calls the Voho API to place an outbound call: a reminder the day before an appointment, a callback after a form submission. See [Telephony](/telephony#inbound-and-outbound).
   </Accordion>
 
   <Accordion title="Keep systems in sync" icon="arrows-rotate">
@@ -57,7 +57,7 @@ The typical shape is a loop: a webhook from Voho starts a workflow, the workflow
 
 ## Speech on its own
 
-If you already have a call platform and only need the voice, the Speech API is usable independently — HTTP, streaming, and WebSocket, with telephony-ready output.
+If you already have a call platform and only need the voice, the Speech API is usable independently: HTTP, streaming, and WebSocket, with telephony-ready output.
 
 <CardGroup cols={2}>
   <Card title="API reference" icon="code" href="/api-reference/introduction">

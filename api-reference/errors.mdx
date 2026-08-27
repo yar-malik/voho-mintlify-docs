@@ -18,9 +18,9 @@ Errors are JSON with a stable `code` and a human-readable `message`.
 
 | Status | Code | Cause | Retry? |
 | --- | --- | --- | --- |
-| 400 | `invalid_request` | Body is not valid JSON | No — fix the request |
+| 400 | `invalid_request` | Body is not valid JSON | No, fix the request |
 | 400 | `empty_text` | `text` missing or blank | No |
-| 400 | `text_too_long` | Over 5,000 characters | No — split the text |
+| 400 | `text_too_long` | Over 5,000 characters | No, split the text |
 | 400 | `unknown_format` | Unrecognised `format` | No |
 | 400 | `empty` | `text` missing or blank on a non-speech endpoint | No |
 | 400 | `no_file` | No file attached, and no base64 `file` in the body | No |
@@ -30,7 +30,7 @@ Errors are JSON with a stable `code` and a human-readable `message`.
 | 404 | `unknown_voice` | No such voice ID | No |
 | 404 | `unknown_model` | No such model ID | No |
 | 404 | `not_found` | No agent with that ID on this account | No |
-| 413 | `too_large` | Upload over 8 MB | No — send less |
+| 413 | `too_large` | Upload over 8 MB | No, send less |
 | 415 | `unsupported_type` | File type or `mime_type` not accepted | No |
 | 502 | `synthesis_failed` | Synthesis produced no audio | Once, cautiously |
 | 503 | `unavailable` | Briefly at capacity | **Yes, with backoff** |
@@ -38,7 +38,7 @@ Errors are JSON with a stable `code` and a human-readable `message`.
 
 ## Retry strategy
 
-Only `unavailable` is reliably transient. Retry it with exponential backoff and jitter — three attempts over a few seconds is usually enough.
+Only `unavailable` is reliably transient. Retry it with exponential backoff and jitter, three attempts over a few seconds is usually enough.
 
 ```python
 import time, random, requests
@@ -66,20 +66,20 @@ def synthesize(payload, attempts=3):
 
 ## Handling errors on a live call
 
-The 4xx codes are development-time problems and should never reach production traffic — validate voice and model IDs at configuration time, not per request.
+The 4xx codes are development-time problems and should never reach production traffic: validate voice and model IDs at configuration time, not per request.
 
 The ones that can occur mid-call are `insufficient_credit`, `unavailable`, and `synthesis_failed`. Each needs a defined behaviour:
 
-- **`insufficient_credit`** — alert operations. Callers should hear a graceful fallback, not silence. Monitor your balance so this never fires.
-- **`unavailable`** — retry once quickly. If it fails again, fall back to pre-recorded audio if you have it.
-- **`synthesis_failed`** — fall back immediately rather than retrying.
+- **`insufficient_credit`**: alert operations. Callers should hear a graceful fallback, not silence. Monitor your balance so this never fires.
+- **`unavailable`**: retry once quickly. If it fails again, fall back to pre-recorded audio if you have it.
+- **`synthesis_failed`**: fall back immediately rather than retrying.
 
 <Tip>
-  Keep pre-recorded audio for your most critical prompts — greeting, hold, and handoff. A line that degrades to recorded prompts is still a working line.
+  Keep pre-recorded audio for your most critical prompts: greeting, hold, and handoff. A line that degrades to recorded prompts is still a working line.
 </Tip>
 
 ## Errors never carry internal detail
 
-Error messages describe what you can act on. They never include upstream diagnostics, infrastructure identifiers, or stack traces — full detail stays in Voho's logs.
+Error messages describe what you can act on. They never include upstream diagnostics, infrastructure identifiers, or stack traces, full detail stays in Voho's logs.
 
 If you need help diagnosing a specific failure, send the timestamp, the voice and model, and the `X-Voho-*` response headers to your Voho contact.

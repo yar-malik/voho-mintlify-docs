@@ -7,7 +7,7 @@ icon: "rocket"
 
 An on-premise deployment is installed with you rather than handed over as a download. A named solutions engineer works alongside your team, and the first workflow is normally live within a month.
 
-Voho ships as container images, in three deployment forms — Docker on a single GPU server, Kubernetes for a cluster, or one self-contained image where the platform requires it — with a signed licence file the deployment validates locally.
+Voho ships as container images, in three deployment forms (Docker on a single GPU server, Kubernetes for a cluster, or one self-contained image where the platform requires it) with a signed licence file the deployment validates locally.
 
 <Note>
   The registry, image references and configuration values are specific to the release you will run and are provided with the runbook for your deployment.
@@ -18,7 +18,7 @@ Voho ships as container images, in three deployment forms — Docker on a single
 
 <Tabs>
   <Tab title="Docker">
-    One GPU server, Docker with NVIDIA GPU support. The usual starting point — a single node is a production configuration, not a trial one. Choose this unless you have a reason not to.
+    One GPU server, Docker with NVIDIA GPU support. The usual starting point: a single node is a production configuration, not a trial one. Choose this unless you have a reason not to.
   </Tab>
   <Tab title="Kubernetes">
     A cluster. Choose this when you are scaling past one node, or when your estate standardises on Kubernetes and a lone Docker host would be the exception nobody patches.
@@ -32,7 +32,7 @@ Voho ships as container images, in three deployment forms — Docker on a single
 
 <Steps>
   <Step title="Scoping" icon="clipboard-list">
-    One call covering capacity, environment, obligations and operations. Bring the numbers from [Requirements](/on-prem/requirements) — peak concurrent calls above all.
+    One call covering capacity, environment, obligations and operations. Bring the numbers from [Requirements](/on-prem/requirements), peak concurrent calls above all.
 
     **Out of it:** a sizing for your traffic, a deployment shape, and the list of what each side provides.
   </Step>
@@ -56,7 +56,7 @@ Voho ships as container images, in three deployment forms — Docker on a single
   </Step>
 
   <Step title="Build the first workflow" icon="bolt">
-    Configure the agent's instructions and wire the actions it needs into your systems. Start with one workflow that matters and finishes — a status enquiry, a ticket being raised — not a broad assistant.
+    Configure the agent's instructions and wire the actions it needs into your systems. Start with one workflow that matters and finishes (a status enquiry, a ticket being raised) not a broad assistant.
 
     See [Instructions](/instructions) and [Actions](/actions).
 
@@ -87,11 +87,11 @@ Voho ships as container images, in three deployment forms — Docker on a single
 Every item here is something only your organisation can produce, and each one blocks the step it belongs to.
 
 - **Peak concurrent calls**, from the busiest hour of the last year.
-- **A GPU host** provisioned to the sizing — 16–24 GB VRAM or better, 8 cores, 32 GB RAM, 50–100 GB disk — on Ubuntu or Debian, with NVIDIA drivers and Docker GPU support in place.
+- **A GPU host** provisioned to the sizing (16–24 GB VRAM or better, 8 cores, 32 GB RAM, 50–100 GB disk) on Ubuntu or Debian, with NVIDIA drivers and Docker GPU support in place.
 - **Network paths** opened: trunk to call handling, action layer to each target system.
 - **Service accounts** on each system the agent will act in, scoped to only what its actions need.
 - **Identity provider** ready for SSO, with your role definitions decided.
-- **Retention policy** per data type — audio, transcripts, summaries — agreed with your legal and data protection people.
+- **Retention policy** per data type (audio, transcripts, summaries) agreed with your legal and data protection people.
 - **A test number** you can route freely without touching production traffic.
 - **A firewall decision** on the periodic usage sync, or an agreed offline path if you are deploying with zero egress.
 - **The first workflow chosen**, with the person who owns that process available.

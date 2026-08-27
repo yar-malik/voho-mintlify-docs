@@ -18,7 +18,7 @@ curl https://app.voho.ai/v1/documents/ask \
 ```json
 {
   "answer": "45 N·m, dry, on revision C of the manual.",
-  "quotes": ["Torque, dry: 45 N·m (33 lbf·ft) — Rev C, section 4.2"],
+  "quotes": ["Torque, dry: 45 N·m (33 lbf·ft). Rev C, section 4.2"],
   "answered": true,
   "cost_cents": 4
 }
@@ -41,7 +41,7 @@ Branch on `answered` rather than parsing the prose.
 
 ## One file at a time
 
-This endpoint reads the document you send it. Indexing a whole archive — drawings, standards, maintenance history, on an offline site — is a deployment rather than an API call. See [Deployment options](/deployment).
+This endpoint reads the document you send it. Indexing a whole archive (drawings, standards, maintenance history, on an offline site) is a deployment rather than an API call. See [Deployment options](/deployment).
 
 ## Limits and cost
 

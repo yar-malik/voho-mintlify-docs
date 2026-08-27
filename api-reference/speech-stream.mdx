@@ -2,7 +2,7 @@
 openapi: "POST /v1/speech/stream"
 title: "Stream speech"
 sidebarTitle: "Streaming"
-description: "POST /v1/speech/stream — audio that starts arriving before synthesis finishes."
+description: "POST /v1/speech/stream, audio that starts arriving before synthesis finishes."
 icon: "tower-broadcast"
 ---
 
@@ -13,7 +13,7 @@ One endpoint returns two shapes, chosen by the `Accept` header:
 - **`text/event-stream`** → Server-Sent Events with base64 chunks and a usage event
 - **anything else** → raw audio bytes, chunked as they arrive
 
-Raw is what a media pipeline wants — pipe it to a player or a SIP leg. SSE is what a browser or orchestration layer wants, because it carries chunk indices and cost alongside the audio.
+Raw is what a media pipeline wants, pipe it to a player or a SIP leg. SSE is what a browser or orchestration layer wants, because it carries chunk indices and cost alongside the audio.
 
 ## Constraints
 
@@ -144,7 +144,7 @@ data: {"bytes":18422,"characters":9,"cost_cents":1}
 
 The two shapes fail differently, because once the status line is sent there is no way to change it.
 
-- **SSE** emits an `error` event and closes. Handle it explicitly — a stream that ends without `done` did not succeed.
+- **SSE** emits an `error` event and closes. Handle it explicitly, a stream that ends without `done` did not succeed.
 - **Raw** aborts the response body. Appending an error would be decoded as audio, so the connection breaking *is* the signal. Treat a truncated body as a failure.
 
 <Note>

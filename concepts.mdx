@@ -1,6 +1,6 @@
 ---
 title: "Core concepts"
-description: "Agents, calls, turns, and actions — the vocabulary the rest of these docs uses."
+description: "Agents, calls, turns, and actions, the vocabulary the rest of these docs uses."
 icon: "diagram-project"
 ---
 
@@ -20,7 +20,7 @@ Calls are the unit you review, measure, and bill against. When something goes wr
 
 ## Turn
 
-A **turn** is one exchange — the caller speaks, the agent responds. Calls are sequences of turns, and most quality problems are turn-level: the agent misheard one thing, or answered a question the caller didn't ask.
+A **turn** is one exchange: the caller speaks, the agent responds. Calls are sequences of turns, and most quality problems are turn-level: the agent misheard one thing, or answered a question the caller didn't ask.
 
 <Note>
   Reading transcripts turn by turn is the single most effective debugging technique available to you. Nearly every "the agent is bad" report resolves to two or three specific turns.
@@ -28,7 +28,7 @@ A **turn** is one exchange — the caller speaks, the agent responds. Calls are 
 
 ## Action
 
-An **action** is something the agent does in the world rather than in the conversation — creating a ticket, looking up an order, updating a record. Actions are what separate a useful agent from a recording.
+An **action** is something the agent does in the world rather than in the conversation: creating a ticket, looking up an order, updating a record. Actions are what separate a useful agent from a recording.
 
 An agent with no actions can only talk. See [Actions](/actions).
 
@@ -36,7 +36,7 @@ An agent with no actions can only talk. See [Actions](/actions).
 
 **Barge-in** is the caller interrupting the agent mid-sentence. Real conversations are full of it, and an agent that ignores interruptions feels robotic and frustrating within about two turns.
 
-Voho agents stop speaking when the caller starts. This matters most on long confirmations — the caller who already knows their order number will talk over you every time.
+Voho agents stop speaking when the caller starts. This matters most on long confirmations, the caller who already knows their order number will talk over you every time.
 
 ## How they fit together
 
@@ -48,7 +48,7 @@ Voho agents stop speaking when the caller starts. This matters most on long conf
     Caller and agent exchange turns. The agent tracks what has been established so far.
   </Step>
   <Step title="Actions fire">
-    When the agent has what it needs, it takes an action — logging the ticket, fetching the record.
+    When the agent has what it needs, it takes an action: logging the ticket, fetching the record.
   </Step>
   <Step title="The call closes">
     The agent confirms, hangs up, and a transcript and summary are written to the call record.

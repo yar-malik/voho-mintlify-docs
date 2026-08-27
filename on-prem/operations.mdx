@@ -1,6 +1,6 @@
 ---
 title: "Operations"
-description: "Running a Voho deployment after handover — what to watch, how to upgrade, and how to know you still have headroom."
+description: "Running a Voho deployment after handover: what to watch, how to upgrade, and how to know you still have headroom."
 icon: "gauge-high"
 ---
 
@@ -20,7 +20,7 @@ Four signals tell you whether the deployment is healthy. Everything else is diag
   </Accordion>
 
   <Accordion title="Handover rate" icon="user-check">
-    The share of calls passed to a person. A rising rate usually means callers are asking for something the agent was never configured to do — which is a content problem, not an infrastructure one.
+    The share of calls passed to a person. A rising rate usually means callers are asking for something the agent was never configured to do, which is a content problem, not an infrastructure one.
   </Accordion>
 
   <Accordion title="Action failures" icon="triangle-exclamation">
@@ -34,7 +34,7 @@ A local dashboard, served from the deployment, shows usage and system health wit
 
 ## Licence renewal
 
-The deployment validates a signed licence file locally, so it does not depend on reaching Voho to keep running. If a licence is not renewed in time the deployment degrades gracefully rather than cutting off — a line does not stop answering because a renewal was sitting in someone's inbox.
+The deployment validates a signed licence file locally, so it does not depend on reaching Voho to keep running. If a licence is not renewed in time the deployment degrades gracefully rather than cutting off, a line does not stop answering because a renewal was sitting in someone's inbox.
 
 Treat that as a safety net, not a plan. Put the expiry date in the same calendar as your certificate renewals.
 
@@ -63,7 +63,7 @@ Capacity is a planning exercise, not an alert. Review it on a schedule:
 
 - Track peak concurrency month over month against the sizing.
 - Add headroom before the season you already know is coming, not during it.
-- When you add hardware, re-measure time to first audio — capacity that does not hold latency has not been added.
+- When you add hardware, re-measure time to first audio, capacity that does not hold latency has not been added.
 
 <Tip>
   The number to defend is peak concurrency during your busiest hour of the year. Average utilisation looks comfortable right up until the hour that matters.
@@ -81,11 +81,11 @@ Keep the boundary clear between what your team fixes and what goes back to Voho.
 
 | Symptom | Usually yours | Usually ours |
 | --- | --- | --- |
-| Agent says the wrong thing | Instructions and workflow configuration | — |
-| Action fails or times out | The target system, its credentials, the network path | — |
+| Agent says the wrong thing | Instructions and workflow configuration |, |
+| Action fails or times out | The target system, its credentials, the network path |, |
 | Latency rises with load | Capacity and placement | Sizing guidance |
-| Audio quality or pronunciation regression | — | Release issue |
+| Audio quality or pronunciation regression |, | Release issue |
 | Component will not start after upgrade | Environment and prerequisites | Release issue |
-| Licence expiry warnings | Renewal with your account team | — |
+| Licence expiry warnings | Renewal with your account team |, |
 
 {/* TODO: confirm the post-handover support model, response commitments and escalation channel with the commercial team before this is quoted anywhere. */}

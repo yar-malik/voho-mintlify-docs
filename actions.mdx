@@ -1,6 +1,6 @@
 ---
 title: "Actions"
-description: "Let an agent do things — log tickets, look up records, update systems — instead of only talking about them."
+description: "Let an agent do things (log tickets, look up records, update systems) instead of only talking about them."
 icon: "bolt"
 ---
 
@@ -22,7 +22,7 @@ An action has a name, a description of when to use it, and the information it ne
 }
 ```
 
-The description is not decoration — it is how the agent decides whether this is the right moment. "Log a maintenance ticket" alone produces agents that log tickets before collecting anything useful.
+The description is not decoration. It is how the agent decides whether this is the right moment. "Log a maintenance ticket" alone produces agents that log tickets before collecting anything useful.
 
 ## Designing actions that work
 
@@ -40,9 +40,9 @@ The description is not decoration — it is how the agent decides whether this i
 
 ## Read actions and write actions
 
-**Read actions** fetch information — order status, account balance, opening hours. They are safe to call speculatively and can run early in a call.
+**Read actions** fetch information: order status, account balance, opening hours. They are safe to call speculatively and can run early in a call.
 
-**Write actions** change something — creating a ticket, cancelling an order. They deserve more care. Have the agent confirm before calling a write action that is hard to reverse:
+**Write actions** change something: creating a ticket, cancelling an order. They deserve more care. Have the agent confirm before calling a write action that is hard to reverse:
 
 ```text
 Before cancelling an order, read back the order number and the item,
@@ -51,7 +51,7 @@ and wait for the caller to confirm. Do not cancel on the first mention.
 
 ## Failure handling
 
-Actions fail — your system is down, the record does not exist, the request times out. Say what the agent should do:
+Actions fail: your system is down, the record does not exist, the request times out. Say what the agent should do:
 
 ```text
 If create_ticket fails, tell the caller their report was taken but the
@@ -67,7 +67,7 @@ SMS. Do not retry more than once, and do not read out an error.
 
 Every action happens while the caller waits in silence. Under about a second is unnoticeable; beyond two or three seconds the caller starts wondering whether the line dropped.
 
-For slow actions, have the agent say what it is doing before calling — "let me check that for you" buys several seconds of natural silence. See [Latency](/latency).
+For slow actions, have the agent say what it is doing before calling, "let me check that for you" buys several seconds of natural silence. See [Latency](/latency).
 
 <CardGroup cols={2}>
   <Card title="Writing instructions" icon="pen-line" href="/instructions">

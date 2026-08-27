@@ -18,13 +18,13 @@ Get an API token, synthesise a sentence, and hear it back.
     Sign in at [app.voho.ai](https://app.voho.ai) and go to API tokens.
   </Step>
   <Step title="Create a token">
-    Give it a name that says where it will be used — `billing-service`, `ivr-staging`. When a token needs revoking, you will want to know what breaks.
+    Give it a name that says where it will be used: `billing-service`, `ivr-staging`. When a token needs revoking, you will want to know what breaks.
   </Step>
   <Step title="Copy it now">
     The token is shown once and starts with `voho_sk_live_`.
 
     <Warning>
-      Only the hash is stored, so a lost token cannot be recovered — you would create a new one and revoke the old. Put it in your secret manager before closing the page.
+      Only the hash is stored, so a lost token cannot be recovered. You would create a new one and revoke the old. Put it in your secret manager before closing the page.
     </Warning>
   </Step>
 </Steps>
@@ -94,7 +94,7 @@ Any voice ID drops straight into the `voice` field. See [Voices and languages](/
 
 ## For telephony
 
-If the audio is going onto a phone line, ask for `mulaw` at 8 kHz — that is what SIP trunks carry, so you skip a transcoding step:
+If the audio is going onto a phone line, ask for `mulaw` at 8 kHz: that is what SIP trunks carry, so you skip a transcoding step:
 
 ```bash
 curl -X POST https://app.voho.ai/v1/speech \
@@ -106,7 +106,7 @@ curl -X POST https://app.voho.ai/v1/speech \
 
 ## For live conversation
 
-Waiting for a complete file adds its whole synthesis time to the silence a caller hears. Stream instead — first audio arrives in roughly 200 ms rather than 1.7 s:
+Waiting for a complete file adds its whole synthesis time to the silence a caller hears. Stream instead, first audio arrives in roughly 200 ms rather than 1.7 s:
 
 ```bash
 curl -N -X POST https://app.voho.ai/v1/speech/stream \
@@ -116,7 +116,7 @@ curl -N -X POST https://app.voho.ai/v1/speech/stream \
   -d '{"text":"أهلاً بك","voice":"layla","format":"opus"}'
 ```
 
-If your text comes from an LLM and arrives incrementally, use the [WebSocket](/api-reference/websocket) — it accepts text while audio is already playing.
+If your text comes from an LLM and arrives incrementally, use the [WebSocket](/api-reference/websocket). It accepts text while audio is already playing.
 
 ## Check before you ship
 

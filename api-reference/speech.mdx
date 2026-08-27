@@ -2,7 +2,7 @@
 openapi: "POST /v1/speech"
 title: "Synthesise speech"
 sidebarTitle: "Speech"
-description: "POST /v1/speech — turn text into a complete audio file."
+description: "POST /v1/speech, turn text into a complete audio file."
 icon: "waveform-lines"
 ---
 
@@ -27,7 +27,7 @@ Returns the finished audio as raw bytes, with the details of what was produced i
 </ParamField>
 
 <ParamField body="sample_rate" type="integer">
-  Output sample rate in Hz. Defaults to the format's native rate — 24000 for `mp3`, `wav`, and `opus`; 8000 for `mulaw`.
+  Output sample rate in Hz. Defaults to the format's native rate: 24000 for `mp3`, `wav`, and `opus`; 8000 for `mulaw`.
 </ParamField>
 
 <ParamField body="speed" type="number" default="1.0">
@@ -35,7 +35,7 @@ Returns the finished audio as raw bytes, with the details of what was produced i
 </ParamField>
 
 <ParamField body="pitch" type="number">
-  Pitch adjustment. **Only applies to `nabra-1`** — `sada-1` ignores it.
+  Pitch adjustment. **Only applies to `nabra-1`**, `sada-1` ignores it.
 </ParamField>
 
 ## Formats
@@ -45,7 +45,7 @@ Returns the finished audio as raw bytes, with the details of what was produced i
 | `mp3` | `audio/mpeg` | 24000 | General playback, smallest files |
 | `wav` | `audio/wav` | 24000 | Uncompressed, further processing |
 | `opus` | `audio/ogg` | 24000 | Low-bandwidth streaming |
-| `mulaw` | `audio/basic` | 8000 | Telephony — SIP trunks, Cisco, Avaya |
+| `mulaw` | `audio/basic` | 8000 | Telephony: SIP trunks, Cisco, Avaya |
 
 <Tip>
   `mulaw` at 8 kHz is what telephony systems actually carry. Requesting it directly avoids a transcoding step and the quality loss that comes with it.
@@ -161,8 +161,8 @@ X-Voho-Cost-Cents: 1
 | 404 | `unknown_voice` | No such voice ID |
 | 404 | `unknown_model` | No such model ID |
 | 502 | `synthesis_failed` | Synthesis produced no audio |
-| 503 | `unavailable` | Briefly at capacity — retry |
+| 503 | `unavailable` | Briefly at capacity, retry |
 
 <Note>
-  `unavailable` is transient. Retry with backoff. `synthesis_failed` usually is not — check your request before retrying.
+  `unavailable` is transient. Retry with backoff. `synthesis_failed` usually is not, check your request before retrying.
 </Note>

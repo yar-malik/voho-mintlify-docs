@@ -1,16 +1,16 @@
 ---
 title: "Models"
-description: "Sada and Nabra — what each is for, what they cost, and which features they support."
+description: "Sada and Nabra: what each is for, what they cost, and which features they support."
 icon: "layer-group"
 ---
 
 Two model tiers. Both cover the whole voice catalog; they differ in fidelity, speed, and price.
 
 <CardGroup cols={2}>
-  <Card title="Sada — sada-1" icon="star">
+  <Card title="Sada, sada-1" icon="star">
     **Flagship expressive model.** Highest fidelity, full emotional range. The default.
   </Card>
-  <Card title="Nabra — nabra-1" icon="gauge-high">
+  <Card title="Nabra, nabra-1" icon="gauge-high">
     **Fast and economical.** Built for high-volume production traffic.
   </Card>
 </CardGroup>
@@ -24,13 +24,13 @@ Two model tiers. Both cover the whole voice catalog; they differ in fidelity, sp
 | Streaming | Yes | No |
 | WebSocket | Yes | No |
 | `pitch` parameter | Ignored | Supported |
-| Default | Yes | — |
+| Default | Yes |, |
 
 ## Choosing
 
 **Use `sada-1`** for anything a customer hears in a live conversation. It is the default, it is the only tier with a streaming path, and expressiveness matters most exactly where latency does.
 
-**Use `nabra-1`** for bulk generation where cost dominates and nothing is waiting on the result — pre-rendering prompt libraries, generating notification audio in batch, non-realtime pipelines. At 2 cents per 1,000 characters it is 60% cheaper.
+**Use `nabra-1`** for bulk generation where cost dominates and nothing is waiting on the result: pre-rendering prompt libraries, generating notification audio in batch, non-realtime pipelines. At 2 cents per 1,000 characters it is 60% cheaper.
 
 <Warning>
   `nabra-1` cannot stream. [`/v1/speech/stream`](/api-reference/speech-stream) and the [WebSocket](/api-reference/websocket) accept `sada-1` only, and reject other models up front rather than failing mid-stream.
@@ -38,7 +38,7 @@ Two model tiers. Both cover the whole voice catalog; they differ in fidelity, sp
 
 ## Pitch
 
-`pitch` applies only to `nabra-1`. The flagship tier ignores it — its expressiveness comes from the model rather than from post-hoc adjustment, and a pitch-shifted flagship voice would sound worse, not more configurable.
+`pitch` applies only to `nabra-1`. The flagship tier ignores it: its expressiveness comes from the model rather than from post-hoc adjustment, and a pitch-shifted flagship voice would sound worse, not more configurable.
 
 ```json
 {

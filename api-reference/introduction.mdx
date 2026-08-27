@@ -23,7 +23,7 @@ curl https://app.voho.ai/v1/voices \
 Tokens are created in the Voho console and begin with `voho_sk_live_`.
 
 <Warning>
-  The plaintext token is shown **once**, at creation. Only its hash is stored, so a lost token cannot be recovered — create a new one and revoke the old. Revoking takes effect immediately.
+  The plaintext token is shown **once**, at creation. Only its hash is stored, so a lost token cannot be recovered. Create a new one and revoke the old. Revoking takes effect immediately.
 </Warning>
 
 A missing, malformed, or revoked token returns `401`:
@@ -83,7 +83,7 @@ One balance funds every endpoint. Each is billed for the thing it produces, and 
 | [Transcription](/api-reference/transcribe) | Minute | 3 |
 | [Extract](/api-reference/documents-extract), [ask](/api-reference/documents-ask), [redact](/api-reference/privacy-redact), [work order](/api-reference/facilities-work-order) | Run | 4 |
 
-Cost is rounded up, so a very short request still costs at least one cent. The [text utilities](/api-reference/text-normalize) are free — they neither synthesise nor read anything.
+Cost is rounded up, so a very short request still costs at least one cent. The [text utilities](/api-reference/text-normalize) are free. They neither synthesise nor read anything.
 
 When the balance reaches zero, every billable endpoint returns `402`:
 
@@ -107,7 +107,7 @@ See [Errors](/api-reference/errors) for the full list.
 
 ## Limits
 
-- **Synthesis: 5,000 characters** per request. Longer text returns `text_too_long` — split it into sentences and concatenate the audio.
+- **Synthesis: 5,000 characters** per request. Longer text returns `text_too_long`, split it into sentences and concatenate the audio.
 - **Uploads: 8 MB.** Documents are PDF, PNG, JPEG or WebP; audio is WAV, MP3, OGG, WebM or FLAC, up to 60 seconds.
 - Files go up as `multipart/form-data` with the file attached, or as JSON with a base64 `file` and a `mime_type`. Both are accepted everywhere a file is.
 

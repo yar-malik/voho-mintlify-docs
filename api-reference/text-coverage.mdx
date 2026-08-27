@@ -19,7 +19,7 @@ Flags tokens likely to be mispronounced: Latin words inside Arabic text, unexpan
 
 | Reason | Meaning |
 | --- | --- |
-| `asset_tag` | Looks like an equipment code — spell out or supply a hint |
+| `asset_tag` | Looks like an equipment code, spell out or supply a hint |
 | `acronym` | Will be read letter by letter unless hinted |
 | `contains_digits` | Will be expanded; the hint shows how |
 | `latin_in_arabic` | Latin word inside Arabic text; confirm the intended reading |
@@ -56,4 +56,4 @@ curl -X POST https://app.voho.ai/v1/text/coverage \
 ```
 </ResponseExample>
 
-`coverage` is the proportion of tokens that raised no flag — 1.0 means nothing looked risky. Treat it as a smoke test on a batch of templates, not a quality score.
+`coverage` is the proportion of tokens that raised no flag; 1.0 means nothing looked risky. Treat it as a smoke test on a batch of templates, not a quality score.

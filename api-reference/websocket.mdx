@@ -57,6 +57,10 @@ Authenticate with your token, then drive the session with JSON text frames. Audi
 
 Same as [streaming](/api-reference/speech-stream): **`sada-1` only**, formats `opus`, `mulaw`, or `pcm`, and 5,000 characters per utterance.
 
+## Reusing a connection
+
+After `done`, send another `start` on the same socket for the next utterance. Each utterance is billed for its own characters. Keeping one socket open between sentences avoids a new handshake each time, which a caller would otherwise hear as a pause before every sentence. Idle connections close after two minutes.
+
 <RequestExample>
 ```javascript Node
 import WebSocket from "ws";

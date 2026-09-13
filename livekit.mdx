@@ -1,0 +1,201 @@
+---
+title: "LiveKit Agents"
+description: "Saudi Arabic speech inside LiveKit Agents: Najdi and Hijazi dialects, Arabic and English in one sentence, streaming both ways, and a Saudi phone number in front of it."
+icon: "puzzle-piece"
+---
+
+`livekit-plugins-voho` gives a [LiveKit Agents](https://docs.livekit.io/agents/) voice agent a Saudi voice and Saudi ears. Your agent speaks Najdi to a Riyadh caller and Hijazi to a Jeddah one, follows a caller who switches into English mid-sentence, and answers a Saudi phone number through LiveKit SIP.
+
+<CardGroup cols={3}>
+  <Card title="Saudi dialects" icon="language">
+    Najdi and Hijazi as separate voices, plus Omani, Gulf, Egyptian and Modern Standard Arabic.
+  </Card>
+  <Card title="Streaming both ways" icon="bolt">
+    Speech starts while the LLM is still writing. Transcripts arrive while the caller is still talking.
+  </Card>
+  <Card title="Saudi hosting" icon="building-lock">
+    Point the same plugin at an in-Kingdom or on-premise Voho deployment.
+  </Card>
+</CardGroup>
+
+## Quickstart
+
+<Steps>
+  <Step title="Install">
+    ```bash
+    pip install "livekit-agents[openai,silero]" livekit-plugins-voho
+    ```
+  </Step>
+  <Step title="Set your keys">
+    Create a Voho key in the [console](https://app.voho.ai/tokens). Any LiveKit LLM plugin works; OpenAI is shown here.
+
+    ```bash
+    export VOHO_API_KEY=voho_sk_live_...
+    export OPENAI_API_KEY=...
+    ```
+  </Step>
+  <Step title="Write the agent">
+    ```python agent.py
+    from livekit.agents import Agent, AgentSession, JobContext, WorkerOptions, cli
+    from livekit.plugins import openai, silero, voho
+
+    INSTRUCTIONS = """You answer the phone for a Riyadh clinic.
+    Speak Saudi Arabic in the Najdi dialect: الحين, إي, وش, زين, أبشر.
+    If the caller switches to English, switch with them.
+    Short sentences. One question at a time."""
+
+    async def entrypoint(ctx: JobContext):
+        await ctx.connect()
+        session = AgentSession(
+            stt=voho.STT(language="ar-SA"),
+            llm=openai.LLM(model="gpt-4o-mini"),
+            tts=voho.TTS(voice="layla"),
+            vad=silero.VAD.load(),
+        )
+        await session.start(agent=Agent(instructions=INSTRUCTIONS), room=ctx.room)
+        await session.say("أهلاً وسهلاً، معك ليلى. كيف أقدر أساعدك؟")
+
+    if __name__ == "__main__":
+        cli.run_app(WorkerOptions(entrypoint_fnc=entrypoint))
+    ```
+  </Step>
+  <Step title="Talk to it">
+    ```bash
+    python agent.py console
+    ```
+
+    Speak Najdi to it from your terminal. Interrupt it and it stops. Say a product name in English and it keeps up.
+  </Step>
+</Steps>
+
+A complete example with an order lookup tool is in the repository: [`examples/agent.py`](https://github.com/yar-malik/livekit-plugins-voho/blob/main/examples/agent.py).
+
+## Choosing the dialect
+
+The voice sets the sound. The instructions set the words. Choose both.
+
+| Caller | Voice | Tell the LLM to use |
+| --- | --- | --- |
+| Riyadh, Qassim, the centre | `layla`, `nouf`, `faisal`, `omar` | الحين, إي, وش, كذا, زين, أبشر |
+| Jeddah, Makkah, Madinah | `salma`, `rawan`, `hisham`, `tariq` | دحين, إيوه, إيش, كدا. Never أبشر or زين |
+| Oman | `maryam`, `salim` | شو, الحين, زين, ما عليه, عاد. Never أبشر |
+| Unknown | `yousef`, `khalid` | Modern Standard Arabic |
+| International | `clementine`, `marlow`, `vespera` | English |
+
+<Warning>
+  A Najdi voice given no dialect instruction reads whatever the LLM writes, and an LLM left alone writes Fusha. That sounds like a recording to a Saudi caller. Put the dialect words in the instructions.
+</Warning>
+
+Switch during a call, for example when a Jeddah caller reaches a Riyadh line:
+
+```python
+session.tts.update_options(voice="salma")
+session.stt.update_options(language="en-US")   # an English-only stretch
+```
+
+See [Voices and languages](/voices) for the full catalog.
+
+## What the plugin calls
+
+| Method | Voho API | Behaviour |
+| --- | --- | --- |
+| `TTS.synthesize()` | [`POST /v1/speech/stream`](/api-reference/speech-stream) | Whole sentence in, chunked PCM out |
+| `TTS.stream()` | [`WS /v1/speech/ws`](/api-reference/websocket) | Tokens in as the LLM writes, audio out as it is produced |
+| `STT.recognize()` | [`POST /v1/transcribe`](/api-reference/transcribe) | One utterance, Arabic and English together |
+| `STT.stream()` | [`WS /v1/transcribe/ws`](/api-reference/transcribe-websocket) | Interim transcripts while the caller speaks, a final one at each pause |
+
+Audio is 16-bit mono PCM: 24 kHz from speech synthesis, 16 kHz into transcription. LiveKit resamples for the room.
+
+## Answering a Saudi phone number
+
+LiveKit SIP connects a phone number to a room, and your agent joins the room. The plugin does not change.
+
+<Steps>
+  <Step title="Get a number with SIP">
+    Saudi 9200, 800 and geographic numbers come from a Saudi carrier that offers SIP trunking. Point the trunk at your LiveKit SIP endpoint. See [Phone numbers](/numbers).
+  </Step>
+  <Step title="Create the inbound trunk">
+    ```json inbound-trunk.json
+    {
+      "trunk": {
+        "name": "Riyadh clinic line",
+        "numbers": ["+966XXXXXXXXX"],
+        "krisp_enabled": true
+      }
+    }
+    ```
+
+    ```bash
+    lk sip inbound create inbound-trunk.json
+    ```
+  </Step>
+  <Step title="Dispatch each call to your agent">
+    ```json dispatch.json
+    {
+      "dispatch_rule": {
+        "rule": { "dispatchRuleIndividual": { "roomPrefix": "call-" } },
+        "roomConfig": { "agents": [{ "agentName": "clinic-line" }] }
+      }
+    }
+    ```
+
+    ```bash
+    lk sip dispatch create dispatch.json
+    ```
+
+    Register the worker under the same name:
+
+    ```python
+    cli.run_app(WorkerOptions(entrypoint_fnc=entrypoint, agent_name="clinic-line"))
+    ```
+  </Step>
+  <Step title="Ring it">
+    Call the number. Telephone audio is 8 kHz and LiveKit resamples it in both directions.
+  </Step>
+</Steps>
+
+For outbound calls, create an outbound trunk and add the callee with `ctx.api.sip.create_sip_participant(...)`. Same plugin, same voices.
+
+## Latency
+
+Measured from a client about 100 ms from the API, with a warm connection: an agent starts speaking a sentence 430 to 480 ms after the plugin receives it. About 200 ms of that is synthesis and the rest is the network.
+
+The plugin keeps its speech socket open between sentences and opens it when LiveKit calls `prewarm()`, so the first sentence of a call is no slower than the rest. A client in the same region as an [in-Kingdom deployment](/on-prem/residency) removes most of the network share.
+
+## Pricing and usage
+
+| | Rate |
+| --- | --- |
+| Speech synthesis, `sada-1` (streaming) | 5¢ per 1,000 characters |
+| Speech synthesis, `nabra-1` | 2¢ per 1,000 characters, no streaming |
+| Transcription | 3¢ per started minute |
+
+A two-minute customer service call is roughly 400 characters spoken by the agent and two minutes heard: about 8¢. Billing comes from a prepaid balance per account. [`GET /v1/usage`](/api-reference/usage) returns what a key used, in the units it was billed in.
+
+## Data and hosting
+
+- Audio is not stored. Billing keeps character and minute counts only.
+- The public cloud API runs in London.
+- In-Kingdom and on-premise deployments use the same API and plugin, with `base_url` pointed at the deployment. See [Data residency](/on-prem/residency).
+
+```python
+voho.TTS(voice="layla", base_url="https://voice.your-company.sa")
+```
+
+## Errors
+
+Voho error codes appear in the exception message, so the log says what to fix.
+
+| Code | HTTP | Means |
+| --- | --- | --- |
+| `unauthorized` | 401 | Wrong or missing key |
+| `insufficient_credit` | 402 | Balance exhausted |
+| `unknown_voice`, `unknown_model`, `unknown_format` | 400 | Check [`GET /v1/voices`](/api-reference/voices-list) |
+| `text_too_long` | 400 | More than 5,000 characters in one utterance |
+| `unavailable` | 503 | Temporarily unavailable, retried |
+
+Client errors are not retried. Server errors, rate limits and dropped sockets are retried using LiveKit's `APIConnectOptions`.
+
+## Source
+
+The plugin is open source under Apache-2.0: [github.com/yar-malik/livekit-plugins-voho](https://github.com/yar-malik/livekit-plugins-voho). Tests run against a local mock of the API with no key needed.

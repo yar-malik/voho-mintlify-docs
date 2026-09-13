@@ -1,0 +1,56 @@
+---
+title: "Usage"
+description: "GET /v1/usage, what your account or a single key used, in the units it was billed in."
+icon: "chart-simple"
+---
+
+<Info>
+  **GET** `https://app.voho.ai/v1/usage`
+</Info>
+
+Returns what was used over a window, from the same records your balance is calculated from, so this total and your balance always agree.
+
+## Query parameters
+
+<ParamField query="days" type="integer" default="30">
+  Window length in days, from 1 to 365.
+</ParamField>
+
+<ParamField query="token" type="string">
+  Pass `self` to count only requests made with the calling key. Useful with one key per environment. Without it, the whole account is counted.
+</ParamField>
+
+## Response
+
+<ResponseField name="window_days" type="integer">The window used.</ResponseField>
+<ResponseField name="scope" type="string">`account` or `token`.</ResponseField>
+<ResponseField name="balance_cents" type="integer">Remaining prepaid balance for the account.</ResponseField>
+<ResponseField name="speech" type="object">
+  Speech synthesis: `requests`, `characters`, `cost_cents`.
+</ResponseField>
+<ResponseField name="products" type="array">
+  Everything else, one entry per product, action and unit: `product`, `action`, `unit`, `units`, `count`, `cost_cents`. Transcription appears here in minutes.
+</ResponseField>
+<ResponseField name="total_cost_cents" type="integer">Speech plus products for the window.</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl "https://app.voho.ai/v1/usage?days=30&token=self" \
+  -H "Authorization: Bearer $VOHO_API_KEY"
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+{
+  "window_days": 30,
+  "scope": "token",
+  "balance_cents": 4120,
+  "speech": { "requests": 1840, "characters": 512400, "cost_cents": 2562 },
+  "products": [
+    { "product": "ai-voice-assistant", "action": "transcribe", "unit": "minute", "units": 3610, "count": 2210, "cost_cents": 10830 }
+  ],
+  "total_cost_cents": 13392
+}
+```
+</ResponseExample>

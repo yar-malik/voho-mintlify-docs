@@ -1,0 +1,103 @@
+---
+title: "WebSocket transcription"
+sidebarTitle: "Transcribe (WebSocket)"
+description: "WS /v1/transcribe/ws, send audio as it is spoken and receive Saudi Arabic transcripts while the caller is still talking."
+icon: "microphone-lines"
+---
+
+<Info>
+  **WS** `wss://app.voho.ai/v1/transcribe/ws`
+</Info>
+
+[`POST /v1/transcribe`](/api-reference/transcribe) takes a finished recording. A live call needs the opposite: audio arriving in small frames and text coming back while the person is still speaking, so whatever is listening can decide when the caller has finished and when to stop talking over them.
+
+Transcription follows Saudi Arabic as it is spoken on the phone (Najdi, Hijazi and Gulf) and keeps the English words that arrive mid-sentence.
+
+## Protocol
+
+Authenticate with your token in the `Authorization` header. A browser, which cannot set headers on a WebSocket, may pass `?token=` instead. Control messages are JSON text frames; audio is sent as binary frames.
+
+### Client to server
+
+<ResponseField name="start" type="frame">
+  Opens transcription. `{ "type": "start", "language": "ar-SA", "sample_rate": 16000, "encoding": "pcm" }`. All fields are optional; these are the defaults. `encoding` is `pcm` (16-bit little-endian, mono) or `mulaw`. `sample_rate` is between 8000 and 48000.
+</ResponseField>
+
+<ResponseField name="binary" type="frame">
+  Audio in the encoding and sample rate you declared. Send frames as they are captured; 20 to 100 ms each works well. Keep sending during silence, since pauses are how a final transcript is recognised.
+</ResponseField>
+
+<ResponseField name="stop" type="frame">
+  No more audio. The final transcript for the last thing said is sent, then `done`. `{ "type": "stop" }`
+</ResponseField>
+
+### Server to client
+
+<ResponseField name="ready" type="frame">
+  Authenticated, waiting for `start`.
+</ResponseField>
+
+<ResponseField name="started" type="frame">
+  Transcription is open. Echoes `language`, `sample_rate`, `encoding`.
+</ResponseField>
+
+<ResponseField name="transcript" type="frame">
+  `{ "type": "transcript", "text": "...", "final": false }`. Interim transcripts arrive while the caller is speaking and may be revised. A frame with `"final": true` settles a stretch of speech and carries `confidence`, and `language` when it was detected.
+</ResponseField>
+
+<ResponseField name="done" type="frame">
+  Session complete. Carries `seconds` of audio received and `cost_cents`.
+</ResponseField>
+
+<ResponseField name="error" type="frame">
+  Carries `error.code` and `error.message`.
+</ResponseField>
+
+## Languages
+
+Any Arabic code (`ar-SA`, `ar-AE`, `ar-OM`, `ar-EG`, `ar`) also transcribes English spoken in the same sentence. Use `en-US` or `en-GB` for an English-only line.
+
+## Billing
+
+3 cents per started minute of audio received, the same rate as [`POST /v1/transcribe`](/api-reference/transcribe). A session is billed once, when it ends.
+
+<RequestExample>
+```python Python
+import asyncio, json, websockets
+
+async def transcribe(frames):
+    url = "wss://app.voho.ai/v1/transcribe/ws"
+    headers = {"Authorization": f"Bearer {API_KEY}"}
+
+    async with websockets.connect(url, additional_headers=headers) as ws:
+        await ws.recv()                                   # ready
+        await ws.send(json.dumps({"type": "start", "language": "ar-SA", "sample_rate": 16000}))
+        await ws.recv()                                   # started
+
+        async def send():
+            async for frame in frames:                    # 16-bit PCM at 16 kHz
+                await ws.send(frame)
+            await ws.send(json.dumps({"type": "stop"}))
+
+        sender = asyncio.create_task(send())
+        async for raw in ws:
+            msg = json.loads(raw)
+            if msg["type"] == "transcript":
+                print("final  " if msg["final"] else "interim", msg["text"])
+            elif msg["type"] == "done":
+                print(msg["seconds"], "s,", msg["cost_cents"], "cents")
+                break
+        await sender
+```
+</RequestExample>
+
+<ResponseExample>
+```json Frames
+{ "type": "transcript", "text": "السلام عليكم", "final": false }
+{ "type": "transcript", "text": "السلام عليكم أبغى أغير", "final": false }
+{ "type": "transcript", "text": "السلام عليكم، أبغى أغيّر الموعد.", "final": true, "confidence": 0.91 }
+{ "type": "done", "seconds": 4.2, "cost_cents": 3 }
+```
+</ResponseExample>
+
+Using LiveKit? The [LiveKit plugin](/livekit) drives this socket for you.

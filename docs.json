@@ -78,6 +78,7 @@
               "instructions",
               "actions",
               "integrations",
+              "livekit",
               "handoff"
             ]
           },
@@ -151,7 +152,8 @@
             "group": "Overview",
             "pages": [
               "api-reference/introduction",
-              "api-reference/errors"
+              "api-reference/errors",
+              "api-reference/usage"
             ]
           },
           {
@@ -180,6 +182,7 @@
             "group": "Understanding",
             "pages": [
               "api-reference/transcribe",
+              "api-reference/transcribe-websocket",
               "api-reference/documents-extract",
               "api-reference/documents-ask",
               "api-reference/privacy-redact",

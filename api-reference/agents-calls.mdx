@@ -1,0 +1,65 @@
+---
+openapi: "POST /v1/agents/{id}/calls"
+title: "Call a lead now"
+sidebarTitle: "Call a lead"
+description: "Hand every new lead to an agent, and it calls them within seconds."
+icon: "phone-arrow-up-right"
+---
+
+Somebody who filled in a form a minute ago still remembers why. Somebody called the next morning often does not. This endpoint is for that first minute: send the lead, and the agent rings them from its own number, usually within a few seconds of your request.
+
+Call it from wherever leads arrive: your website's form handler, your CRM, or an automation tool such as Zapier or Make sitting behind Meta or Google lead ads.
+
+## Before the first lead
+
+1. Attach a Twilio number to the agent in the console. The call goes out from that number. To use a different one, pass it as `from`.
+2. Create an API token on the **API Tokens** page.
+3. Write the agent for an outbound call: it rang them, so it should say who it is, why it is calling, and ask whether now is a good time. The **Real-estate sales** template is written this way.
+
+## Sending a lead
+
+```bash
+curl https://app.voho.ai/v1/agents/ag_7f2c19/calls \
+  -H "Authorization: Bearer voho_sk_live_..." \
+  -H "Content-Type: application/json" \
+  -d '{
+    "to": "+966512345678",
+    "name": "سارة",
+    "variables": { "unit": "A2", "source": "instagram" }
+  }'
+```
+
+```json
+{
+  "status": "calling",
+  "lead_id": "4f0c6a8e-2b1d-4c7a-9e55-0a7b3c2d1e90",
+  "batch_id": "9a1e2f3c-5d6b-4e7f-8a9b-0c1d2e3f4a5b",
+  "seconds_to_call": 1.4
+}
+```
+
+`variables` are filled into the agent's instructions and greeting, so an agent written with `{{unit}}` opens knowing what the lead asked about. `name` is available as `{{name}}`.
+
+## What happens to a lead
+
+| `status` | Meaning |
+| --- | --- |
+| `calling` | The phone is ringing now. |
+| `queued` | It will be called at the next opportunity. `reason` says why: outside the calling window, or a call to the same number is already under way. |
+| `skipped` | It will not be called. `reason` says why, usually the do-not-call list. |
+
+Every lead lands in one standing campaign per agent, named **Instant leads**, on the **Outbound** page. That is where you see who answered, who did not, and each conversation. The same rules as any campaign apply:
+
+- **Calling window.** Leads are called between 09:00 and 20:00 Riyadh time. One that arrives at night is called when the window opens.
+- **No answer.** Retried twice more, 15 minutes apart. A voicemail counts as no answer, and the agent hangs up on it rather than talking to the tone.
+- **Do not call.** A number on your do-not-call list is never called.
+- **Double submissions.** The same number sent again while a call to it is under way does not place a second call. Sent again later, it is a new lead and gets the full set of attempts.
+- **Pausing.** Pause **Instant leads** on the Outbound page and new leads are refused with `409` until you resume it.
+
+## Cost
+
+A call is billed per connected minute at the live call rate, from the same balance as everything else. A call that is not answered costs nothing.
+
+<Note>
+  Outbound calls need a Twilio number today. SIP trunks can receive calls but cannot yet place them.
+</Note>

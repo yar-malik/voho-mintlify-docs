@@ -1230,6 +1230,212 @@
         }
       }
     },
+    "/v1/agents/{id}/calls": {
+      "post": {
+        "summary": "Call a lead now",
+        "operationId": "agentCall",
+        "description": "Ring a lead the moment they enquire. The agent calls from the Twilio number attached to it, usually within a few seconds of this request, so a lead form, a CRM or an automation tool can hand every new lead straight to the agent.\n\nEach agent keeps one standing campaign named `Instant leads`, visible on the Outbound page, and every lead is a recipient in it. The do-not-call list, the 09:00 to 20:00 Riyadh calling window, answering-machine hang-up and retries all apply: a lead outside the window is called when it opens, and one who does not answer is tried twice more, 15 minutes apart. Sending the same number again while a call to it is under way does not place a second call.\n\nBilled per connected minute at the live call rate, like any call Voho holds.",
+        "tags": [
+          "Agents"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The agent's ID, from `/v1/agents`."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "to"
+                ],
+                "properties": {
+                  "to": {
+                    "type": "string",
+                    "description": "The lead's phone number, in international format.",
+                    "example": "+966512345678"
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "The lead's name. Also available to the agent as `{{name}}`.",
+                    "example": "سارة"
+                  },
+                  "variables": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "string"
+                    },
+                    "description": "What the lead asked about, filled into the agent's instructions and greeting as `{{unit}}` and the like, so it opens knowing why it is calling. Up to 10 keys, letters, digits and underscores.",
+                    "example": {
+                      "unit": "A2",
+                      "source": "instagram"
+                    }
+                  },
+                  "from": {
+                    "type": "string",
+                    "description": "Call from this number instead of the agent's own. Must be a Twilio number on your account.",
+                    "example": "+966112345678"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The lead was accepted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "calling",
+                        "queued",
+                        "skipped"
+                      ],
+                      "description": "`calling`: the phone is ringing now. `queued`: it will be called at the next opportunity, see `reason`. `skipped`: it will not be called, see `reason`."
+                    },
+                    "lead_id": {
+                      "type": "string"
+                    },
+                    "batch_id": {
+                      "type": "string",
+                      "description": "The agent's `Instant leads` campaign."
+                    },
+                    "reason": {
+                      "type": "string",
+                      "description": "Why the lead was queued or skipped."
+                    },
+                    "seconds_to_call": {
+                      "type": "number",
+                      "description": "From receiving the request to placing the call, when `status` is `calling`."
+                    }
+                  }
+                },
+                "example": {
+                  "status": "calling",
+                  "lead_id": "4f0c6a8e-2b1d-4c7a-9e55-0a7b3c2d1e90",
+                  "batch_id": "9a1e2f3c-5d6b-4e7f-8a9b-0c1d2e3f4a5b",
+                  "seconds_to_call": 1.4
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The number is missing or not in international format.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "invalid_number",
+                    "message": "Send \"to\" as a phone number in international format, e.g. +9665XXXXXXXX."
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, malformed, or revoked token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "unauthorized",
+                    "message": "Invalid or missing API token."
+                  }
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "Not enough credit to place a call.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "insufficient_credit",
+                    "message": "Your credit balance is too low to place a call. Top up to continue."
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The account is suspended by its provider.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "suspended",
+                    "message": "This account is suspended. Contact your provider."
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No such resource on this account.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Nothing to call from: no Twilio number on the agent, no connected Twilio account, or instant calling paused on the Outbound page.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "no_number",
+                    "message": "Attach a Twilio number to this agent first, or pass \"from\" with one of your numbers."
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server fault.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/transcribe": {
       "post": {
         "summary": "Transcribe audio",

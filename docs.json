@@ -175,7 +175,8 @@
             "group": "Agents",
             "pages": [
               "api-reference/agents-list",
-              "api-reference/agents-reply"
+              "api-reference/agents-reply",
+              "api-reference/agents-calls"
             ]
           },
           {

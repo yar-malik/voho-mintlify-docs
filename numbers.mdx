@@ -1,58 +1,70 @@
 ---
 title: "Phone numbers"
-description: "Getting a number in Saudi Arabia or the Gulf, bringing numbers you already own, and what the carrier will ask for."
+description: "Bring any number you already have, from Twilio or from any Saudi carrier over SIP."
 icon: "hashtag"
 ---
 
-Every line needs a number in front of it. You can take one from Voho, or keep the numbers you already publish and point them at an agent.
+Every line needs a number in front of it. Voho does not sell numbers: you bring one you already have, and point it at an agent. Your carrier stays yours, and so does the bill for the line.
 
-## Bringing numbers you already have
+There are two ways a number reaches an agent. Both are set up on the **Phone Numbers** page of the console.
 
-The lowest-friction option, and the right one if your number is already printed on invoices, vehicles, or a website.
+<CardGroup cols={2}>
+  <Card title="From Twilio" icon="hashtag" href="#from-twilio">
+    Connect your Twilio account and import the numbers it already owns.
+  </Card>
+  <Card title="Any carrier, over SIP" icon="network-wired" href="#any-carrier-over-sip">
+    A Saudi 011, 013, 9200 or 800 number from GO, Mobily, stc, Zain, Maqsam or any other carrier, or your own PBX.
+  </Card>
+</CardGroup>
 
-Nothing about the number changes. Your carrier keeps terminating it, and your phone system routes the call to the agent over SIP like any other destination. See [Telephony](/telephony). No porting, no notice period, no window where callers reach a dead line.
+## From Twilio
 
-## New numbers in the region
+Connect your Twilio account with its Account SID and auth token, then **Import numbers**. Every voice-capable number the account owns is listed. Assign an agent to one and its incoming calls go to that agent; remove the agent and the number is handed back.
 
-Voho arranges provisioning across Saudi Arabia and the wider Gulf, including +966 numbers.
+Nothing is bought on your behalf, and your Twilio bill stays yours.
 
-What is available depends on three things, and they interact:
+## Any carrier, over SIP
 
-<AccordionGroup>
-  <Accordion title="Number type" icon="list-check">
-    Geographic, national, toll-free, and mobile numbers have different rules and different inventory. A toll-free number and a local geographic number are not interchangeable requests.
-  </Accordion>
+For a number you already have with a carrier, including the Saudi numbers Twilio does not sell. Your carrier sends the calls for that number over SIP to your Twilio account, and Twilio hands them to your agent. Nothing about the number changes: no porting, no notice period, no window where callers reach a dead line.
 
-  <Accordion title="Direction" icon="arrow-right-arrow-left">
-    Some numbers are provisioned for inbound only. If you intend to run outbound campaigns from a number, say so at the start. It changes what can be issued and what the carrier requires.
-  </Accordion>
+<Steps>
+  <Step title="Connect Twilio">
+    SIP calls arrive through your own Twilio account, so connect it first. You do not need to buy a number there. Use an upgraded account: a trial account plays Twilio's own message at the start of every call.
+  </Step>
+  <Step title="Create a SIP trunk">
+    On **Phone Numbers**, choose **Import number**, then **Any carrier, over SIP**. Give it a name and list the numbers your carrier routes down it, as `+966112345678` or the local `0112345678`, `9200…` or `800…` form. If your carrier gives you the IP addresses it sends calls from, add them too.
+  </Step>
+  <Step title="Send the details to your carrier">
+    Voho sets up a SIP address for the trunk in your Twilio account and shows you, once, what your carrier needs:
 
-  <Accordion title="Carrier inventory" icon="warehouse">
-    Availability is real-world inventory in the country in question, not a catalogue that is always in stock. Lead times vary by number type and by market.
-  </Accordion>
-</AccordionGroup>
+    | | |
+    | --- | --- |
+    | SIP host | `vh-….sip.twilio.com`, unique to the trunk |
+    | Transport | UDP or TCP, port 5060 |
+    | Authentication | the username and password shown, or the IP addresses you listed |
+    | Request URI | the dialled number, e.g. `sip:+966112345678@vh-….sip.twilio.com` |
+
+    The password is shown once. If it is lost, delete the trunk and create another.
+  </Step>
+  <Step title="Assign an agent">
+    Pick an agent for each number. The trunk shows **pending** until the first call arrives, then **active**.
+  </Step>
+</Steps>
 
 <Note>
-  Bring your requirement as a sentence rather than a quantity: "inbound geographic numbers in Riyadh for three client sites, outbound from one national number." That is enough to check availability. "Ten Saudi numbers" is not.
+  Carriers do not all put the dialled number in the request URI. If yours sends a pilot number or an extension instead, a trunk with a single number still routes every call to it. With several numbers on one trunk, ask the carrier to send the dialled number.
 </Note>
 
-## Verification and documentation
-
-Number provisioning in Saudi Arabia is subject to the requirements of the terminating carrier and to applicable Saudi regulation. This is a carrier process, not a Voho one, and Voho cannot shortcut it.
-
-The exact requirements are confirmed against your case: your company structure, the intended use, the number type, and whether the numbers are inbound, outbound, or both. Expect to identify the legal entity taking the numbers and the person authorised to sign for it.
-
 <Warning>
-  Do not commit a launch date to your own customers before the number requirement is confirmed with the carrier. Verification is the step that most often moves a go-live date, and it is outside Voho's control.
+  Over SIP, numbers answer incoming calls. Outbound calls and [instant lead calls](/api-reference/agents-calls) need a Twilio number today.
 </Warning>
 
-{/* TODO: do not publish a document checklist here. The specific KYC/documentation requirements are carrier- and case-dependent and have not been confirmed in writing by a KSA carrier. When they are, this section can name them, and only then. Same rule for lead times and for which Gulf markets are actually available. */}
+## Getting a Saudi number
+
+If you do not have a number yet, take one from a Saudi carrier that offers SIP, then bring it as above. Geographic (011, 012, 013), 9200 unified and 800 toll-free numbers are all offered over SIP by Saudi carriers; mobile-looking `05` numbers are generally not.
+
+Number provisioning in Saudi Arabia is the carrier's process and subject to Saudi regulation. Expect to identify the legal entity taking the number and the person authorised to sign for it, and do not commit a launch date to your own customers until the carrier has confirmed the number.
 
 ## Cost
 
-Numbers and call carriage are quoted separately from the platform, by region and number type, and passed through at cost. Voho does not mark up carrier minutes.
-
-<Card title="Ask about numbers for your deployment" icon="paper-plane" href="mailto:support@voho.ai">
-  Bring the country, the number type, the direction, and how many. See [Telephony](/telephony) for what happens once the number is live.
-  {/* TODO: confirm the correct routing address for number and carrier enquiries. */}
-</Card>
+Voho bills the agent per connected minute, from your Voho balance. The number, the line and the carrier's minutes are billed by your carrier and by Twilio, directly to you. Voho does not resell or mark up carrier minutes.

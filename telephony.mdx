@@ -1,23 +1,23 @@
 ---
 title: "Telephony"
-description: "How calls reach a Voho agent: a number from Voho, or your own SIP trunk in front of the phone system you already run."
+description: "How calls reach a Voho agent: a number from your Twilio account, or any number from any carrier over SIP."
 icon: "phone"
 ---
 
-An agent is only worth building once calls actually reach it. There are two ways that happens, and most deployments end up using both.
+An agent is only worth building once calls actually reach it. Voho does not sell numbers: you bring any number you already have, in one of two ways.
 
 <CardGroup cols={2}>
-  <Card title="A number from Voho" icon="hashtag" href="/numbers">
-    Voho provisions the number and terminates the call. Nothing changes in your phone system.
+  <Card title="From Twilio" icon="hashtag" href="/numbers#from-twilio">
+    Connect your Twilio account and import the numbers it owns.
   </Card>
-  <Card title="Your own trunk" icon="network-wired" href="#bring-your-own-trunk">
-    Your carrier and PBX stay exactly as they are. The agent becomes one more destination on the trunk.
+  <Card title="Any carrier, over SIP" icon="network-wired" href="/numbers#any-carrier-over-sip">
+    GO, Mobily, stc, Zain, Maqsam, any other carrier, or your own PBX. Your carrier and PBX stay exactly as they are.
   </Card>
 </CardGroup>
 
 ## Bring your own trunk
 
-Voho connects over SIP to the telephony you already run. Cisco, Avaya, a hosted PBX, or a trunk direct from your carrier: the agent sits behind it as a destination, so you keep your numbers, your call routing, and your existing contracts.
+Voho takes calls over SIP from the telephony you already run. Cisco, Avaya, a hosted PBX, or a trunk direct from your carrier: the agent sits behind it as a destination, so you keep your numbers, your call routing, and your existing contracts. The calls arrive through a SIP address in your own Twilio account; [Phone numbers](/numbers#any-carrier-over-sip) walks through the setup.
 
 There is no requirement to replace or migrate anything. A common first rollout points a single test number or a low-volume queue at the agent and leaves everything else untouched.
 
@@ -69,11 +69,11 @@ Bring that figure to scoping along with average call length and the inbound/outb
 
 ## What Voho does not do
 
-Voho is not your carrier. Call carriage, number rental, and per-minute telephony charges come from a carrier and are quoted separately by region. See [Phone numbers](/numbers).
+Voho is not your carrier and does not sell numbers. Call carriage, number rental, and per-minute telephony charges come from your carrier and from Twilio, billed to you directly. See [Phone numbers](/numbers).
 
 <CardGroup cols={2}>
   <Card title="Phone numbers" icon="hashtag" href="/numbers">
-    Provisioning in Saudi Arabia and the Gulf, and bringing your own.
+    Bringing your numbers, from Twilio or any carrier over SIP.
   </Card>
   <Card title="Integrations" icon="plug" href="/integrations">
     Trigger outbound calls and push results into your systems.
